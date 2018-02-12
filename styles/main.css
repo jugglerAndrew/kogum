@@ -1,0 +1,126 @@
+/* GLOBAL */
+span.empty_set {
+  font-size: 85%;
+}
+
+/* NAV */
+ul.nav {
+  text-align: center;
+}
+ul.nav li {
+  display: inline-block;
+  width: fit-content;
+}
+
+/* PUZZLE */
+#puzzle {
+  padding: .2em;
+  padding-bottom: 1em;
+  background-color: #f6f6f6;
+  border-width: .05em;
+  border-style: solid;
+  border-color: #EEEEEE;
+  border-radius: 1em;
+  margin-bottom: 3em;
+}
+#play_pause_button {
+  border-width: .1em;
+  border-style: solid;
+  border-color: #EEEEEE;
+  color: #666666;
+  width: 5.5em;
+}
+#reload_button {
+  border-width: .1em;
+  border-style: solid;
+  border-color: #EEEEEE;
+  color: #666666;
+}
+#reload_button:disabled {
+  color: #EEEEEE;
+}
+div.card {
+  background-color: white;
+  border-width: .1em;
+  border-style: solid;
+  border-color: #EEEEEE;
+  padding: .4em;
+  text-align: center;
+  margin: 0 auto;
+}
+.card_img {
+  display: none;
+}
+.empty_img {
+  display: inline-block;
+}
+.time {
+  color: #666666;
+}
+
+/* SOLUTION */
+#solution {
+  padding: .2em;
+  background-color: #f6f6f6;
+  border-width: .05em;
+  border-style: solid;
+  border-color: #EEEEEE;
+  border-radius: 1em;
+  margin-bottom: 3em;
+}
+span.forward_slash {
+  color: #EEEEEE;
+  font-size: 2.5rem;
+  vertical-align: top;
+}
+span.solution_number {
+  color: #666666;
+  font-size: 2.5rem;
+  margin-right: 0.5em;
+  vertical-align: top;
+}
+.solution_img {
+}
+div.solution_set {
+  display: inline-block;
+}
+div.solution_card {
+  display: inline-block;
+}
+
+/* TUTORIAL */
+.tab {
+  display: none;
+}
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+.step.active {
+  opacity: 1;
+}
+.step.finish {
+  background-color: #4CAF50;
+}
+#attributes {
+}
+#attributes td, #attributes th {
+    border: 1px solid #f6f6f6;
+    padding: 1em;
+}
+#attributes tr {
+  background-color: #f6f6f6;
+}
+#attributes th {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    text-align: left;
+    background-color: #f6f6f6;
+    font-weight: 700;
+}
