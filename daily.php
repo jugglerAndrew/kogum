@@ -1,21 +1,38 @@
+<?php 
+// Check if user is authenticated
+require_once('/models/auth.php');
+global $user_id;
+if(empty($user_id)) {
+	//Not authenticated
+	header('Location: login.php');
+} 
+
+// Check if user accessed puzzle already
+require_once('/models/db.php');
+$query = $connection->prepare("SELECT pg.puzzle_game_id FROM puzzle_game pg JOIN user_game ug ON ug.puzzle_game_id = pg.puzzle_game_id WHERE user_id = ? AND SYSDATE() BETWEEN pg.start_date AND pg.end_date;");
+$query->bind_param("i", $user_id);
+$query->execute();
+$query->bind_result($game_found);
+$query->fetch();
+$query->close();
+
+// Send user back to profile if they have already played this game
+if ($game_found) {
+	header('Location: profile.php?user_id='.$user_id);
+}
+?>
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="/styles/main.css">
   <link rel="stylesheet" type="text/css" href="/styles/simple-grid.css">
   <script type="text/javascript" src="/scripts/game.js"></script>
 </head>
-<body onload="loadGame()">
+<body onload="loadGame('daily')">
   <div id="game" class="container">
     <div class="row">
-      <div id="game_header">
         <div class="col-12">
-          <ul class="nav">
-            <li><a href="/game.html">k<span class="empty_set">&empty;</span>gum</a></li>
-            <li><a href="/game.html">rand<span class="empty_set">&empty;</span>m</a></li>
-            <li><a href="/tutorial.html">tut<span class="empty_set">&empty;</span>rial</a></li>
-          </ul>
+			<?php require_once('nav.php'); ?>
         </div>
-      </div>
     </div>
     <div id="puzzle">
       <div class="row">
@@ -27,7 +44,7 @@
             <button id="play_pause_button" onclick="playPauseButton(this.value)" value="PLAY" type="button"></button>
           </div>
           <div class="col-1">
-            <button id="reload_button" onclick="loadGame()" type="button">NEW</button>
+            <button id="reload_button" hidden="hidden" onclick="loadGame('daily')" type="button" disabled>NEW</button>
           </div>
         </div>
       </div>
@@ -80,7 +97,7 @@
     <div id="solution">
 
       <div id="solution_header" class="row">
-        <div class="col-3">s<span class="empty_set">&empty;</span>luti<span class="empty_set">&empty;</span>ns</div>
+        <div class="col-3">s<span class="empty_set">&#248;</span>luti<span class="empty_set">&#248;</span>ns</div>
       </div>
 
       <div id="solution_row" class="row">

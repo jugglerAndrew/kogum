@@ -1,5 +1,6 @@
 var debug = false;
-var debugGameId = 1;
+var debugId = 1;
+var game = null;
 var newGame = true;
 var puzzle = {};
 var possible = [];
@@ -52,6 +53,7 @@ function pauseGame() {
 
 // END GAME
 function endGame() {
+	var userTime = sw.time().toString();
   stopwatchStop();
   document.getElementById('reload_button').disabled = false;
   document.getElementById('play_pause_button').disabled = true;
@@ -60,6 +62,14 @@ function endGame() {
     cards[i].removeAttribute("onclick");
     setCardBorder(cards[i].id, cssCardBorderColor, cssCardBorderColor);
   }
+	// TODO save time
+	if (game == 'daily') {
+		/*var x = new XMLHttpRequest();
+    x.open("GET","/models/save_game.php?time=" + sw.time.toString(),true);
+    x.send();
+    return false;*/
+		window.location.replace("/models/save_game.php?time=" + userTime);
+	}
 }
 
 // RENDER CARDS VISIBLE OR INVISIBLE
@@ -122,13 +132,13 @@ function playPauseButton(value) {
     pauseGame();
   }
 }
-
 // END PUZZLE GAME AND TIMER
 
 // GET PUZZLE GAME
-function loadGame() {
-  var fetchPuzzleUrl = "../models/fetch_puzzle.php?puzzle_id&difficulty";
-  if (debug) fetchPuzzleUrl = "../models/fetch_puzzle.php?puzzle_id=" + debugGameId.toString() + "&difficulty=100";
+function loadGame(g) {
+  game = g;
+	var fetchPuzzleUrl = "../models/fetch_puzzle.php?game=" + g.toString() + "&difficulty&id";
+  if (debug) fetchPuzzleUrl = "../models/fetch_puzzle.php?&game&difficulty&id=" + debugId.toString();
 
   //Get puzzle API call
   fetch(fetchPuzzleUrl).then(function(response) {
@@ -224,7 +234,7 @@ function validatePossible(set) {
     if (s == possibleSet) {
       // Valid
       invalid = false;
-      console.log(puzzle.solution.splice(puzzle.solution.indexOf(possibleSet), 1));
+      if (debug) console.log(puzzle.solution.splice(puzzle.solution.indexOf(possibleSet), 1));
       solutionSetValid(possible);
       break;
     }

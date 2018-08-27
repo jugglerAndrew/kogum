@@ -4,7 +4,8 @@ CREATE PROCEDURE generateSolutionSet() -- (IN p_color_code INT, IN p_fill_id INT
 BEGIN
   DECLARE not_found INT DEFAULT FALSE;
   DECLARE v_card_a, v_card_b, v_card_c INT;
-  DECLARE v_set_code, v_id, v_sol_exists, v_potential INT;
+  DECLARE v_id, v_sol_exists, v_potential INT;
+  DECLARE v_set_code VARCHAR(50);
 
   DECLARE c_color CURSOR FOR
     SELECT meta_color_id FROM meta_color WHERE active_flag = 1 AND meta_color_id IN (1,2,3); -- p_color_id;

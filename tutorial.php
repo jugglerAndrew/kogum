@@ -6,19 +6,13 @@
 <body>
   <div id="tutorial" class="container">
     <div class="row">
-      <div id="game_header">
         <div class="col-12">
-          <ul class="nav">
-            <li><a href="/game.html">k<span class="empty_set">&empty;</span>gum</a></li>
-            <li><a href="/game.html">rand<span class="empty_set">&empty;</span>m</a></li>
-            <li><a href="/tutorial.html">tut<span class="empty_set">&empty;</span>rial</a></li>
-          </ul>
+			<?php require_once('nav.php'); ?>
         </div>
-      </div>
     </div>
     <div class="row">
       <div class="col-12">
-    <h1>tut<span class="empty_set">&empty;</span>rial</h1>
+    <h1>tut<span class="empty_set">&#248;</span>rial</h1>
 
     <div style="overflow:auto;">
       <div style="float:right;">
@@ -30,7 +24,7 @@
     <!-- One "tab" for each step in the form: -->
     <div class="tab">
       <img src="/images/game_1.png"/>
-      <p>K<span class="empty_set">&empty;</span>gum is a puzzle game composed of twelve different cells. Above is an example game.</p>
+      <p>K<span class="empty_set">&#248;</span>gum is a puzzle game composed of twelve different cells. Above is an example game.</p>
     </div>
 
     <div class="tab">
@@ -97,9 +91,9 @@
     </div>
 
     <div class="tab">
-      <h2><span class="empty_set">&empty;</span>bjective</h2>
+      <h2><span class="empty_set">&#248;</span>bjective</h2>
       <p>The goal of Kogum is to identify a pattern of three cells. There are six patterns in each puzzle - find them all to win.</p>
-      <h2>the tw<span class="empty_set">&empty;</span> rules</h2>
+      <h2>the tw<span class="empty_set">&#248;</span> rules</h2>
       <p>For three cells to be a valid pattern, follow the TWO RULES:</p>
       <ol>
         <li>The three cells must be unique.</li>
@@ -136,7 +130,7 @@
 
       Since both of our candidates are filled in, let's look at shape. One is a square, so its DIFFERENT than the one-blue-empty-triangle, but its also the SAME as the one-blue-striped-square. That breaks our second rule, so let's check out the other cell. The circle is DIFFERENT than both of the other shapes, so it completes the pattern!
 
-      Continue on to see the other five patterns, or click <a href="/game.html">here</a> to start playing!</p>
+      Continue on to see the other five patterns, or click <a href="/game.php">here</a> to start playing!</p>
     </div>
 
     <div class="tab">
@@ -192,7 +186,7 @@
         <li>Number = different</li>
         <li>Shape = same</li>
       </ul>
-      <p>That's all there is to it. Play anytime <a href="/game.html">here</a> or coming soon: register so you can play our daily puzzles and get ranked!</p>
+      <p>That's all there is to it. Play anytime <a href="/game.php">here</a> or coming soon: register so you can play our daily puzzles and get ranked!</p>
     </div>
 
     <!-- Circles which indicates the steps of the form: -->

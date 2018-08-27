@@ -6,31 +6,25 @@
 <body>
   <div id="tutorial" class="container">
     <div class="row">
-      <div id="game_header">
-        <div class="col-12">
-          <ul class="nav">
-            <li><a href="/game.html">k<span class="empty_set">&empty;</span>gum</a></li>
-            <li><a href="/game.html">rand<span class="empty_set">&empty;</span>m</a></li>
-            <li><a href="/tutorial.html">tut<span class="empty_set">&empty;</span>rial</a></li>
-          </ul>
-        </div>
-      </div>
+		<div class="col-12">
+			<?php require_once('nav.php'); ?>
+		</div>
     </div>
     <div class="row">
       <div class="col-12">
         <div class="center">
-          <h1>k<span class="empty_set">&empty;</span>gum</h1>
+          <h1>k<span class="empty_set">&#248;</span>gum</h1>
           <p>a game of patterns</p>
         </div>
       </div>
       <div class="col-6">
         <div class="center">
-          <h2><a href="/game.html">PLAY</a></h2>
+          <h2><a href="/game.php">PLAY</a></h2>
         </div>
       </div>
       <div class="col-6">
         <div class="center">
-          <h2><a href="/tutorial.html">LEARN</a></h2>
+          <h2><a href="/tutorial.php">LEARN</a></h2>
         </div>
       </div>
     </div>
