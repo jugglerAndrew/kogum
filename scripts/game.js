@@ -295,7 +295,7 @@ function stopwatchFormatTime(time) {
 	time = time % (60 * 1000);
 	s = Math.floor( time / 1000 );
 	ms = time % 1000;
-	newTime = stopwatchPad(h, 2) + ':' + stopwatchPad(m, 2) + ':' + stopwatchPad(s, 2) + ':' + stopwatchPad(ms, 3);
+	newTime = stopwatchPad(h, 2) + ':' + stopwatchPad(m, 2) + ':' + stopwatchPad(s, 2) + '.' + stopwatchPad(ms, 3);
 	return newTime;
 }
 function stopwatchShow() {
