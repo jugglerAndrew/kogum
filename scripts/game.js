@@ -135,15 +135,16 @@ function playPauseButton(value) {
 // END PUZZLE GAME AND TIMER
 
 // GET PUZZLE GAME
-function loadGame(g) {
-  game = g;
-	var fetchPuzzleUrl = "../models/fetch_puzzle.php?game=" + g.toString() + "&difficulty&id";
+function loadGame(gameType) {
+	var fetchPuzzleUrl = "../models/fetch_puzzle.php?game=" + gameType.toString() + "&difficulty&id";
   if (debug) fetchPuzzleUrl = "../models/fetch_puzzle.php?&game&difficulty&id=" + debugId.toString();
 
   //Get puzzle API call
-  fetch(fetchPuzzleUrl).then(function(response) {
-    return response.json();
-  }).then(function(returnPuzzle) {
+  fetch(fetchPuzzleUrl)
+    .then( function(response) {
+            return response.json();
+    })
+    .then(function(returnPuzzle) {
     // Set puzzle global
     puzzle = returnPuzzle;
 

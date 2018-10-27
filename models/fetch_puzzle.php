@@ -8,13 +8,13 @@ $id = (int)$_GET["id"];
 $sql = new MySQLi('localhost', 'root', 'root', 'kogum_dev');
 
 // Set difficulty
-if ($difficulty === "" || $difficulty === null) {
+if ($difficulty === "" || $difficulty === null || $difficulty === 0) {
   $difficulty = 99999;
 }
 
 if ($game === "random") {
 	
-	if ($id === "" || $id === null) {
+	if ($id === "" || $id === null || $id === 0) {
 		
 		// Get random puzzle
 		$result = $sql->query("SELECT puzzle_id, solution_id FROM puzzle ORDER BY RAND() LIMIT 1");
@@ -57,7 +57,6 @@ if ($game === "random") {
 	for ($puzzle = array (); $row = $result->fetch_assoc(); $puzzle[] = $row);
 	$result->close();	
 	$puzzle_game_id = $puzzle_id = $puzzle[0]['puzzle_game_id'];
-
 
 	// Get user info
 	require_once('auth.php');
@@ -129,7 +128,6 @@ foreach ($solution_cards as $r) {
   array_push($solutions, $r['solution_set_code']);
 }
 
-
 // E'ryday I'm shufflin'
 shuffle($puzzle_cards);
 
@@ -140,7 +138,7 @@ $return = array ("id" => $puzzle_id,
                 "solution" => $solutions);
 
 //echo"<pre>";
-//print_r($return['card'][0]);
+//print_r($c);
 //echo "</pre>";
 header("Content-Type: application/json;charset=utf-8");
 echo json_encode($return);

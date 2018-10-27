@@ -4,7 +4,7 @@
   <link rel="stylesheet" type="text/css" href="/styles/simple-grid.css">
   <script type="text/javascript" src="/scripts/game.js"></script>
 </head>
-<body onload="loadGame('daily')">
+<body onload="loadGame('random')">
   <div id="game" class="container">
     <div class="row">
         <div class="col-12">
@@ -21,7 +21,7 @@
             <button id="play_pause_button" onclick="playPauseButton(this.value)" value="PLAY" type="button"></button>
           </div>
           <div class="col-1">
-            <button id="reload_button" onclick="loadGame('daily')" type="button">NEW</button>
+            <button id="reload_button" onclick="loadGame('random')" type="button">NEW</button>
           </div>
         </div>
       </div>
