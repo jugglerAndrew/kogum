@@ -1,5 +1,6 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS generatePuzzle //
+/* Create abstract puzzles. */
 CREATE PROCEDURE generatePuzzle(IN p_amount INT)
 BEGIN
   DECLARE not_found INT DEFAULT FALSE;

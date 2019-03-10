@@ -62,12 +62,8 @@ function endGame() {
     cards[i].removeAttribute("onclick");
     setCardBorder(cards[i].id, cssCardBorderColor, cssCardBorderColor);
   }
-	// TODO save time
+
 	if (game == 'daily') {
-		/*var x = new XMLHttpRequest();
-    x.open("GET","/models/save_game.php?time=" + sw.time.toString(),true);
-    x.send();
-    return false;*/
 		window.location.replace("/models/save_game.php?time=" + userTime);
 	}
 }
@@ -76,7 +72,7 @@ function endGame() {
 function hideCards(bool) {
   var emptyVal = "";
   var cardVal = "";
-  var cards = document.getElementsByClassName("card"); //TODO
+  var cards = document.getElementsByClassName("card");
 
   // Set on click and border values
   if (bool) {
@@ -137,7 +133,7 @@ function playPauseButton(value) {
 // GET PUZZLE GAME
 function loadGame(gameType) {
 	var fetchPuzzleUrl = "../models/fetch_puzzle.php?game=" + gameType.toString() + "&difficulty&id";
-  if (debug) fetchPuzzleUrl = "../models/fetch_puzzle.php?&game&difficulty&id=" + debugId.toString();
+  if (debug) fetchPuzzleUrl = "../models/fetch_puzzle.php?&game=debug&difficulty&id=" + debugId.toString();
 
   //Get puzzle API call
   fetch(fetchPuzzleUrl)

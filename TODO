@@ -1,0 +1,6 @@
+
+Todo:
+  ☐ sql view for daily page that shows bld puzzles and times
+  ☐ daily summary page
+  ✔ DEFECT 1: more than six solutions in a puzzle found (ex: puzzle 94) @done(18-11-04 18:59)
+  ✔ DEFECT 2: when clicking on daily it keeps inserting new rows for user_game @done(18-11-04 15:58)

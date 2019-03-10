@@ -1,6 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS generateSolutionSet //
-CREATE PROCEDURE generateSolutionSet() -- (IN p_color_code INT, IN p_fill_id INT, IN p_shape_id INT)
+/* Create all possible solution sets (a solution set is three cards). */
+CREATE PROCEDURE generateSolutionSet()
 BEGIN
   DECLARE not_found INT DEFAULT FALSE;
   DECLARE v_card_a, v_card_b, v_card_c INT;
@@ -24,7 +25,9 @@ BEGIN
     SELECT card_id
     FROM temp_sort
     ORDER BY card_id ASC;
-
+  /* There are 15 different clauses representing all of the scenarios of match and non-match. 
+  Two possibilities for each of the four attributes = 2^4 = 16. 
+  One scenario is subtracted: a scenario where every attribute is matching is not a possible solution.*/
   DECLARE c_validate_sol CURSOR FOR SELECT COUNT(1) FROM
     (SELECT * FROM card WHERE card_id = v_card_a) a,
     (SELECT * FROM card WHERE card_id = v_card_b) b,
@@ -37,10 +40,6 @@ BEGIN
       AND (a.meta_color_id != b.meta_color_id AND b.meta_color_id != c.meta_color_id AND a.meta_color_id != c.meta_color_id)
       AND (a.meta_fill_id = b.meta_fill_id AND b.meta_fill_id = c.meta_fill_id AND a.meta_fill_id = c.meta_fill_id)
       AND (a.meta_shape_id = b.meta_shape_id AND b.meta_shape_id = c.meta_shape_id AND a.meta_shape_id = c.meta_shape_id) )
-    OR ( (a.meta_count_id != b.meta_count_id AND b.meta_count_id != c.meta_count_id AND a.meta_count_id != c.meta_count_id)
-      AND (a.meta_color_id != b.meta_color_id AND b.meta_color_id != c.meta_color_id AND a.meta_color_id != c.meta_color_id)
-      AND (a.meta_fill_id = b.meta_fill_id AND b.meta_fill_id = c.meta_fill_id AND a.meta_fill_id = c.meta_fill_id)
-      AND (a.meta_shape_id = b.meta_shape_id AND b.meta_shape_id = c.meta_shape_id AND a.meta_shape_id = c.meta_shape_id) )
     OR (  (a.meta_count_id != b.meta_count_id AND b.meta_count_id != c.meta_count_id AND a.meta_count_id != c.meta_count_id)
       AND (a.meta_color_id != b.meta_color_id AND b.meta_color_id != c.meta_color_id AND a.meta_color_id != c.meta_color_id)
       AND (a.meta_fill_id != b.meta_fill_id AND b.meta_fill_id != c.meta_fill_id AND a.meta_fill_id != c.meta_fill_id)
@@ -81,10 +80,18 @@ BEGIN
       AND (a.meta_color_id != b.meta_color_id AND b.meta_color_id != c.meta_color_id AND a.meta_color_id != c.meta_color_id)
       AND (a.meta_fill_id = b.meta_fill_id AND b.meta_fill_id = c.meta_fill_id AND a.meta_fill_id = c.meta_fill_id)
       AND (a.meta_shape_id = b.meta_shape_id AND b.meta_shape_id = c.meta_shape_id AND a.meta_shape_id = c.meta_shape_id) )
-      OR (  (a.meta_count_id = b.meta_count_id AND b.meta_count_id = c.meta_count_id AND a.meta_count_id = c.meta_count_id)
-        AND (a.meta_color_id = b.meta_color_id AND b.meta_color_id = c.meta_color_id AND a.meta_color_id = c.meta_color_id)
-        AND (a.meta_fill_id != b.meta_fill_id AND b.meta_fill_id != c.meta_fill_id AND a.meta_fill_id != c.meta_fill_id)
-        AND (a.meta_shape_id = b.meta_shape_id AND b.meta_shape_id = c.meta_shape_id AND a.meta_shape_id = c.meta_shape_id) );
+    OR (  (a.meta_count_id = b.meta_count_id AND b.meta_count_id = c.meta_count_id AND a.meta_count_id = c.meta_count_id)
+      AND (a.meta_color_id = b.meta_color_id AND b.meta_color_id = c.meta_color_id AND a.meta_color_id = c.meta_color_id)
+      AND (a.meta_fill_id != b.meta_fill_id AND b.meta_fill_id != c.meta_fill_id AND a.meta_fill_id != c.meta_fill_id)
+      AND (a.meta_shape_id = b.meta_shape_id AND b.meta_shape_id = c.meta_shape_id AND a.meta_shape_id = c.meta_shape_id) )
+    OR (  (a.meta_count_id != b.meta_count_id AND b.meta_count_id != c.meta_count_id AND a.meta_count_id != c.meta_count_id)
+      AND (a.meta_color_id = b.meta_color_id AND b.meta_color_id = c.meta_color_id AND a.meta_color_id = c.meta_color_id)
+      AND (a.meta_fill_id = b.meta_fill_id AND b.meta_fill_id = c.meta_fill_id AND a.meta_fill_id = c.meta_fill_id)
+      AND (a.meta_shape_id = b.meta_shape_id AND b.meta_shape_id = c.meta_shape_id AND a.meta_shape_id = c.meta_shape_id) )
+    OR (  (a.meta_count_id != b.meta_count_id AND b.meta_count_id != c.meta_count_id AND a.meta_count_id != c.meta_count_id)
+      AND (a.meta_color_id = b.meta_color_id AND b.meta_color_id = c.meta_color_id AND a.meta_color_id = c.meta_color_id)
+      AND (a.meta_fill_id != b.meta_fill_id AND b.meta_fill_id != c.meta_fill_id AND a.meta_fill_id != c.meta_fill_id)
+      AND (a.meta_shape_id != b.meta_shape_id AND b.meta_shape_id != c.meta_shape_id AND a.meta_shape_id != c.meta_shape_id) );
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET not_found = TRUE;
 
