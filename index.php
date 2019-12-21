@@ -7,7 +7,7 @@
   <div id="tutorial" class="container">
     <div class="row">
 		<div class="col-12">
-			<?php require_once('nav.php'); ?>
+			<?php require_once 'nav.php'; ?>
 		</div>
     </div>
     <div class="row">
