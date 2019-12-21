@@ -28,6 +28,18 @@ CREATE TABLE IF NOT EXISTS game (
 );
 INSERT INTO game(game_name) VALUES('CLASSIC');
 
+CREATE TABLE IF NOT EXISTS difficulty (
+  difficulty_id INTEGER NOT NULL PRIMARY KEY,
+	difficulty_name VARCHAR(100) NOT NULL,
+	difficulty_desc VARCHAR(500) NULL,
+  insert_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+INSERT INTO difficulty(difficulty_id, difficulty_name) VALUES(100, 'Breakfast');
+INSERT INTO difficulty(difficulty_id, difficulty_name) VALUES(200, 'Lunch');
+INSERT INTO difficulty(difficulty_id, difficulty_name) VALUES(300, 'Dinner');
+INSERT INTO difficulty(difficulty_id, difficulty_name) VALUES(400, 'Dessert');
+
 CREATE TABLE IF NOT EXISTS puzzle_game (
   puzzle_game_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   puzzle_id INTEGER NOT NULL,

@@ -1,6 +1,6 @@
 <ul class="nav">
 <?php 
-require_once('/models/auth.php');
+require_once '/models/auth.php';
 global $user_id;
 if(empty($user_id)) {
 	//Not authenticated

@@ -2,7 +2,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS generatePuzzleGame //
 /* Create actual instances of games for users to solve. */
 CREATE PROCEDURE generatePuzzleGame(IN p_game_type INT, IN p_difficulty INT, IN p_amount INT)
-/* Usage: generatePuzzleGame(1,200,100) will create 100 lunch puzzles */
+/* Usage: CALL generatePuzzleGame(1,200,100) will create 100 lunch puzzles */
 BEGIN
 	DECLARE not_found INT DEFAULT FALSE;
   DECLARE v_i, v_puzzle_id, v_puzzle_game_id INT DEFAULT 0;
@@ -51,7 +51,7 @@ BEGIN
 		END IF;
 		
 		-- Get start time for each puzzle difficulty
-		-- TODO:Should create a table for this
+		-- TODO: Should create a table for this
 		IF p_difficulty = 100 THEN
 			SET v_max_start_time = '040000';
 		ELSEIF p_difficulty = 200 THEN

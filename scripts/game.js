@@ -1,4 +1,4 @@
-var debug = false;
+var debug = true;
 var debugId = 1;
 var game = null;
 var newGame = true;
