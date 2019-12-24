@@ -1,6 +1,6 @@
 <?php 
 // Check if user is authenticated
-require_once('/models/auth.php');
+require_once('models/auth.php');
 global $user_id;
 if(empty($user_id)) {
 	//Not authenticated
@@ -8,7 +8,7 @@ if(empty($user_id)) {
 } 
 
 // Check if user accessed puzzle already
-require_once('/models/db.php');
+require_once('models/db.php');
 $query = $connection->prepare("SELECT pg.puzzle_game_id FROM puzzle_game pg JOIN user_game ug ON ug.puzzle_game_id = pg.puzzle_game_id WHERE user_id = ? AND SYSDATE() BETWEEN pg.start_date AND pg.end_date;");
 $query->bind_param("i", $user_id);
 $query->execute();

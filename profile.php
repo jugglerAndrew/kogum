@@ -1,5 +1,5 @@
 <?php
-	require_once '/models/db.php';
+	require_once 'models/db.php';
 	
 	//Get user info
 	$user_id = htmlspecialchars($_GET["user_id"]);
