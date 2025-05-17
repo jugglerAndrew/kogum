@@ -1,0 +1,58 @@
+# .devcontainer/docker-compose.yml
+version: '3.8'
+
+services:
+  # Application service (Node.js, TypeScript, React tools)
+  app:
+    # You can use a pre-built dev container image or build your own Dockerfile
+    # Using a pre-built image for Node.js and TypeScript:
+    image: mcr.microsoft.com/devcontainers/typescript-node:0-18 # Using Node 18, 0 means latest patch
+    # If you need a specific Node version, you can use: node:18-bullseye, node:20-bullseye etc.
+
+    volumes:
+      # Mount the entire workspace (your monorepo root) into /workspaces
+      # The :cached part can improve performance on macOS and Windows
+      - ..:/workspaces/${localWorkspaceFolderBasename}:cached
+
+    # Overrides the default command so the container keeps running.
+    command: sleep infinity
+
+    # Expose ports for frontend and backend dev servers
+    # These will be automatically forwarded by devcontainer.json
+    ports:
+      - "3000:3000" # For React frontend (Vite default)
+      - "5173:5173" # Vite default port, often used if 3000 is taken or for HMR
+      - "8080:8080" # For Node.js backend API
+
+    environment:
+      # Define environment variables for the app service
+      # The DATABASE_URL will point to our 'db' service
+      DATABASE_URL: "postgresql://postgres:postgrespassword@db:5432/kogum_dev?schema=public"
+      # Add any other backend environment variables here
+      # NODE_ENV: development
+
+    # This container depends on the db service.
+    depends_on:
+      - db
+
+    # Optional: If you need to run as a non-root user consistently
+    # user: node
+
+  # Database service (PostgreSQL)
+  db:
+    image: postgres:15 # Use a specific version of PostgreSQL
+    restart: unless-stopped
+    volumes:
+      # Persist PostgreSQL data by mounting a volume
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword # Change this if you want, but match DATABASE_URL
+      POSTGRES_DB: kogum_dev
+    ports:
+      # Forward PostgreSQL port to host (optional, for external DB tools)
+      # If you only access it from the 'app' container, you don't need to expose it to host.
+      - "5432:5432"
+
+volumes:
+  postgres_data: # Defines the named volume for PostgreSQL data persistence
