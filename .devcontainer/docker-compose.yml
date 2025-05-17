@@ -1,12 +1,12 @@
 # .devcontainer/docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   # Application service (Node.js, TypeScript, React tools)
   app:
     # You can use a pre-built dev container image or build your own Dockerfile
     # Using a pre-built image for Node.js and TypeScript:
-    image: mcr.microsoft.com/devcontainers/typescript-node:0-18 # Using Node 18, 0 means latest patch
+    image: mcr.microsoft.com/devcontainers/typescript-node:0-20 # This image includes Node.js, npm, and TypeScript pre-installed
     # If you need a specific Node version, you can use: node:18-bullseye, node:20-bullseye etc.
 
     volumes:
