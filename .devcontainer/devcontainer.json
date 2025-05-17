@@ -90,6 +90,8 @@
         "dbaeumer.vscode-eslint", // ESLint
         "esbenp.prettier-vscode", // Prettier - Code formatter
         "VisualStudioExptTeam.vscodeintellicode", // IntelliCode AI-assisted development
+        "github.copilot", // GitHub Copilot
+        "github.copilot-chat", // GitHub Copilot Chat
 
         // Node.js / TypeScript
         "ms-vscode.vscode-typescript-next", // Helps with using workspace TS version
