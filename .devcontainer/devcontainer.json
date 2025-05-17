@@ -18,7 +18,7 @@
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true", // Optional: install Zsh
       "configureZshAsDefaultShell": "true" // Optional: set Zsh as default
-    },
+    }
     // Installs Node.js - though our base image in docker-compose already has it,
     // this feature can manage versions or install nvm if needed.
     // If your 'app' service image in docker-compose.yml is a generic one,
@@ -78,30 +78,30 @@
         "[typescriptreact]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
-        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ]
       },
       "extensions": [
         // Essential
         "dbaeumer.vscode-eslint", // ESLint
         "esbenp.prettier-vscode", // Prettier - Code formatter
         "VisualStudioExptTeam.vscodeintellicode", // IntelliCode AI-assisted development
-        "eamodio.gitlens", // GitLens — Git supercharged
-        "mhutchie.git-graph", // Git Graph
 
         // Node.js / TypeScript
         "ms-vscode.vscode-typescript-next", // Helps with using workspace TS version
-        "firsttris.vscode-jest-runner", // If you use Jest for testing
 
         // PostgreSQL (if you want to interact with the DB from VS Code)
-        "ms-ossdata.vscode-postgresql", // (Preferred) or cweijan.vscode-postgresql-client2
-        "kreativ-software.csharpextensions", // Often includes SQL formatting tools
+        "ms-ossdata.vscode-pgsql", // (Preferred) or cweijan.vscode-postgresql-client2
 
         // Docker (useful for managing containers if needed)
         "ms-azuretools.vscode-docker",
 
         // Other useful ones
-        "Gruntfuggly.todo-tree", // Highlights TODO, FIXME, etc.
-        "streetsidesoftware.code-spell-checker" // Spell checker
+        "Gruntfuggly.todo-tree" // Highlights TODO, FIXME, etc.
       ]
     }
   },
@@ -112,6 +112,6 @@
 
   // Set the user VS Code will use when connecting to the container
   "remoteUser": "node" // Or 'vscode' if that's the user in your dev container image.
-                       // The 'mcr.microsoft.com/devcontainers/typescript-node' image often defaults to 'node' or 'vscode'.
-                       // Check your specific image if unsure.
+  // The 'mcr.microsoft.com/devcontainers/typescript-node' image often defaults to 'node' or 'vscode'.
+  // Check your specific image if unsure.
 }
