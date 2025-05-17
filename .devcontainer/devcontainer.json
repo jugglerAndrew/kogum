@@ -1,0 +1,117 @@
+// .devcontainer/devcontainer.json
+{
+  "name": "Kogum Dev Environment",
+
+  // Use Docker Compose file to define services
+  "dockerComposeFile": "docker-compose.yml",
+
+  // The service in docker-compose.yml that VS Code should connect to
+  "service": "app",
+
+  // The Docker workspace folder where the repository is cloned
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // Features to add to the dev container.
+  // More info: https://containers.dev/implementors/features/
+  "features": {
+    // Installs common utilities like git, curl, etc.
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true", // Optional: install Zsh
+      "configureZshAsDefaultShell": "true" // Optional: set Zsh as default
+    },
+    // Installs Node.js - though our base image in docker-compose already has it,
+    // this feature can manage versions or install nvm if needed.
+    // If your 'app' service image in docker-compose.yml is a generic one,
+    // you'd rely more heavily on this feature.
+    // "ghcr.io/devcontainers/features/node:1": {
+    //   "version": "18" // Specify Node version
+    // }
+    // Feature for Docker-in-Docker if you needed to build/run other containers from within Codespaces
+    // "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  // Ports to forward automatically. These match the 'ports' in docker-compose.yml for the 'app' service.
+  "forwardPorts": [3000, 5173, 8080],
+
+  // Ports that should be opened locally when the container starts.
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend (React App)",
+      "onAutoForward": "openPreview" // or "openBrowser"
+    },
+    "5173": {
+      "label": "Frontend (Vite HMR Port)",
+      "onAutoForward": "silent"
+    },
+    "8080": {
+      "label": "Backend API",
+      "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
+    }
+  },
+
+  // Commands to run after the container is created.
+  // This will install dependencies for the monorepo and its packages.
+  "postCreateCommand": "npm install", // Runs in the workspaceFolder (monorepo root)
+
+  // Commands to run after creating the container and attaching VS Code.
+  // "postAttachCommand": {
+  //   "server": "npm run dev -w backend" // Example: auto-start backend
+  // },
+
+  // VS Code specific settings and extensions
+  "customizations": {
+    "vscode": {
+      "settings": {
+        // General settings
+        "editor.formatOnSave": true,
+        "files.eol": "\n",
+        // Terminal
+        "terminal.integrated.defaultProfile.linux": "zsh", // If you installed Zsh via features
+        // TypeScript settings
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        // ESLint & Prettier (assuming you'll set them up)
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+      },
+      "extensions": [
+        // Essential
+        "dbaeumer.vscode-eslint", // ESLint
+        "esbenp.prettier-vscode", // Prettier - Code formatter
+        "VisualStudioExptTeam.vscodeintellicode", // IntelliCode AI-assisted development
+        "eamodio.gitlens", // GitLens — Git supercharged
+        "mhutchie.git-graph", // Git Graph
+
+        // Node.js / TypeScript
+        "ms-vscode.vscode-typescript-next", // Helps with using workspace TS version
+        "firsttris.vscode-jest-runner", // If you use Jest for testing
+
+        // PostgreSQL (if you want to interact with the DB from VS Code)
+        "ms-ossdata.vscode-postgresql", // (Preferred) or cweijan.vscode-postgresql-client2
+        "kreativ-software.csharpextensions", // Often includes SQL formatting tools
+
+        // Docker (useful for managing containers if needed)
+        "ms-azuretools.vscode-docker",
+
+        // Other useful ones
+        "Gruntfuggly.todo-tree", // Highlights TODO, FIXME, etc.
+        "streetsidesoftware.code-spell-checker" // Spell checker
+      ]
+    }
+  },
+
+  // Use 'postCreateCommand' for tasks like 'npm install' from the root.
+  // Use 'updateContentCommand' if you need to run something when the source code changes.
+  // Use 'postAttachCommand' to run when VS Code attaches.
+
+  // Set the user VS Code will use when connecting to the container
+  "remoteUser": "node" // Or 'vscode' if that's the user in your dev container image.
+                       // The 'mcr.microsoft.com/devcontainers/typescript-node' image often defaults to 'node' or 'vscode'.
+                       // Check your specific image if unsure.
+}
