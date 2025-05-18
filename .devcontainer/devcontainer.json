@@ -46,6 +46,10 @@
     "8080": {
       "label": "Backend API",
       "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
     }
   },
 

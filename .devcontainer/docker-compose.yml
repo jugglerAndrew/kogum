@@ -6,7 +6,7 @@ services:
   app:
     # You can use a pre-built dev container image or build your own Dockerfile
     # Using a pre-built image for Node.js and TypeScript:
-    image: mcr.microsoft.com/devcontainers/typescript-node:0-20 # This image includes Node.js, npm, and TypeScript pre-installed
+    image: mcr.microsoft.com/devcontainers/typescript-node:22-bookworm # This image includes Node.js, npm, and TypeScript pre-installed
     # If you need a specific Node version, you can use: node:18-bullseye, node:20-bullseye etc.
 
     volumes:
@@ -40,7 +40,7 @@ services:
 
   # Database service (PostgreSQL)
   db:
-    image: postgres:15 # Use a specific version of PostgreSQL
+    image: postgres:17 # Use a specific version of PostgreSQL
     restart: unless-stopped
     volumes:
       # Persist PostgreSQL data by mounting a volume
