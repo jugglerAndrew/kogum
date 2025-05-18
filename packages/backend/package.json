@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0"
   },
   "scripts": {
@@ -13,6 +15,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/pg": "^8.15.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
