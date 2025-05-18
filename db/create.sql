@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE users ADD CONSTRAINT users_user_name_key UNIQUE (user_name);
+ALTER TABLE users ADD CONSTRAINT users_user_email_key UNIQUE (user_email);
 /* We will insert users via the application with proper hashing */
 -- INSERT INTO users(user_name, user_password, user_email) VALUES('test', 'hashed_password_here', 'kogumgame+test@gmail.com');
 
