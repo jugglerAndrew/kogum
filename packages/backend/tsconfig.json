@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS", // Crucial for ts-node to work smoothly with Node.js by default
+    "target": "ES2020", // Or ES2019, ES2021, etc.
+    "outDir": "./dist",
+    "rootDir": "./src", // Assuming your main server code is in src
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts"], // Make sure this line is present and correct
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
