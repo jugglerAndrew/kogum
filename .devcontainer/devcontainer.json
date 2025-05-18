@@ -103,8 +103,8 @@
         // PostgreSQL (if you want to interact with the DB from VS Code)
         "ms-ossdata.vscode-pgsql", // (Preferred) or cweijan.vscode-postgresql-client2
 
-        // Docker (useful for managing containers if needed)
-        "ms-azuretools.vscode-docker",
+        // Containers manager
+        "ms-azuretools.vscode-containers",
 
         // Other useful ones
         "Gruntfuggly.todo-tree" // Highlights TODO, FIXME, etc.
