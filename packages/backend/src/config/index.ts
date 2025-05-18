@@ -9,7 +9,7 @@ export const config = {
   bcryptSaltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10),
   jwt: {
     secret: process.env.JWT_SECRET || "fallback_secret_key", // Fallback, but .env is better
-    expiresIn: process.env.JWT_EXPIRES_IN || "1h",
+    expiresIn: process.env.JWT_EXPIRES_IN || 3600,
   },
 };
 
