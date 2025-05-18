@@ -17,19 +17,19 @@ coverage
 *.lcov
 
 # Node
-node_modules/      # Ignore all node_modules directories recursively
-dist/              # Common build output directory
-build/             # Another common build output directory
-.env               # Environment variables (should not be committed)
+node_modules/
+dist/
+build/
+.env
 .env.*.local
 .env.local
 
 # IDEs and Editors
 .idea/
 .vscode/*
-!.vscode/settings.json   # You might want to commit shared VS Code settings
-!.vscode/extensions.json # And recommended extensions
-!.vscode/launch.json     # And debug configurations
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
 *.sublime-workspace
 *.sublime-project
 

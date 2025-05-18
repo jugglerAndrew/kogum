@@ -1,7 +1,7 @@
 # Node
-node_modules/      # Ignore all node_modules directories recursively
-dist/              # Common build output directory
-build/             # Another common build output directory
-.env               # Environment variables (should not be committed)
+node_modules/
+dist/
+build/
+.env
 .env.*.local
 .env.local
