@@ -37,11 +37,13 @@ export const register: RequestHandler = async (
       error.message === "Email already registered."
     ) {
       res.status(409).json({ message: error.message }); // 409 Conflict
+      return; // Add this return
     }
     console.error("Registration error:", error);
     // Pass to a generic error handler or return a generic message
     // next(error); // If you have a centralized error handling middleware
     res.status(500).json({ message: "Failed to register user." });
+    // No return needed here as it's the last statement in this path
   }
 };
 
@@ -64,7 +66,7 @@ export const login: RequestHandler = async (
       return;
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password_hash); // user.password_hash is the hash from DB
+    const isPasswordMatch = await bcrypt.compare(password, user.user_password); // Assuming user_password holds the hash from DB
     if (!isPasswordMatch) {
       res.status(401).json({ message: "Invalid username or password." }); // Unauthorized
       return;
