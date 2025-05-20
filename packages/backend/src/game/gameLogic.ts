@@ -67,3 +67,30 @@ export function isSet(
 
   return true;
 }
+
+/**
+ * Finds all unique sets of three cards from a given array of abstract cards.
+ *
+ * @param cards An array of AbstractCard objects to search within.
+ * @returns An array of arrays, where each inner array contains three AbstractCard objects that form a set.
+ *          Returns an empty array if no sets are found or if fewer than 3 cards are provided.
+ */
+export function findAllSets(cards: AbstractCard[]): AbstractCard[][] {
+  const foundSets: AbstractCard[][] = [];
+  const n = cards.length;
+
+  if (n < 3) {
+    return foundSets;
+  }
+
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      for (let k = j + 1; k < n; k++) {
+        if (isSet(cards[i], cards[j], cards[k])) {
+          foundSets.push([cards[i], cards[j], cards[k]]);
+        }
+      }
+    }
+  }
+  return foundSets;
+}
