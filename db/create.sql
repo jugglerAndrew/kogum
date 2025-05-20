@@ -288,6 +288,7 @@ CREATE TABLE IF NOT EXISTS puzzle (
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+
 -- Add FK for puzzle_game.puzzle_id after puzzle table is defined
 ALTER TABLE puzzle_game ADD CONSTRAINT fk_puzzle_id FOREIGN KEY (puzzle_id) REFERENCES puzzle(puzzle_id);
 
@@ -359,3 +360,20 @@ CREATE TABLE IF NOT EXISTS user_game (
 -- CALL generateSolutionSet();
 -- CALL generatePuzzle(p_amount INT);
 */
+
+CREATE TABLE IF NOT EXISTS puzzles (
+    puzzle_id SERIAL PRIMARY KEY,
+    -- Stores an array of abstract card IDs, e.g., {"c0-s1-f2-n0", "c1-s0-f1-n2", ...}
+    card_ids VARCHAR(30)[] NOT NULL, -- Max length for "cXX-sXX-fXX-nXX" is less than 30
+    -- Optional: A unique constraint on card_ids if you want to prevent identical puzzles.
+    -- This requires a canonical representation (e.g., sorted array) and might be complex with array types.
+    -- For now, we'll rely on the seeder to manage uniqueness if strictly needed, or allow duplicates.
+    -- CONSTRAINT unique_puzzle_cards UNIQUE (card_ids)
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Optional: Index on card_ids if you plan to query by them, though less common for this table.
+-- CREATE INDEX IF NOT EXISTS idx_puzzles_card_ids ON puzzles USING GIN (card_ids);
+
+COMMENT ON TABLE puzzles IS 'Stores pre-generated abstract puzzles, each consisting of 12 abstract card IDs that form 6 solutions.';
+COMMENT ON COLUMN puzzles.card_ids IS 'Array of 12 abstract card identifiers that make up the puzzle.';
