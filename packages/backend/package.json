@@ -14,7 +14,8 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "seed:cards": "ts-node ./scripts/seedCards.ts",
     "seed:solutions": "ts-node ./scripts/seedSolutionSets.ts",
-    "seed:all": "npm run seed:cards && npm run seed:solutions",
+    "seed:puzzles": "ts-node scripts/seedPuzzles.ts",
+    "seed:all": "npm run seed:cards && npm run seed:solutions && npm run seed:puzzles",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
