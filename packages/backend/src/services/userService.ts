@@ -6,7 +6,7 @@ import { config } from "../config";
 export interface NewUser {
   user_name: string;
   user_email: string;
-  password_hash: string; // Store the hash, not the plain password
+  user_password: string; // Store the hash, not the plain password
   user_register_date?: Date; // Optional, as DB has default
 }
 
@@ -41,7 +41,7 @@ export const createUser = async (userData: {
       passwordHash,
     ]);
     if (result.rows.length > 0) {
-      // Don't return password_hash from this function usually, but for now, let's match User interface
+      // Don't return user_password from this function usually, but for now, let's match User interface
       return result.rows[0];
     }
     throw new Error("User creation failed, no rows returned.");
