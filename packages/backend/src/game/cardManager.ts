@@ -7,21 +7,27 @@ import {
   AttributeIndex,
 } from "./types";
 
+let allAbstractCardsCache: AbstractCard[] | null = null;
+let abstractCardMapCache: Map<string, AbstractCard> | null = null;
 /**
  * Generates all 81 unique abstract cards.
  * Each card is a combination of four attributes, each with three possible values (represented by indices 0, 1, 2).
  * @returns An array of 81 AbstractCard objects.
  */
 export function generateAllAbstractCards(): AbstractCard[] {
-  const cards: AbstractCard[] = [];
-  const indices: AttributeIndex[] = [0, 1, 2];
+  if (allAbstractCardsCache) {
+    return allAbstractCardsCache;
+  }
 
-  for (const colorIndex of indices) {
-    for (const shapeIndex of indices) {
-      for (const fillIndex of indices) {
-        for (const countIndex of indices) {
-          cards.push({
-            id: `c${colorIndex}-s${shapeIndex}-f${fillIndex}-n${countIndex}`,
+  const cardsGenerated: AbstractCard[] = [];
+  const attributeIndices: AttributeIndex[] = [0, 1, 2];
+
+  for (const colorIndex of attributeIndices) {
+    for (const shapeIndex of attributeIndices) {
+      for (const fillIndex of attributeIndices) {
+        for (const countIndex of attributeIndices) {
+          cardsGenerated.push({
+            id: `c${colorIndex}-s${shapeIndex}-f${fillIndex}-n${countIndex}`, // Standardized ID format
             colorIndex,
             shapeIndex,
             fillIndex,
@@ -31,7 +37,27 @@ export function generateAllAbstractCards(): AbstractCard[] {
       }
     }
   }
-  return cards;
+  allAbstractCardsCache = cardsGenerated;
+  return allAbstractCardsCache;
+}
+
+/**
+ * Retrieves a map of all abstract cards, keyed by their ID.
+ * Generates and caches the map on the first call.
+ * @returns A Map where keys are card IDs and values are AbstractCard objects.
+ */
+function getAbstractCardMap(): Map<string, AbstractCard> {
+  if (abstractCardMapCache) {
+    return abstractCardMapCache;
+  }
+  const map = new Map<string, AbstractCard>();
+  generateAllAbstractCards().forEach((card) => map.set(card.id, card));
+  abstractCardMapCache = map;
+  return abstractCardMapCache;
+}
+
+export function getAbstractCardById(id: string): AbstractCard | undefined {
+  return getAbstractCardMap().get(id);
 }
 
 /**

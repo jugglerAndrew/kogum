@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors"; // For Cross-Origin Resource Sharing
 import { config } from "./config"; // Your config file
 import authRoutes from "./routes/authRoutes";
+import puzzleRoutes from "./routes/puzzleRoutes";
 // import pool from './db'; // Import db pool if you want to test connection on start
 
 dotenv.config(); // Ensure .env is loaded
@@ -33,7 +34,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoutes);
-// We'll add other routes like /api/puzzle here later
+app.use("/api/puzzles", puzzleRoutes);
 
 // Basic Error Handling Middleware (optional, can be more sophisticated)
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
