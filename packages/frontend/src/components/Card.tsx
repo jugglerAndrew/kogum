@@ -16,6 +16,7 @@ interface CardProps {
   onSelect: (abstractCardId: string) => void;
   isSelected: boolean;
   applyMargins?: boolean; // New prop
+  isPaused?: boolean; // To hide shapes when game is paused
 }
 
 // A simple map for color names to SVG/CSS color values
@@ -36,6 +37,7 @@ const CardComponent: React.FC<CardProps> = ({
   onSelect,
   isSelected,
   applyMargins = true, // Default to true
+  isPaused = false, // Default to false
 }) => {
   const { card_name, count_value, abstractCardId } = cardData;
 
@@ -49,7 +51,7 @@ const CardComponent: React.FC<CardProps> = ({
     margin: applyMargins ? "5px" : "0px", // Conditional margin
     width: "180px", // Landscape width
     height: "120px", // Landscape height
-    cursor: "pointer",
+    cursor: isPaused ? "default" : "pointer", // Change cursor when paused
     backgroundColor: isSelected ? "#e0f0ff" : "#ffffff",
     borderRadius: "8px",
     boxShadow: isSelected
@@ -139,7 +141,10 @@ const CardComponent: React.FC<CardProps> = ({
   };
 
   return (
-    <div style={cardStyle} onClick={() => onSelect(abstractCardId)}>
+    <div
+      style={cardStyle}
+      onClick={!isPaused ? () => onSelect(abstractCardId) : undefined} // Disable click when paused
+    >
       <svg
         width="90%"
         height="90%"
@@ -167,7 +172,7 @@ const CardComponent: React.FC<CardProps> = ({
             </pattern>
           </defs>
         )}
-        {renderShapes()}
+        {!isPaused && renderShapes()} {/* Conditionally render shapes */}
       </svg>
       {/* <div style={{ fontSize: '0.6em', color: '#777', marginTop: 'auto' }}>
         {card_name.replace(/_/g, ' ')}

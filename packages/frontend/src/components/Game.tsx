@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import CardComponent from "./Card";
 
 // Types to match backend response
@@ -17,20 +17,61 @@ interface PuzzleData {
 const Game: React.FC = () => {
   const [puzzle, setPuzzle] = useState<PuzzleData | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]); // Store abstractCardIds
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>(" "); // Initialized with a space to maintain height
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // Store found solutions as an array of ClientCardData arrays, up to 6 solutions
   const [foundSolutions, setFoundSolutions] = useState<
     (ClientCardData[] | null)[]
   >(Array(6).fill(null));
+
+  // Timer state
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<number>(0); // Time in ms when paused
+  const [currentTime, setCurrentTime] = useState<number>(0); // Continuously updated time in ms
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchNewPuzzle();
   }, []);
 
+  // Timer effect
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+    if (!isPaused && startTime !== null && puzzle) {
+      intervalId = setInterval(() => {
+        setCurrentTime(elapsedTime + (Date.now() - startTime));
+      }, 47); // Update frequently for ms accuracy
+    } else if (isPaused) {
+      // Ensure currentTime reflects the paused time accurately
+      setCurrentTime(elapsedTime);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isPaused, startTime, elapsedTime, puzzle]);
+
+  // Effect to make messages temporary
+  useEffect(() => {
+    if (message.trim() !== "") {
+      // If there's a non-empty message
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+      }
+      messageTimeoutRef.current = setTimeout(() => {
+        setMessage(" "); // Clear message after 5 seconds
+      }, 5000);
+    }
+    // Cleanup timeout if component unmounts or message changes before timeout fires
+    return () => {
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+      }
+    };
+  }, [message]);
+
   const fetchNewPuzzle = async () => {
     setIsLoading(true);
-    setMessage("");
+    setMessage(" "); // Reset message to a space to maintain height
     setSelectedCards([]);
     setFoundSolutions(Array(6).fill(null)); // Reset found solutions
     try {
@@ -40,6 +81,11 @@ const Game: React.FC = () => {
       }
       const data: PuzzleData = await response.json();
       setPuzzle(data);
+      // Reset and start timer
+      setElapsedTime(0);
+      setCurrentTime(0);
+      setStartTime(Date.now());
+      setIsPaused(false);
     } catch (error) {
       console.error("Failed to fetch puzzle:", error);
       setMessage("Failed to load puzzle. Please try again.");
@@ -49,6 +95,7 @@ const Game: React.FC = () => {
   };
 
   const handleCardSelect = (abstractCardId: string) => {
+    if (isPaused) return; // Do nothing if paused
     setSelectedCards((prevSelected) => {
       if (prevSelected.includes(abstractCardId)) {
         return prevSelected.filter((id) => id !== abstractCardId); // Deselect
@@ -131,6 +178,50 @@ const Game: React.FC = () => {
     setSelectedCards([]); // Clear selection after checking
   };
 
+  const handlePauseResume = () => {
+    const now = Date.now();
+    if (isPaused) {
+      // Resuming
+      setStartTime(now); // Current time becomes the new start for the current segment
+      // elapsedTime remains the accumulated time from previous segments
+      setIsPaused(false);
+    } else {
+      // Pausing
+      if (startTime) {
+        setElapsedTime(
+          (prevElapsedTime) => prevElapsedTime + (now - startTime)
+        );
+      }
+      setStartTime(null); // Indicate that the timer is not actively running a segment
+      setIsPaused(true);
+    }
+  };
+
+  const handleNewPuzzleClick = () => {
+    const wasGameAlreadyPaused = isPaused;
+
+    // If the game is not already paused by the user, pause it for the dialog
+    if (!wasGameAlreadyPaused) {
+      handlePauseResume(); // This will set isPaused to true and stop the timer
+    }
+
+    // Defer the confirm dialog to allow the pause state to render
+    setTimeout(() => {
+      if (
+        window.confirm(
+          "Are you sure you want to start a new puzzle? Your current game progress will be lost."
+        )
+      ) {
+        fetchNewPuzzle(); // fetchNewPuzzle will reset isPaused to false and restart timer
+      } else {
+        // If user cancels, and we paused the game for this dialog, resume it
+        if (!wasGameAlreadyPaused) {
+          handlePauseResume(); // This will set isPaused back to false and resume the timer
+        }
+      }
+    }, 0); // Timeout of 0ms defers execution to the next event loop cycle
+  };
+
   if (isLoading) return <p>Loading puzzle...</p>;
   if (!puzzle) return <p>{message || "No puzzle data."}</p>;
 
@@ -139,22 +230,63 @@ const Game: React.FC = () => {
     (s) => s !== null
   ).length;
 
+  const formatTime = (totalMilliseconds: number): string => {
+    const ms = String(totalMilliseconds % 1000).padStart(3, "0");
+    const totalSeconds = Math.floor(totalMilliseconds / 1000);
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
+    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+    return `${minutes}:${seconds}:${ms}`;
+  };
+  const displayTime = formatTime(currentTime);
+
   return (
     <div>
-      <button onClick={fetchNewPuzzle}>New Random Puzzle</button>
-      {/* <p>Puzzle ID: {puzzle.puzzle_id}</p> */}
-      {/* <p>Solutions expected: {numSolutionsProvided}</p> */}
-      {message && (
-        <p
+      {/* Puzzle Menu Bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between", // Distribute space
+          padding: "10px 15px",
+          borderBottom: "1px solid #eee",
+          marginBottom: "15px",
+          flexWrap: "wrap", // Allow wrapping on smaller screens
+          gap: "10px", // Gap between items if they wrap
+        }}
+      >
+        {/* Puzzle Type - Placeholder for now */}
+        <div style={{ fontSize: "1.1em", fontWeight: "bold" }}>randøm</div>
+
+        {/* Message Area */}
+        <div
           style={{
-            color: message.startsWith("Congratulations") ? "green" : "red",
+            color:
+              message.trim() === "" || message.startsWith("Congratulations")
+                ? "green"
+                : "red",
             fontWeight: "bold",
-            minHeight: "1.2em", // Reserve space to prevent layout shift
+            minHeight: "1.2em", // Reserve space
+            textAlign: "center",
+            flexGrow: 1, // Allow message to take available space
+            visibility: message.trim() === "" ? "hidden" : "visible", // Hide if effectively empty but keep space
           }}
         >
           {message}
-        </p>
-      )}
+        </div>
+
+        {/* Timer and Controls Group */}
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          <div style={{ fontSize: "1.2em", fontFamily: "monospace" }}>
+            {displayTime}
+          </div>
+          <button onClick={handlePauseResume}>
+            {isPaused ? "Resume" : "Pause"}
+          </button>
+          <button onClick={handleNewPuzzleClick}>New Puzzle</button>
+        </div>
+      </div>
+
+      {/* Card Grid */}
       <div
         className="card-board"
         style={{
@@ -163,7 +295,7 @@ const Game: React.FC = () => {
           gridTemplateRows: "repeat(3, 1fr)", // 3 rows
           gap: "5px", // Reduced gap for tighter grid
           maxWidth: "800px", // Max width for the board (approx 4 cards wide + gaps)
-          margin: "20px auto", // Center the board
+          margin: "0 auto", // Center the board
           padding: "5px",
           border: "1px solid #ccc",
           borderRadius: "8px",
@@ -175,10 +307,12 @@ const Game: React.FC = () => {
             cardData={card}
             onSelect={handleCardSelect}
             isSelected={selectedCards.includes(card.abstractCardId)}
+            isPaused={isPaused}
           />
         ))}
       </div>
 
+      {/* Solution Area */}
       <div
         className="solution-area"
         style={{
@@ -194,13 +328,13 @@ const Game: React.FC = () => {
         <div
           className="solution-slots"
           style={{
-            display: "grid", // Change to grid
-            gridTemplateColumns: "repeat(3, 1fr)", // 3 columns
-            gridTemplateRows: "repeat(2, auto)", 
-            justifyItems: "center", // Center items within grid cells
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateRows: "repeat(2, auto)",
+            justifyItems: "center",
             gap: "10px",
-            maxWidth: "920px", 
-            margin: "0 auto", 
+            maxWidth: "920px",
+            margin: "0 auto",
           }}
         >
           {Array(numSolutionsProvided)
@@ -215,15 +349,12 @@ const Game: React.FC = () => {
                     border: "1px dashed #aaa",
                     borderRadius: "5px",
                     padding: "5px",
-                    // Slot width: 3 scaled cards (90px each) + 2 gaps (5px each) + slot padding (5px*2)
-                    // (90 * 3) + (5 * 2) + (5 * 2) = 270 + 10 + 10 = 290px.
-                    width: "284px", 
-                    // Slot height: 1 scaled card (60px) + slot padding (5px*2) = 70px
-                    height: "70px", 
+                    width: "284px",
+                    height: "70px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-start", // Align cards to the start, gap will space them
-                    gap: "2px", // Reduced gap between the scaled card wrappers
+                    justifyContent: "flex-start",
+                    gap: "2px",
                     backgroundColor: solutionSet ? "#e8f5e9" : "#f0f0f0",
                   }}
                 >
@@ -233,18 +364,17 @@ const Game: React.FC = () => {
                         key={`sol-${card.abstractCardId}-${index}-wrapper`}
                         style={{
                           transform: "scale(0.5)",
-                          transformOrigin: "top left", // Scale from top-left
-                          // Set wrapper dimensions to the SCALED card's content box size
-                          // This makes the layout box match the visual size after scaling.
-                          width: "90px",  // Scaled card content width (180px * 0.5)
-                          height: "60px", // Scaled card content height (120px * 0.5)
+                          transformOrigin: "top left",
+                          width: "90px",
+                          height: "60px",
                         }}
                       >
                         <CardComponent
                           cardData={card}
                           onSelect={() => {}}
-                          isSelected={false} // isSelected is false for solution cards
-                          applyMargins={false} // Don't apply CardComponent's internal margins
+                          isSelected={false}
+                          applyMargins={false}
+                          isPaused={isPaused}
                         />
                       </div>
                     ))

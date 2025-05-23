@@ -4,7 +4,7 @@ import Game from "./components/Game";
 function App() {
   return (
     <>
-      <h1>Kogum - The Game of Sets</h1>
+      <h1>køgum</h1>
       <Game />
     </>
   );
