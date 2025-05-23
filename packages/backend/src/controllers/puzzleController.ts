@@ -10,7 +10,7 @@ import { findAllSets } from "../game/gameLogic";
 // Later, this could be fetched from the DB or be more dynamic
 const defaultGameAttributes: GameAttributeSet = {
   colors: ["RED", "GREEN", "BLUE"], // Example values
-  shapes: ["OVAL", "SQUIGGLE", "DIAMOND"], // Example values
+  shapes: ["OVAL", "TRIANGLE", "DIAMOND"], // Example values
   fills: ["SOLID", "STRIPED", "OPEN"], // Example values
 };
 
