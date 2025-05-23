@@ -28,6 +28,7 @@ const Game: React.FC = () => {
   const [elapsedTime, setElapsedTime] = useState<number>(0); // Time in ms when paused
   const [currentTime, setCurrentTime] = useState<number>(0); // Continuously updated time in ms
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameCompleted, setIsGameCompleted] = useState<boolean>(false);
   const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const Game: React.FC = () => {
     setSelectedCards([]);
     setFoundSolutions(Array(6).fill(null)); // Reset found solutions
     try {
+      setIsGameCompleted(false); // Reset game completion state
       const response = await fetch("/api/puzzles/random");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -95,7 +97,7 @@ const Game: React.FC = () => {
   };
 
   const handleCardSelect = (abstractCardId: string) => {
-    if (isPaused) return; // Do nothing if paused
+    if (isPaused || isGameCompleted) return; // Do nothing if paused or game is completed
     setSelectedCards((prevSelected) => {
       if (prevSelected.includes(abstractCardId)) {
         return prevSelected.filter((id) => id !== abstractCardId); // Deselect
@@ -154,7 +156,27 @@ const Game: React.FC = () => {
               newFound[emptySlotIndex] = cardsForSolutionSet;
               return newFound;
             });
-            setMessage("Congratulations! You found a Set!");
+
+            // Check if all sets are found
+            const newNumSolutionsFound =
+              foundSolutions.filter((s) => s !== null).length + 1; // +1 for the current one
+            if (
+              newNumSolutionsFound === puzzle.solutions.length &&
+              puzzle.solutions.length > 0
+            ) {
+              setIsGameCompleted(true);
+              if (startTime) {
+                // If timer was running
+                // Capture final elapsed time
+                const finalElapsedTime = elapsedTime + (Date.now() - startTime);
+                setElapsedTime(finalElapsedTime);
+                setCurrentTime(finalElapsedTime); // Ensure currentTime reflects the final time immediately
+              }
+              setStartTime(null); // Stop the timer
+              setMessage("Congratulations! You found all Sets!");
+            } else {
+              setMessage("Congratulations! You found a Set!");
+            }
             isSetFoundThisTurn = true;
           } else {
             // This case should ideally not happen if puzzle data is consistent
@@ -179,6 +201,7 @@ const Game: React.FC = () => {
   };
 
   const handlePauseResume = () => {
+    if (isGameCompleted) return; // Don't allow pause/resume if game is completed
     const now = Date.now();
     if (isPaused) {
       // Resuming
@@ -279,7 +302,7 @@ const Game: React.FC = () => {
           <div style={{ fontSize: "1.2em", fontFamily: "monospace" }}>
             {displayTime}
           </div>
-          <button onClick={handlePauseResume}>
+          <button onClick={handlePauseResume} disabled={isGameCompleted}>
             {isPaused ? "Resume" : "Pause"}
           </button>
           <button onClick={handleNewPuzzleClick}>New Puzzle</button>
