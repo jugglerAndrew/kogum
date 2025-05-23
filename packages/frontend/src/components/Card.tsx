@@ -15,6 +15,7 @@ interface CardProps {
   cardData: ClientCardData;
   onSelect: (abstractCardId: string) => void;
   isSelected: boolean;
+  applyMargins?: boolean; // New prop
 }
 
 // A simple map for color names to SVG/CSS color values
@@ -34,6 +35,7 @@ const CardComponent: React.FC<CardProps> = ({
   cardData,
   onSelect,
   isSelected,
+  applyMargins = true, // Default to true
 }) => {
   const { card_name, count_value, abstractCardId } = cardData;
 
@@ -41,9 +43,10 @@ const CardComponent: React.FC<CardProps> = ({
   const actualColor = colorMap[colorName.toUpperCase()] || "black";
 
   const cardStyle: React.CSSProperties = {
+    boxSizing: "border-box", // Add this to include padding and border in width/height
     border: isSelected ? "3px solid dodgerblue" : "1px solid #ccc",
     padding: "5px",
-    margin: "5px",
+    margin: applyMargins ? "5px" : "0px", // Conditional margin
     width: "180px", // Landscape width
     height: "120px", // Landscape height
     cursor: "pointer",
