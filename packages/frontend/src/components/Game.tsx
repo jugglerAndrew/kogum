@@ -286,104 +286,118 @@ const Game: React.FC = () => {
         </div>
       </div>
 
-      {/* Card Grid */}
+      {/* Main Game Layout: Solutions on Left, Card Grid on Right */}
       <div
-        className="card-board"
+        className="game-area-container"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)", // 4 columns
-          gridTemplateRows: "repeat(3, 1fr)", // 3 rows
-          gap: "5px", // Reduced gap for tighter grid
-          maxWidth: "800px", // Max width for the board (approx 4 cards wide + gaps)
-          margin: "0 auto", // Center the board
-          padding: "5px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
+          display: "flex",
+          justifyContent: "center", // Center the whole game area if screen is wide
+          alignItems: "flex-start", // Align items to the top
+          gap: "20px", // Gap between solution area and card grid
+          padding: "0 15px", // Add some horizontal padding to the overall container
         }}
       >
-        {puzzle.cards.map((card) => (
-          <CardComponent
-            key={card.abstractCardId}
-            cardData={card}
-            onSelect={handleCardSelect}
-            isSelected={selectedCards.includes(card.abstractCardId)}
-            isPaused={isPaused}
-          />
-        ))}
-      </div>
-
-      {/* Solution Area */}
-      <div
-        className="solution-area"
-        style={{
-          marginTop: "30px",
-          borderTop: "2px solid #ccc",
-          paddingTop: "20px",
-          paddingBottom: "20px",
-        }}
-      >
-        <h2>
-          Found Sets ({numSolutionsActuallyFound}/{numSolutionsProvided})
-        </h2>
+        {/* Solution Area Wrapper */}
         <div
-          className="solution-slots"
+          className="solution-area-wrapper"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gridTemplateRows: "repeat(2, auto)",
-            justifyItems: "center",
-            gap: "10px",
-            maxWidth: "920px",
-            margin: "0 auto",
+            // flexBasis: "320px", // Define a base width for the solution area
+            width: "310px", // Fixed width for the solution area column
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            // height: "100%", // If trying to match height, but flex-start is better
           }}
         >
-          {Array(numSolutionsProvided)
-            .fill(null)
-            .map((_, index) => {
-              const solutionSet = foundSolutions[index];
-              return (
-                <div
-                  key={`solution-slot-${index}`}
-                  className="solution-slot"
-                  style={{
-                    border: "1px dashed #aaa",
-                    borderRadius: "5px",
-                    padding: "5px",
-                    width: "284px",
-                    height: "70px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    gap: "2px",
-                    backgroundColor: solutionSet ? "#e8f5e9" : "#f0f0f0",
-                  }}
-                >
-                  {solutionSet ? (
-                    solutionSet.map((card) => (
-                      <div
-                        key={`sol-${card.abstractCardId}-${index}-wrapper`}
-                        style={{
-                          transform: "scale(0.5)",
-                          transformOrigin: "top left",
-                          width: "90px",
-                          height: "60px",
-                        }}
-                      >
-                        <CardComponent
-                          cardData={card}
-                          onSelect={() => {}}
-                          isSelected={false}
-                          applyMargins={false}
-                          isPaused={isPaused}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <span style={{ color: "#aaa" }}>Slot {index + 1}</span>
-                  )}
-                </div>
-              );
-            })}
+          {/* Found Sets ({numSolutionsActuallyFound}/{numSolutionsProvided}) */}
+          <div
+            className="solution-slots"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr", // Single column
+              gridTemplateRows: "repeat(6, auto)", // 6 rows, height based on content
+              gap: "8px", // Gap between solution slots vertically
+              justifyItems: "center", // Center the slots if the grid column is wider
+            }}
+          >
+            {Array(numSolutionsProvided > 0 ? numSolutionsProvided : 6) // Ensure at least 6 slots are rendered for layout
+              .fill(null)
+              .map((_, index) => {
+                const solutionSet = foundSolutions[index];
+                return (
+                  <div
+                    key={`solution-slot-${index}`}
+                    className="solution-slot"
+                    style={{
+                      border: "1px dashed #aaa",
+                      borderRadius: "5px",
+                      padding: "5px",
+                      width: "284px", // Width of a single solution slot
+                      height: "68px", // Height of a single solution slot
+                      display: "flex",
+                      alignItems: "center", // Keeps vertical centering
+                      justifyContent: solutionSet ? "flex-start" : "center", // Center text if no solutionSet, else flex-start for cards
+                      gap: "7px",
+                      backgroundColor: solutionSet ? "#e8f5e9" : "#f0f0f0",
+                    }}
+                  >
+                    {solutionSet ? (
+                      solutionSet.map((card) => (
+                        <div
+                          key={`sol-${card.abstractCardId}-${index}-wrapper`}
+                          style={{
+                            transform: "scale(0.5)",
+                            transformOrigin: "top left",
+                            width: "90px",
+                            height: "60px",
+                          }}
+                        >
+                          <CardComponent
+                            cardData={card}
+                            onSelect={() => {}}
+                            isSelected={false}
+                            applyMargins={false}
+                            isPaused={isPaused}
+                            isSolutionDisplayCard={true}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <span style={{ color: "#aaa" }}>
+                        Solution Set {index + 1}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+
+        {/* Card Grid */}
+        <div
+          className="card-board"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)", // 4 rows
+            gridTemplateRows: "repeat(4, 1fr)", // 3 columns
+            gap: "5px",
+            maxWidth: "600px",
+            // margin: "0 auto", // No longer needed as parent flex centers
+            padding: "5px",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            alignSelf: "flex-start", // Ensure it doesn't stretch if solution area is taller
+          }}
+        >
+          {puzzle.cards.map((card) => (
+            <CardComponent
+              key={card.abstractCardId}
+              cardData={card}
+              onSelect={handleCardSelect}
+              isSelected={selectedCards.includes(card.abstractCardId)}
+              isPaused={isPaused}
+            />
+          ))}
         </div>
       </div>
       {/* For debugging: <pre>{JSON.stringify(puzzle.solutions, null, 2)}</pre> */}
