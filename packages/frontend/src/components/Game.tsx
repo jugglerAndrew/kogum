@@ -29,11 +29,18 @@ const Game: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<number>(0); // Continuously updated time in ms
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isGameCompleted, setIsGameCompleted] = useState<boolean>(false);
+
+  // Active page state for navigation
+  type ActivePage = "kogum" | "today" | "random" | "scores" | "login";
+  const [activePage, setActivePage] = useState<ActivePage>("kogum");
+
   const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // Initial setup: "kogum" is the default page, load a puzzle for it.
+    setActivePage("kogum");
     fetchNewPuzzle();
-  }, []);
+  }, []); // Empty dependency array ensures this runs once on mount
 
   // Timer effect
   useEffect(() => {
@@ -245,6 +252,38 @@ const Game: React.FC = () => {
     }, 0); // Timeout of 0ms defers execution to the next event loop cycle
   };
 
+  // Navigation Handlers
+  const handleNavigateKogum = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActivePage("kogum");
+    handleNewPuzzleClick(); // "kogum" page shows a new random puzzle
+  };
+
+  const handleNavigateToday = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActivePage("today");
+    // Placeholder for daily puzzle functionality
+    setMessage("Daily puzzle feature coming soon!");
+  };
+
+  const handleNavigateRandom = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActivePage("random");
+    handleNewPuzzleClick(); // "random" link explicitly fetches a new random puzzle
+  };
+
+  const handleNavigateScores = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActivePage("scores");
+    setMessage("Scores page coming soon!");
+  };
+
+  const handleNavigateLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActivePage("login");
+    setMessage("Login feature coming soon!");
+  };
+
   if (isLoading) return <p>Loading puzzle...</p>;
   if (!puzzle) return <p>{message || "No puzzle data."}</p>;
 
@@ -264,6 +303,78 @@ const Game: React.FC = () => {
 
   return (
     <div>
+      {/* New Navigation Bar */}
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "center", // Center the links container
+          alignItems: "center",
+          padding: "10px 15px",
+          backgroundColor: "#f8f9fa", // A light background color
+          borderRadius: "8px",
+          marginBottom: "0px", // No margin below nav, existing menu bar has margin top
+        }}
+      >
+        <div style={{ display: "flex", gap: "20px" }}>
+          {/* Using <a> tags for semantic navigation links, href="#" for now */}
+          <a
+            href="#"
+            onClick={handleNavigateKogum}
+            style={{
+              textDecoration: "none",
+              color: "#007bff",
+              fontWeight: activePage === "kogum" ? "bold" : "normal",
+            }}
+          >
+            køgum
+          </a>
+          <a
+            href="#"
+            onClick={handleNavigateToday}
+            style={{
+              textDecoration: "none",
+              color: "#495057",
+              fontWeight: activePage === "today" ? "bold" : "normal",
+            }}
+          >
+            tøday
+          </a>
+          <a
+            href="#"
+            onClick={handleNavigateRandom}
+            style={{
+              textDecoration: "none",
+              color: "#495057",
+              fontWeight: activePage === "random" ? "bold" : "normal",
+            }}
+          >
+            randøm
+          </a>
+          <a
+            href="#"
+            onClick={handleNavigateScores}
+            style={{
+              textDecoration: "none",
+              color: "#495057",
+              fontWeight: activePage === "scores" ? "bold" : "normal",
+            }}
+          >
+            scøres
+          </a>
+          <a
+            href="#"
+            onClick={handleNavigateLogin}
+            style={{
+              textDecoration: "none",
+              color: "#495057",
+              fontWeight: activePage === "login" ? "bold" : "normal",
+            }}
+          >
+            løgin
+          </a>
+        </div>
+      </nav>
+
       {/* Puzzle Menu Bar */}
       <div
         style={{
@@ -305,7 +416,14 @@ const Game: React.FC = () => {
           <button onClick={handlePauseResume} disabled={isGameCompleted}>
             {isPaused ? "Resume" : "Pause"}
           </button>
-          <button onClick={handleNewPuzzleClick}>New Puzzle</button>
+          <button
+            onClick={() => {
+              setActivePage("random"); // Set context to random for this button
+              handleNewPuzzleClick();
+            }}
+          >
+            New Puzzle
+          </button>
         </div>
       </div>
 
