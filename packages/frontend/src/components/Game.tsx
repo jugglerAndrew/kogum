@@ -1,5 +1,7 @@
+// /workspaces/kogum/packages/frontend/src/components/Game.tsx
 import React, { useState, useEffect, useRef } from "react";
 import CardComponent from "./Card";
+import AuthPage from "./Auth/AuthPage"; // Import the AuthPage component
 
 // Types to match backend response
 interface ClientCardData {
@@ -280,17 +282,33 @@ const Game: React.FC = () => {
 
   const handleNavigateLogin = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (activePage === "login") return; // Avoid re-processing if already on login page
+
+    // If a game is in progress and not paused, pause it.
+    if (startTime && !isPaused && !isGameCompleted) {
+      const now = Date.now();
+      // Ensure startTime is not null before calculating elapsed time for the current segment
+      setElapsedTime(
+        (prevElapsedTime) => prevElapsedTime + (now - (startTime || now))
+      );
+      setStartTime(null); // Stop the timer segment
+      setIsPaused(true); // Set game to paused state
+    }
     setActivePage("login");
-    setMessage("Login feature coming soon!");
+    setMessage(" "); // Clear any game-related messages
   };
 
-  if (isLoading) return <p>Loading puzzle...</p>;
-  if (!puzzle) return <p>{message || "No puzzle data."}</p>;
+  // Initial loading state for the very first puzzle fetch
+  if (isLoading && !puzzle && activePage !== "login")
+    return <p>Loading puzzle...</p>;
+  // If there's no puzzle data after initial load (and not on login page)
+  if (!puzzle && activePage !== "login")
+    return <p>{message || "No puzzle data."}</p>;
 
-  const numSolutionsProvided = puzzle.solutions.length;
-  const numSolutionsActuallyFound = foundSolutions.filter(
-    (s) => s !== null
-  ).length;
+  const numSolutionsProvided = puzzle ? puzzle.solutions.length : 0;
+  // const numSolutionsActuallyFound = foundSolutions.filter(
+  //   (s) => s !== null
+  // ).length; // This can be derived in the JSX if needed
 
   const formatTime = (totalMilliseconds: number): string => {
     const ms = String(totalMilliseconds % 1000).padStart(3, "0");
@@ -303,20 +321,18 @@ const Game: React.FC = () => {
 
   return (
     <div>
-      {/* New Navigation Bar */}
       <nav
         style={{
           display: "flex",
-          justifyContent: "center", // Center the links container
+          justifyContent: "center",
           alignItems: "center",
           padding: "10px 15px",
-          backgroundColor: "#f8f9fa", // A light background color
+          backgroundColor: "#f8f9fa",
           borderRadius: "8px",
-          marginBottom: "0px", // No margin below nav, existing menu bar has margin top
+          marginBottom: "0px",
         }}
       >
         <div style={{ display: "flex", gap: "20px" }}>
-          {/* Using <a> tags for semantic navigation links, href="#" for now */}
           <a
             href="#"
             onClick={handleNavigateKogum}
@@ -375,173 +391,200 @@ const Game: React.FC = () => {
         </div>
       </nav>
 
-      {/* Puzzle Menu Bar */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between", // Distribute space
-          padding: "10px 15px",
-          borderBottom: "1px solid #eee",
-          marginBottom: "15px",
-          flexWrap: "wrap", // Allow wrapping on smaller screens
-          gap: "10px", // Gap between items if they wrap
-        }}
-      >
-        {/* Puzzle Type - Placeholder for now */}
-        <div style={{ fontSize: "1.1em", fontWeight: "bold" }}>randøm</div>
+      {/* Content based on activePage */}
+      {activePage === "login" && <AuthPage />}
 
-        {/* Message Area */}
-        <div
-          style={{
-            color:
-              message.trim() === "" || message.startsWith("Congratulations")
-                ? "green"
-                : "red",
-            fontWeight: "bold",
-            minHeight: "1.2em", // Reserve space
-            textAlign: "center",
-            flexGrow: 1, // Allow message to take available space
-            visibility: message.trim() === "" ? "hidden" : "visible", // Hide if effectively empty but keep space
-          }}
-        >
-          {message}
-        </div>
-
-        {/* Timer and Controls Group */}
-        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-          <div style={{ fontSize: "1.2em", fontFamily: "monospace" }}>
-            {displayTime}
-          </div>
-          <button onClick={handlePauseResume} disabled={isGameCompleted}>
-            {isPaused ? "Resume" : "Pause"}
-          </button>
-          <button
-            onClick={() => {
-              setActivePage("random"); // Set context to random for this button
-              handleNewPuzzleClick();
-            }}
-          >
-            New Puzzle
-          </button>
-        </div>
-      </div>
-
-      {/* Main Game Layout: Solutions on Left, Card Grid on Right */}
-      <div
-        className="game-area-container"
-        style={{
-          display: "flex",
-          justifyContent: "center", // Center the whole game area if screen is wide
-          alignItems: "flex-start", // Align items to the top
-          gap: "20px", // Gap between solution area and card grid
-          padding: "0 15px", // Add some horizontal padding to the overall container
-        }}
-      >
-        {/* Solution Area Wrapper */}
-        <div
-          className="solution-area-wrapper"
-          style={{
-            // flexBasis: "320px", // Define a base width for the solution area
-            width: "310px", // Fixed width for the solution area column
-            padding: "10px",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            // height: "100%", // If trying to match height, but flex-start is better
-          }}
-        >
-          {/* Found Sets ({numSolutionsActuallyFound}/{numSolutionsProvided}) */}
+      {(activePage === "kogum" || activePage === "random") && (
+        <>
+          {/* Puzzle Menu Bar */}
           <div
-            className="solution-slots"
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr", // Single column
-              gridTemplateRows: "repeat(6, auto)", // 6 rows, height based on content
-              gap: "8px", // Gap between solution slots vertically
-              justifyItems: "center", // Center the slots if the grid column is wider
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "10px 15px",
+              borderBottom: "1px solid #eee",
+              marginBottom: "15px",
+              flexWrap: "wrap",
+              gap: "10px",
             }}
           >
-            {Array(numSolutionsProvided > 0 ? numSolutionsProvided : 6) // Ensure at least 6 slots are rendered for layout
-              .fill(null)
-              .map((_, index) => {
-                const solutionSet = foundSolutions[index];
-                return (
-                  <div
-                    key={`solution-slot-${index}`}
-                    className="solution-slot"
-                    style={{
-                      border: "1px dashed #aaa",
-                      borderRadius: "5px",
-                      padding: "5px",
-                      width: "284px", // Width of a single solution slot
-                      height: "68px", // Height of a single solution slot
-                      display: "flex",
-                      alignItems: "center", // Keeps vertical centering
-                      justifyContent: solutionSet ? "flex-start" : "center", // Center text if no solutionSet, else flex-start for cards
-                      gap: "7px",
-                      backgroundColor: solutionSet ? "#e8f5e9" : "#f0f0f0",
-                    }}
-                  >
-                    {solutionSet ? (
-                      solutionSet.map((card) => (
+            <div style={{ fontSize: "1.1em", fontWeight: "bold" }}>
+              {activePage === "kogum" ? "køgum" : "randøm"}
+            </div>
+
+            <div
+              style={{
+                color:
+                  message.trim() === "" || message.startsWith("Congratulations")
+                    ? "green"
+                    : "red",
+                fontWeight: "bold",
+                minHeight: "1.2em",
+                textAlign: "center",
+                flexGrow: 1,
+                visibility: message.trim() === "" ? "hidden" : "visible",
+              }}
+            >
+              {message} {/* This is Game.tsx's message state */}
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              <div style={{ fontSize: "1.2em", fontFamily: "monospace" }}>
+                {displayTime}
+              </div>
+              <button onClick={handlePauseResume} disabled={isGameCompleted}>
+                {isPaused ? "Resume" : "Pause"}
+              </button>
+              <button
+                onClick={() => {
+                  // When "New Puzzle" is clicked from game view, it's always a random one
+                  setActivePage("random");
+                  handleNewPuzzleClick();
+                }}
+              >
+                New Puzzle
+              </button>
+            </div>
+          </div>
+
+          {/* Main Game Layout or loading/error messages for puzzle */}
+          {isLoading && activePage !== "login" ? (
+            <p>Loading puzzle...</p>
+          ) : !puzzle && activePage !== "login" ? (
+            <p>{message || "No puzzle data."}</p>
+          ) : puzzle && activePage !== "login" ? (
+            <div
+              className="game-area-container"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "20px",
+                padding: "0 15px",
+              }}
+            >
+              {/* Solution Area Wrapper */}
+              <div
+                className="solution-area-wrapper"
+                style={{
+                  width: "310px",
+                  padding: "10px",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                }}
+              >
+                <div
+                  className="solution-slots"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr",
+                    gridTemplateRows: "repeat(6, auto)",
+                    gap: "8px",
+                    justifyItems: "center",
+                  }}
+                >
+                  {Array(numSolutionsProvided > 0 ? numSolutionsProvided : 6)
+                    .fill(null)
+                    .map((_, index) => {
+                      const solutionSet = foundSolutions[index];
+                      return (
                         <div
-                          key={`sol-${card.abstractCardId}-${index}-wrapper`}
+                          key={`solution-slot-${index}`}
+                          className="solution-slot"
                           style={{
-                            transform: "scale(0.5)",
-                            transformOrigin: "top left",
-                            width: "90px",
-                            height: "60px",
+                            border: "1px dashed #aaa",
+                            borderRadius: "5px",
+                            padding: "5px",
+                            width: "284px",
+                            height: "68px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: solutionSet
+                              ? "flex-start"
+                              : "center",
+                            gap: "7px",
+                            backgroundColor: solutionSet
+                              ? "#e8f5e9"
+                              : "#f0f0f0",
                           }}
                         >
-                          <CardComponent
-                            cardData={card}
-                            onSelect={() => {}}
-                            isSelected={false}
-                            applyMargins={false}
-                            isPaused={isPaused}
-                            isSolutionDisplayCard={true}
-                          />
+                          {solutionSet ? (
+                            solutionSet.map((card) => (
+                              <div
+                                key={`sol-${card.abstractCardId}-${index}-wrapper`}
+                                style={{
+                                  transform: "scale(0.5)",
+                                  transformOrigin: "top left",
+                                  width: "90px",
+                                  height: "60px",
+                                }}
+                              >
+                                <CardComponent
+                                  cardData={card}
+                                  onSelect={() => {}}
+                                  isSelected={false}
+                                  applyMargins={false}
+                                  isPaused={isPaused}
+                                  isSolutionDisplayCard={true}
+                                />
+                              </div>
+                            ))
+                          ) : (
+                            <span style={{ color: "#aaa" }}>
+                              Solution Set {index + 1}
+                            </span>
+                          )}
                         </div>
-                      ))
-                    ) : (
-                      <span style={{ color: "#aaa" }}>
-                        Solution Set {index + 1}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-        </div>
+                      );
+                    })}
+                </div>
+              </div>
 
-        {/* Card Grid */}
+              {/* Card Grid */}
+              <div
+                className="card-board"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gridTemplateRows: "repeat(4, 1fr)",
+                  gap: "5px",
+                  maxWidth: "600px",
+                  padding: "5px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  alignSelf: "flex-start",
+                }}
+              >
+                {puzzle.cards.map((card) => (
+                  <CardComponent
+                    key={card.abstractCardId}
+                    cardData={card}
+                    onSelect={handleCardSelect}
+                    isSelected={selectedCards.includes(card.abstractCardId)}
+                    isPaused={isPaused}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </>
+      )}
+
+      {(activePage === "today" || activePage === "scores") && (
         <div
-          className="card-board"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)", // 4 rows
-            gridTemplateRows: "repeat(4, 1fr)", // 3 columns
-            gap: "5px",
-            maxWidth: "600px",
-            // margin: "0 auto", // No longer needed as parent flex centers
-            padding: "5px",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            alignSelf: "flex-start", // Ensure it doesn't stretch if solution area is taller
-          }}
+          style={{ textAlign: "center", marginTop: "20px", padding: "20px" }}
         >
-          {puzzle.cards.map((card) => (
-            <CardComponent
-              key={card.abstractCardId}
-              cardData={card}
-              onSelect={handleCardSelect}
-              isSelected={selectedCards.includes(card.abstractCardId)}
-              isPaused={isPaused}
-            />
-          ))}
+          {/* This message is set by handleNavigateToday/handleNavigateScores */}
+          <p>{message}</p>
         </div>
-      </div>
-      {/* For debugging: <pre>{JSON.stringify(puzzle.solutions, null, 2)}</pre> */}
+      )}
+
+      {/* For debugging: 
+        {puzzle && (activePage === "kogum" || activePage === "random") && 
+          <pre>{JSON.stringify(puzzle.solutions, null, 2)}</pre>
+        }
+      */}
     </div>
   );
 };
