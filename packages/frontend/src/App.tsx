@@ -7,6 +7,7 @@ import GamePage from "./pages/GamePage";
 import TodayPage from "./pages/TodayPage";
 import ScoresPage from "./pages/ScoresPage";
 import WelcomePage from "./pages/WelcomePage";
+import TutorialPage from "./pages/TutorialPage";
 import type { ActivePage, UserData } from "./types";
 
 const App: React.FC = () => {
@@ -43,7 +44,7 @@ const App: React.FC = () => {
 
   // Effect for global messages (e.g., "Feature coming soon")
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     if (globalMessage.trim() !== "") {
       timeoutId = setTimeout(() => {
         setGlobalMessage(" ");
@@ -102,6 +103,16 @@ const App: React.FC = () => {
     setGlobalMessage(" ");
   };
 
+  const handleNavigateTutorial = () => {
+    setActivePage("tutorial");
+    setGlobalMessage(" ");
+  };
+
+  const handleNavigateUserPage = () => {
+    setActivePage("userPage");
+    setGlobalMessage(" ");
+  };
+
   const renderPage = () => {
     if (appIsLoading) {
       return (
@@ -119,6 +130,8 @@ const App: React.FC = () => {
             onRegister={handleNavigateLogin}
           />
         );
+      case "tutorial":
+        return <TutorialPage />;
       case "random":
         return <GamePage key="random" pageTitle="randøm" />;
       case "today":
@@ -159,7 +172,6 @@ const App: React.FC = () => {
   return (
     <Layout
       activePage={activePage}
-      setActivePage={setActivePage} // Pass setActivePage for direct navigation like User Profile link
       isLoggedIn={isLoggedIn}
       currentUser={currentUser}
       onLogout={handleLogout}
@@ -168,6 +180,8 @@ const App: React.FC = () => {
       onNavigateToday={handleNavigateToday}
       onNavigateRandom={handleNavigateRandom}
       onNavigateScores={handleNavigateScores}
+      onNavigateTutorial={handleNavigateTutorial}
+      onNavigateUserPage={handleNavigateUserPage}
     >
       {renderPage()}
     </Layout>

@@ -23,6 +23,7 @@ export type ActivePage =
   | "random"
   | "scores"
   | "login"
-  | "userPage";
+  | "userPage"
+  | "tutorial";
 
 export type DailyMealType = "breakfast" | "lunch" | "dinner" | "snack";

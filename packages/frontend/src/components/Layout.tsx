@@ -5,21 +5,21 @@ import type { ActivePage, UserData } from "../types";
 interface LayoutProps {
   children: React.ReactNode;
   activePage: ActivePage;
-  setActivePage: (page: ActivePage) => void;
   isLoggedIn: boolean;
   currentUser: UserData | null;
   onLogout: () => void;
-  onNavigateLogin: () => void; // Specific handler for login navigation
+  onNavigateLogin: () => void;
   onNavigateKogum: () => void;
   onNavigateToday: () => void;
   onNavigateRandom: () => void;
   onNavigateScores: () => void;
+  onNavigateTutorial: () => void;
+  onNavigateUserPage: () => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
   activePage,
-  setActivePage,
   isLoggedIn,
   currentUser,
   onLogout,
@@ -28,6 +28,8 @@ const Layout: React.FC<LayoutProps> = ({
   onNavigateToday,
   onNavigateRandom,
   onNavigateScores,
+  onNavigateTutorial,
+  onNavigateUserPage,
 }) => {
   return (
     <div>
@@ -56,6 +58,20 @@ const Layout: React.FC<LayoutProps> = ({
             }}
           >
             køgum
+          </a>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigateTutorial();
+            }}
+            style={{
+              textDecoration: "none",
+              color: "#495057",
+              fontWeight: activePage === "tutorial" ? "bold" : "normal",
+            }}
+          >
+            tutørial
           </a>
           <a
             href="#"
@@ -105,7 +121,7 @@ const Layout: React.FC<LayoutProps> = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  setActivePage("userPage");
+                  onNavigateUserPage();
                 }}
                 style={{
                   textDecoration: "none",
