@@ -6,6 +6,7 @@ import UserDashboardPage from "./pages/UserDashboardPage";
 import GamePage from "./pages/GamePage";
 import TodayPage from "./pages/TodayPage";
 import ScoresPage from "./pages/ScoresPage";
+import WelcomePage from "./pages/WelcomePage";
 import type { ActivePage, UserData } from "./types";
 
 const App: React.FC = () => {
@@ -111,9 +112,13 @@ const App: React.FC = () => {
     }
     switch (activePage) {
       case "kogum":
-        // Using key to force re-mount and data fetch if navigating from 'random' to 'kogum'
-        // or if you want 'køgum' link to always start a fresh puzzle.
-        return <GamePage key="kogum" pageTitle="køgum" />;
+        return (
+          <WelcomePage
+            onPlayToday={handleNavigateToday}
+            onPlayRandom={handleNavigateRandom}
+            onRegister={handleNavigateLogin}
+          />
+        );
       case "random":
         return <GamePage key="random" pageTitle="randøm" />;
       case "today":
@@ -124,20 +129,15 @@ const App: React.FC = () => {
         if (!isLoggedIn) {
           return <LoginPage onLoginSuccess={handleLoginSuccess} />;
         }
-        // If logged in and tries to go to login, redirect to userPage
-        // This state update will cause a re-render, and this function will be called again.
-        // To avoid an infinite loop if something goes wrong, ensure userPage logic is sound.
         setActivePage("userPage");
-        return null; // Render nothing this cycle, will re-render with 'userPage'
+        return null;
       case "userPage":
         if (isLoggedIn && currentUser) {
           return <UserDashboardPage currentUser={currentUser} />;
         }
-        // If not logged in and tries to go to userPage, redirect to login
         setActivePage("login");
-        return null; // Render nothing this cycle, will re-render with 'login'
+        return null;
       default:
-        // Fallback for unknown page
         return (
           <p style={{ textAlign: "center", marginTop: "50px" }}>
             Page not found.
