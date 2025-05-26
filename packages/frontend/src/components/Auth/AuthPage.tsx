@@ -2,7 +2,16 @@ import React from "react";
 import Login from "./Login";
 import Register from "./Register";
 
-const AuthPage: React.FC = () => {
+interface UserData {
+  user_id: string;
+  user_name: string;
+  user_email: string;
+}
+interface AuthPageProps {
+  onLoginSuccess: (token: string, userData: UserData) => void;
+}
+
+const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
   return (
     <div
       style={{
@@ -19,7 +28,7 @@ const AuthPage: React.FC = () => {
       <div style={{ flex: 1, minWidth: "300px", maxWidth: "420px" }}>
         {" "}
         {/* Login container */}
-        <Login />
+        <Login onLoginSuccess={onLoginSuccess} />
       </div>
       <div style={{ flex: 1, minWidth: "300px", maxWidth: "420px" }}>
         {" "}

@@ -9,10 +9,10 @@ interface UserData {
 
 interface LoginProps {
   // Optional: Callback for when login is successful
-  // onLoginSuccess?: (token: string, userData: UserData) => void;
+  onLoginSuccess: (token: string, userData: UserData) => void;
 }
 
-const Login: React.FC<LoginProps> = (/*{ onLoginSuccess }*/) => {
+const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -45,13 +45,11 @@ const Login: React.FC<LoginProps> = (/*{ onLoginSuccess }*/) => {
 
       if (response.ok) {
         setMessage(data.message || "Login successful!");
-        // Store token and user data (e.g., in localStorage)
-        // localStorage.setItem('authToken', data.token);
-        // localStorage.setItem('userData', JSON.stringify(data.user));
-        // if (onLoginSuccess) {
-        //   onLoginSuccess(data.token, data.user);
-        // }
-        // For now, just clear form. Redirection/state update can be handled by parent or context.
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userData', JSON.stringify(data.user));
+        if (onLoginSuccess) {
+          onLoginSuccess(data.token, data.user);
+        }
         setUserName("");
         setPassword("");
       } else {
