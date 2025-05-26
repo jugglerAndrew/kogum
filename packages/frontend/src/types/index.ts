@@ -24,3 +24,5 @@ export type ActivePage =
   | "scores"
   | "login"
   | "userPage";
+
+export type DailyMealType = "breakfast" | "lunch" | "dinner" | "snack";

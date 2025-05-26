@@ -43,3 +43,5 @@ export interface ClientCardData {
   /** Optionally, the ID of the abstract card this was derived from */
   abstractCardId?: string;
 }
+
+export type DailyMealType = "breakfast" | "lunch" | "dinner" | "snack";

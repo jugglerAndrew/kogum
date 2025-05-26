@@ -81,7 +81,7 @@ const App: React.FC = () => {
 
   const handleNavigateToday = () => {
     setActivePage("today");
-    setGlobalMessage("Daily puzzle feature coming soon!");
+    setGlobalMessage(" ");
   };
 
   const handleNavigateRandom = () => {
@@ -170,15 +170,6 @@ const App: React.FC = () => {
       onNavigateScores={handleNavigateScores}
     >
       {renderPage()}
-      {/* Display global messages if any, specifically for placeholder pages */}
-      {globalMessage.trim() &&
-        (activePage === "today" || activePage === "scores") && (
-          <div
-            style={{ textAlign: "center", marginTop: "20px", padding: "20px" }}
-          >
-            <p>{globalMessage}</p>
-          </div>
-        )}
     </Layout>
   );
 };

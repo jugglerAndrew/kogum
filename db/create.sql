@@ -377,3 +377,42 @@ CREATE TABLE IF NOT EXISTS puzzles (
 
 COMMENT ON TABLE puzzles IS 'Stores pre-generated abstract puzzles, each consisting of 12 abstract card IDs that form 6 solutions.';
 COMMENT ON COLUMN puzzles.card_ids IS 'Array of 12 abstract card identifiers that make up the puzzle.';
+
+
+
+-- daily feature
+-- Enum type for meal_type for better data integrity
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'meal_type_enum') THEN
+        CREATE TYPE meal_type_enum AS ENUM ('breakfast', 'lunch', 'dinner', 'snack');
+    END IF;
+END$$;
+
+CREATE TABLE daily_puzzles (
+    daily_puzzle_id SERIAL PRIMARY KEY,
+    puzzle_date DATE NOT NULL,
+    meal_type meal_type_enum NOT NULL,
+    puzzle_id INTEGER NOT NULL REFERENCES puzzles(puzzle_id) ON DELETE CASCADE,
+    -- difficulty_level INTEGER, -- For future use
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_date_meal UNIQUE (puzzle_date, meal_type) -- Ensures only one puzzle per meal per day
+);
+
+-- Optional: Index for faster lookups
+CREATE INDEX idx_daily_puzzles_date_meal ON daily_puzzles (puzzle_date, meal_type);
+
+-- Trigger to update 'updated_at' timestamp (optional but good practice)
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_daily_puzzles_timestamp
+BEFORE UPDATE ON daily_puzzles
+FOR EACH ROW
+EXECUTE FUNCTION trigger_set_timestamp();
