@@ -36,24 +36,33 @@ const exampleCards = [
   },
   {
     card_name: "BLUE_OPEN_OVAL",
-    count_value: 2 as const,
-    abstractCardId: "c6",
+    count_value: 3 as const,
+    abstractCardId: "c7",
   },
   {
     card_name: "BLUE_OPEN_OVAL",
-    count_value: 3 as const,
-    abstractCardId: "c6",
+    count_value: 2 as const,
+    abstractCardId: "c8",
+  },
+  {
+    card_name: "RED_STRIPED_DIAMOND",
+    count_value: 2 as const,
+    abstractCardId: "c9",
+  },
+  {
+    card_name: "GREEN_SOLID_TRIANGLE",
+    count_value: 2 as const,
+    abstractCardId: "c10",
   },
 ];
 
 const steps = [
   {
-    title: "Welcome to Kogum!",
+    title: "What is Køgum?",
     content: (
       <>
-        <h2 style={{ textAlign: "center" }}>What is Kogum?</h2>
         <p>
-          Kogum is a puzzle game composed of twelve different cards. The goal is
+          Køgum is a puzzle game composed of twelve different cards. The goal is
           to find sets of three cards that form a valid pattern.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
@@ -254,82 +263,100 @@ const steps = [
     content: (
       <>
         <p>Here are more valid sets. Can you spot why they are valid?</p>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 16,
-            justifyContent: "center",
-          }}
-        >
-          {exampleCards.slice(0, 3).map((card) => (
-            <CardComponent
-              key={card.abstractCardId + "ex"}
-              cardData={card}
-              onSelect={() => {}}
-              isSelected={false}
-            />
-          ))}
+        <div style={{ display: "flex", gap: 8 }}>
+          <CardComponent
+            cardData={{
+              card_name: "RED_SOLID_OVAL",
+              count_value: 2,
+              abstractCardId: "color1",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
+          <CardComponent
+            cardData={{
+              card_name: "GREEN_SOLID_OVAL",
+              count_value: 2,
+              abstractCardId: "color2",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
+          <CardComponent
+            cardData={{
+              card_name: "BLUE_SOLID_OVAL",
+              count_value: 2,
+              abstractCardId: "color3",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
         </div>
         <p style={{ marginTop: 16 }}>
-          Try to find all six sets in a real puzzle!
+          Same: count, fill, shape. Different: color.
         </p>
-      </>
-    ),
-  },
-  {
-    title: "Even More Examples",
-    content: (
-      <>
-        <p>Here are more valid sets. Can you spot why they are valid?</p>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 16,
-            justifyContent: "center",
-          }}
-        >
-          {exampleCards.slice(3, 6).map((card, idx) => (
-            <CardComponent
-              key={card.abstractCardId + "ex" + idx}
-              cardData={card}
-              onSelect={() => {}}
-              isSelected={false}
-            />
-          ))}
+        <br />
+        <div style={{ display: "flex", gap: 8 }}>
+          <CardComponent
+            cardData={{
+              card_name: "RED_EMPTY_OVAL",
+              count_value: 3,
+              abstractCardId: "color1",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
+          <CardComponent
+            cardData={{
+              card_name: "BLUE_EMPTY_OVAL",
+              count_value: 1,
+              abstractCardId: "color2",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
+          <CardComponent
+            cardData={{
+              card_name: "GREEN_EMPTY_OVAL",
+              count_value: 2,
+              abstractCardId: "color3",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
         </div>
-        <p style={{ marginTop: 16 }}>
-          Try to find all six sets in a real puzzle!
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "Last More Examples",
-    content: (
-      <>
-        <p>Here are more valid sets. Can you spot why they are valid?</p>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 16,
-            justifyContent: "center",
-          }}
-        >
-          {exampleCards.slice(5, 8).map((card, idx) => (
-            <CardComponent
-              key={card.abstractCardId + "ex" + idx}
-              cardData={card}
-              onSelect={() => {}}
-              isSelected={false}
-            />
-          ))}
+        <p>Same: shape, fill. Different: count, color.</p>
+        <br />
+        <div style={{ display: "flex", gap: 8 }}>
+          <CardComponent
+            cardData={{
+              card_name: "RED_STRIPED_DIAMOND",
+              count_value: 2,
+              abstractCardId: "color1",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
+          <CardComponent
+            cardData={{
+              card_name: "GREEN_EMPTY_TRIANGLE",
+              count_value: 1,
+              abstractCardId: "color2",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
+          <CardComponent
+            cardData={{
+              card_name: "BLUE_SOLID_OVAL",
+              count_value: 3,
+              abstractCardId: "color3",
+            }}
+            onSelect={() => {}}
+            isSelected={false}
+          />
         </div>
-        <p style={{ marginTop: 16 }}>
-          Try to find all six sets in a real puzzle!
-        </p>
+        <p>Different: shape, count, fill, color.</p>
       </>
     ),
   },
@@ -352,7 +379,7 @@ const TutorialPage: React.FC = () => {
       }}
     >
       <h1 style={{ textAlign: "center", fontSize: "2.2em", marginBottom: 8 }}>
-        Tutorial
+        tutørial
       </h1>
       <h2 style={{ textAlign: "center", color: "#007bff", marginBottom: 24 }}>
         {steps[step].title}
