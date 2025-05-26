@@ -21,7 +21,7 @@ const TodayPage: React.FC = () => {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isGameCompleted, setIsGameCompleted] = useState<boolean>(false);
 
-  const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const messageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const meal = getCurrentMealType();
@@ -52,12 +52,16 @@ const TodayPage: React.FC = () => {
       setCurrentTime(0);
       setStartTime(Date.now());
       setIsPaused(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch daily puzzle:", error);
-      setMessage(
-        error.message ||
-          "Failed to load today's puzzle. Please try again later."
-      );
+      if (error instanceof Error) {
+        setMessage(
+          error.message ||
+            "Failed to load today's puzzle. Please try again later."
+        );
+      } else {
+        setMessage("Failed to load today's puzzle. Please try again later.");
+      }
       setPuzzle(null);
     } finally {
       setIsLoading(false);
@@ -71,7 +75,7 @@ const TodayPage: React.FC = () => {
   }, [currentMeal]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
+    let intervalId: ReturnType<typeof setTimeout> | null = null;
     if (!isPaused && startTime !== null && puzzle && !isGameCompleted) {
       intervalId = setInterval(() => {
         setCurrentTime(elapsedTime + (Date.now() - startTime));
