@@ -15,7 +15,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
   return (
     <div
       style={{
-        maxWidth: 600,
+        maxWidth: "1000px",
         margin: "40px auto 0 auto",
         padding: "32px 20px 40px 20px",
         background: "#fff",
@@ -24,36 +24,12 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
         textAlign: "center",
       }}
     >
-      <h1
-        style={{
-          fontSize: "3.5em",
-          fontWeight: 800,
-          marginBottom: 0,
-          letterSpacing: "0.04em",
-        }}
-      >
-        k
-        <span
-          style={{
-            fontFamily: "serif",
-            fontSize: "0.8em",
-            verticalAlign: "middle",
-          }}
-        >
-          &#248;
-        </span>
-        gum
-      </h1>
+      <h1>k&#248;gum</h1>
       <div
         style={{ fontSize: "1.3em", margin: "10px 0 18px 0", color: "#444" }}
       >
         Kogum is a game of sets
       </div>
-      <div style={{ fontSize: "1.1em", color: "#666", marginBottom: 32 }}>
-        {/* Rules blurb placeholder */}
-        <em>Rules coming soon! (You can add them here.)</em>
-      </div>
-
       <button
         onClick={onPlayToday}
         style={{

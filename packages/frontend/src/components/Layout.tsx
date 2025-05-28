@@ -32,7 +32,11 @@ const Layout: React.FC<LayoutProps> = ({
   onNavigateUserPage,
 }) => {
   return (
-    <div>
+    <div
+      style={{
+        minWidth: "1000px",
+      }}
+    >
       <nav
         style={{
           display: "flex",

@@ -25,7 +25,7 @@ const GamePage: React.FC<GamePageProps> = ({ pageTitle }) => {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isGameCompleted, setIsGameCompleted] = useState<boolean>(false);
 
-  const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const messageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const formatTime = (totalMilliseconds: number): string => {
     const ms = String(totalMilliseconds % 1000).padStart(3, "0");
@@ -67,7 +67,7 @@ const GamePage: React.FC<GamePageProps> = ({ pageTitle }) => {
   // Or simply rely on App.tsx's key prop for re-mount
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
     if (!isPaused && startTime !== null && puzzle && !isGameCompleted) {
       intervalId = setInterval(() => {
         setCurrentTime(elapsedTime + (Date.now() - startTime));
@@ -371,7 +371,7 @@ const GamePage: React.FC<GamePageProps> = ({ pageTitle }) => {
             gridTemplateColumns: "repeat(3, 1fr)",
             gridTemplateRows: "repeat(4, 1fr)",
             gap: "5px",
-            maxWidth: "600px",
+            maxWidth: "1000px",
             padding: "5px",
             border: "1px solid #ccc",
             borderRadius: "8px",

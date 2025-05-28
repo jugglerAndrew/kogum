@@ -21,7 +21,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
         alignItems: "flex-start", // Align items to the top
         gap: "20px", // Space between login and register components
         padding: "20px",
-        maxWidth: "900px", // Max width for the auth page container
+        maxWidth: "1000px", // Max width for the auth page container
         margin: "20px auto", // Center the auth page container
       }}
     >

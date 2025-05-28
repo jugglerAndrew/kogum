@@ -369,7 +369,7 @@ const TutorialPage: React.FC = () => {
   return (
     <div
       style={{
-        maxWidth: 700,
+        maxWidth: "1000px",
         margin: "40px auto",
         background: "#fff",
         borderRadius: 16,
