@@ -86,143 +86,135 @@ const steps = [
           Each card has four attributes: <b>color</b>, <b>number</b>,{" "}
           <b>fill</b>, and <b>shape</b>.
         </p>
-        <ul
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 24,
-            justifyContent: "center",
-          }}
-        >
-          <li>
-            <b>Color:</b>
-            <div style={{ display: "flex", gap: 8 }}>
-              <CardComponent
-                cardData={{
-                  card_name: "RED_SOLID_OVAL",
-                  count_value: 1,
-                  abstractCardId: "color1",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "GREEN_SOLID_OVAL",
-                  count_value: 1,
-                  abstractCardId: "color2",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "BLUE_SOLID_OVAL",
-                  count_value: 1,
-                  abstractCardId: "color3",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-            </div>
-          </li>
-          <li>
-            <b>Number:</b>
-            <div style={{ display: "flex", gap: 8 }}>
-              <CardComponent
-                cardData={{
-                  card_name: "RED_SOLID_OVAL",
-                  count_value: 1,
-                  abstractCardId: "num1",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "RED_SOLID_OVAL",
-                  count_value: 2,
-                  abstractCardId: "num2",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "RED_SOLID_OVAL",
-                  count_value: 3,
-                  abstractCardId: "num3",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-            </div>
-          </li>
-          <li>
-            <b>Fill:</b>
-            <div style={{ display: "flex", gap: 8 }}>
-              <CardComponent
-                cardData={{
-                  card_name: "GREEN_SOLID_OVAL",
-                  count_value: 1,
-                  abstractCardId: "fill1",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "GREEN_STRIPED_OVAL",
-                  count_value: 1,
-                  abstractCardId: "fill2",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "GREEN_OPEN_OVAL",
-                  count_value: 1,
-                  abstractCardId: "fill3",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-            </div>
-          </li>
-          <li>
-            <b>Shape:</b>
-            <div style={{ display: "flex", gap: 8 }}>
-              <CardComponent
-                cardData={{
-                  card_name: "BLUE_SOLID_OVAL",
-                  count_value: 1,
-                  abstractCardId: "shape1",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "BLUE_SOLID_DIAMOND",
-                  count_value: 1,
-                  abstractCardId: "shape2",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-              <CardComponent
-                cardData={{
-                  card_name: "BLUE_SOLID_TRIANGLE",
-                  count_value: 1,
-                  abstractCardId: "shape3",
-                }}
-                onSelect={() => {}}
-                isSelected={false}
-              />
-            </div>
-          </li>
-        </ul>
+
+        <div>
+          <b>Color:</b>
+          <div style={{ display: "flex", gap: 8 }}>
+            <CardComponent
+              cardData={{
+                card_name: "RED_SOLID_OVAL",
+                count_value: 1,
+                abstractCardId: "color1",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "GREEN_SOLID_OVAL",
+                count_value: 1,
+                abstractCardId: "color2",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "BLUE_SOLID_OVAL",
+                count_value: 1,
+                abstractCardId: "color3",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+          </div>
+        </div>
+        <div>
+          <b>Number:</b>
+          <div style={{ display: "flex", gap: 8 }}>
+            <CardComponent
+              cardData={{
+                card_name: "RED_SOLID_OVAL",
+                count_value: 1,
+                abstractCardId: "num1",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "RED_SOLID_OVAL",
+                count_value: 2,
+                abstractCardId: "num2",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "RED_SOLID_OVAL",
+                count_value: 3,
+                abstractCardId: "num3",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+          </div>
+        </div>
+        <div>
+          <b>Fill:</b>
+          <div style={{ display: "flex", gap: 8 }}>
+            <CardComponent
+              cardData={{
+                card_name: "GREEN_SOLID_OVAL",
+                count_value: 1,
+                abstractCardId: "fill1",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "GREEN_STRIPED_OVAL",
+                count_value: 1,
+                abstractCardId: "fill2",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "GREEN_OPEN_OVAL",
+                count_value: 1,
+                abstractCardId: "fill3",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+          </div>
+        </div>
+        <div>
+          <b>Shape:</b>
+          <div style={{ display: "flex", gap: 8 }}>
+            <CardComponent
+              cardData={{
+                card_name: "BLUE_SOLID_OVAL",
+                count_value: 1,
+                abstractCardId: "shape1",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "BLUE_SOLID_DIAMOND",
+                count_value: 1,
+                abstractCardId: "shape2",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+            <CardComponent
+              cardData={{
+                card_name: "BLUE_SOLID_TRIANGLE",
+                count_value: 1,
+                abstractCardId: "shape3",
+              }}
+              onSelect={() => {}}
+              isSelected={false}
+            />
+          </div>
+        </div>
       </>
     ),
   },

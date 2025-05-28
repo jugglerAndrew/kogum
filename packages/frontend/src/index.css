@@ -3,29 +3,29 @@
   line-height: 1.5;
   font-weight: 400;
 
-  --kogum-fg-color: #f0efec;
-  --kogum-bg-color: #414966;
-  --kogum-nav-bg: #f0efec;
-  --kogum-nav-radius: 8px;
-  --kogum-nav-link: #414966;
-  --kogum-nav-link-active: bold;
-  --kogum-logout: #dc3545;
+  --k-primary-color: #e0e0e2;
+  --k-accent-color: #2b4162;
+  --k-warn-color: #721817;
+  --k-good-color: #0b6e4f;
+  --k-nice-color: #fa9f42;
+  --kogum-radius: 8px;
+  --k-primary-color-active: bold;
   color-scheme: light dark;
-  color: var(--kogum-fg-color);
-  background-color: var(--kogum-bg-color);
+  color: var(--k-accent-color);
+  background-color: var(--k-primary-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 a.layout-container {
   min-width: 1000px;
-  background: var(--kogum-bg-color);
   border-radius: 16px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
   padding: 32px;
-  color: var(--kogum-bg-color);
+  color: var(--k-primary-color);
   max-width: 1000px;
   margin: 40px auto 0 auto;
 }
@@ -35,8 +35,8 @@ a.layout-container {
   justify-content: center;
   align-items: center;
   padding: 10px 15px;
-  background-color: var(--kogum-nav-bg);
-  border-radius: var(--kogum-nav-radius);
+  background-color: var(--k-accent-color);
+  border-radius: var(--kogum-radius);
   margin-bottom: 0px;
 }
 
@@ -47,15 +47,23 @@ a.layout-container {
 
 .layout-nav-link {
   text-decoration: none;
-  color: var(--kogum-nav-link);
+  color: var(--k-primary-color);
   font-weight: normal;
   transition: color 0.2s;
 }
 .layout-nav-link.active {
-  font-weight: var(--kogum-nav-link-active);
+  font-weight: var(--k-primary-color-active);
 }
 .layout-nav-link.logout {
-  color: var(--kogum-logout);
+  color: var(--k-warn-color);
+}
+
+main {
+  background-color: var(--k-accent-color);
+  border-radius: var(--kogum-radius);
+  color: var(--k-primary-color);
+  margin-top: 40px;
+  padding: 20px;
 }
 
 a {
@@ -75,7 +83,7 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--kogum-bg-color);
+  background-color: var(--k-primary-color);
 }
 
 h1 {
@@ -106,7 +114,7 @@ button:focus-visible {
   :root {
     color: #414966;
     background-color: #ffffff;
-    --kogum-bg-color: #414966;
+    --k-primary-color: #414966;
   }
   a:hover {
     color: #747bff;
