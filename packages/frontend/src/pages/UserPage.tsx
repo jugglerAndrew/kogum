@@ -16,7 +16,7 @@ const UserPage: React.FC<UserPageProps> = ({ currentUser }) => {
   }
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
+    <div style={{ textAlign: "center" }}>
       <h1>Welcome, {currentUser.user_name}!</h1>
       <p>This is your personal page. More features coming soon!</p>
       <p>User ID: {currentUser.user_id}</p>

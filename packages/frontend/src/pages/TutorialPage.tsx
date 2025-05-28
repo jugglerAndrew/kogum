@@ -367,17 +367,7 @@ const TutorialPage: React.FC = () => {
   const totalSteps = steps.length;
 
   return (
-    <div
-      style={{
-        maxWidth: "1000px",
-        margin: "40px auto",
-        background: "#fff",
-        borderRadius: 16,
-        boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
-        padding: 32,
-        color: "#222", // dark grey for main text
-      }}
-    >
+    <div>
       <h1 style={{ textAlign: "center", fontSize: "2.2em", marginBottom: 8 }}>
         tutørial
       </h1>

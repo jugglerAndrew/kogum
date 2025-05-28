@@ -1,6 +1,6 @@
 // /workspaces/kogum/packages/frontend/src/pages/UserDashboardPage.tsx
 import React from "react";
-import UserPageComponent from "../components/UserPage"; // Renamed to avoid conflict
+import UserPageComponent from "./UserPage";
 import type { UserData } from "../types";
 
 interface UserDashboardPageProps {

@@ -401,10 +401,6 @@ const TodayPage: React.FC = () => {
             gridTemplateColumns: "repeat(3, 1fr)",
             gridTemplateRows: "repeat(4, 1fr)",
             gap: "5px",
-            maxWidth: "1000px",
-            padding: "5px",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
             alignSelf: "flex-start",
           }}
         >

@@ -13,17 +13,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
   onRegister,
 }) => {
   return (
-    <div
-      style={{
-        maxWidth: "1000px",
-        margin: "40px auto 0 auto",
-        padding: "32px 20px 40px 20px",
-        background: "#fff",
-        borderRadius: 16,
-        boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
-        textAlign: "center",
-      }}
-    >
+    <div style={{ textAlign: "center", padding: "0 20px 8px 20px" }}>
       <h1>k&#248;gum</h1>
       <div
         style={{ fontSize: "1.3em", margin: "10px 0 18px 0", color: "#444" }}

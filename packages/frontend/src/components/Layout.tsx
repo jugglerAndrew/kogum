@@ -35,6 +35,13 @@ const Layout: React.FC<LayoutProps> = ({
     <div
       style={{
         minWidth: "1000px",
+        background: "#fff",
+        borderRadius: 16,
+        boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
+        padding: 32,
+        color: "#222",
+        maxWidth: "1000px",
+        margin: "40px auto 0 auto",
       }}
     >
       <nav

@@ -3,7 +3,7 @@ import React from "react";
 
 const ScoresPage: React.FC = () => {
   return (
-    <div style={{ textAlign: "center", marginTop: "20px", padding: "20px" }}>
+    <div style={{ textAlign: "center" }}>
       <p>Scores page coming soon!</p>
     </div>
   );
