@@ -14,12 +14,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
 }) => {
   return (
     <div style={{ textAlign: "center", padding: "0 20px 8px 20px" }}>
-      <h1>k&#248;gum</h1>
-      <div
-        style={{ fontSize: "1.3em", margin: "10px 0 18px 0", color: "#444" }}
-      >
-        Kogum is a game of sets
-      </div>
+      <h1>k&#248;gum</h1>a game of patterns
       <button
         onClick={onPlayToday}
         style={{
@@ -27,11 +22,12 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
           padding: "28px 0",
           fontSize: "1.5em",
           fontWeight: 700,
-          background: "linear-gradient(90deg, #4f8cff 0%, #38cfa6 100%)",
+          background: "linear-gradient(90deg, #6a4a7e 0%, #594b78 100%)",
           color: "#fff",
           border: "none",
           borderRadius: 12,
           marginBottom: 18,
+          marginTop: 36,
           cursor: "pointer",
           boxShadow: "0 2px 8px rgba(79,140,255,0.10)",
           transition: "background 0.2s",
@@ -39,15 +35,14 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
       >
         Play Today's Puzzle
       </button>
-
       <button
         onClick={onPlayRandom}
         style={{
           width: "100%",
-          padding: "24px 0",
-          fontSize: "1.25em",
-          fontWeight: 600,
-          background: "linear-gradient(90deg, #ffb347 0%, #ff5e62 100%)",
+          padding: "28px 0",
+          fontSize: "1.5em",
+          fontWeight: 700,
+          background: "linear-gradient(90deg, #90447f 0%, #6a4a7e 100%)",
           color: "#fff",
           border: "none",
           borderRadius: 12,
@@ -59,7 +54,6 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
       >
         Play a Random Puzzle
       </button>
-
       <div
         style={{
           background: "#f3f7ff",
@@ -67,10 +61,16 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
           padding: "22px 18px 18px 18px",
           marginTop: 18,
           marginBottom: 0,
-          border: "1px solid #e0e7ff",
         }}
       >
-        <div style={{ fontSize: "1.15em", fontWeight: 700, marginBottom: 8 }}>
+        <div
+          style={{
+            fontSize: "1.15em",
+            fontWeight: 700,
+            marginBottom: 8,
+            color: "#555",
+          }}
+        >
           Register for More Features
         </div>
         <div style={{ fontSize: "1em", color: "#555", marginBottom: 12 }}>
@@ -84,7 +84,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
             padding: "16px 0",
             fontSize: "1.1em",
             fontWeight: 600,
-            background: "#007bff",
+            background: "green",
             color: "#fff",
             border: "none",
             borderRadius: 8,

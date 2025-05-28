@@ -32,96 +32,65 @@ const Layout: React.FC<LayoutProps> = ({
   onNavigateUserPage,
 }) => {
   return (
-    <div
-      style={{
-        minWidth: "1000px",
-        background: "#fff",
-        borderRadius: 16,
-        boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
-        padding: 32,
-        color: "#222",
-        maxWidth: "1000px",
-        margin: "40px auto 0 auto",
-      }}
-    >
-      <nav
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "10px 15px",
-          backgroundColor: "#f8f9fa",
-          borderRadius: "8px",
-          marginBottom: "0px",
-        }}
-      >
-        <div style={{ display: "flex", gap: "20px" }}>
+    <div className="layout-container">
+      <nav className="layout-nav">
+        <div className="layout-nav-links">
           <a
             href="#"
+            className={`layout-nav-link${
+              activePage === "kogum" ? " active" : ""
+            }`}
             onClick={(e) => {
               e.preventDefault();
               onNavigateKogum();
-            }}
-            style={{
-              textDecoration: "none",
-              color: "#007bff",
-              fontWeight: activePage === "kogum" ? "bold" : "normal",
             }}
           >
             køgum
           </a>
           <a
             href="#"
+            className={`layout-nav-link${
+              activePage === "tutorial" ? " active" : ""
+            }`}
             onClick={(e) => {
               e.preventDefault();
               onNavigateTutorial();
-            }}
-            style={{
-              textDecoration: "none",
-              color: "#495057",
-              fontWeight: activePage === "tutorial" ? "bold" : "normal",
             }}
           >
             tutørial
           </a>
           <a
             href="#"
+            className={`layout-nav-link${
+              activePage === "today" ? " active" : ""
+            }`}
             onClick={(e) => {
               e.preventDefault();
               onNavigateToday();
-            }}
-            style={{
-              textDecoration: "none",
-              color: "#495057",
-              fontWeight: activePage === "today" ? "bold" : "normal",
             }}
           >
             tøday
           </a>
           <a
             href="#"
+            className={`layout-nav-link${
+              activePage === "random" ? " active" : ""
+            }`}
             onClick={(e) => {
               e.preventDefault();
               onNavigateRandom();
-            }}
-            style={{
-              textDecoration: "none",
-              color: "#495057",
-              fontWeight: activePage === "random" ? "bold" : "normal",
             }}
           >
             randøm
           </a>
           <a
             href="#"
+            className={`layout-nav-link${
+              activePage === "scores" ? " active" : ""
+            }`}
             onClick={(e) => {
               e.preventDefault();
               onNavigateScores();
-            }}
-            style={{
-              textDecoration: "none",
-              color: "#495057",
-              fontWeight: activePage === "scores" ? "bold" : "normal",
             }}
           >
             scøres
@@ -130,25 +99,23 @@ const Layout: React.FC<LayoutProps> = ({
             <>
               <a
                 href="#"
+                className={`layout-nav-link${
+                  activePage === "userPage" ? " active" : ""
+                }`}
                 onClick={(e) => {
                   e.preventDefault();
                   onNavigateUserPage();
-                }}
-                style={{
-                  textDecoration: "none",
-                  color: "#007bff",
-                  fontWeight: activePage === "userPage" ? "bold" : "normal",
                 }}
               >
                 {currentUser.user_name}
               </a>
               <a
                 href="#"
+                className="layout-nav-link logout"
                 onClick={(e) => {
                   e.preventDefault();
                   onLogout();
                 }}
-                style={{ textDecoration: "none", color: "#dc3545" }}
               >
                 løgout
               </a>
@@ -156,14 +123,12 @@ const Layout: React.FC<LayoutProps> = ({
           ) : (
             <a
               href="#"
+              className={`layout-nav-link${
+                activePage === "login" ? " active" : ""
+              }`}
               onClick={(e) => {
                 e.preventDefault();
                 onNavigateLogin();
-              }}
-              style={{
-                textDecoration: "none",
-                color: "#495057",
-                fontWeight: activePage === "login" ? "bold" : "normal",
               }}
             >
               løgin

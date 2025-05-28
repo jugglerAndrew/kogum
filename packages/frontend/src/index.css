@@ -3,14 +3,59 @@
   line-height: 1.5;
   font-weight: 400;
 
+  --kogum-fg-color: #f0efec;
+  --kogum-bg-color: #414966;
+  --kogum-nav-bg: #f0efec;
+  --kogum-nav-radius: 8px;
+  --kogum-nav-link: #414966;
+  --kogum-nav-link-active: bold;
+  --kogum-logout: #dc3545;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--kogum-fg-color);
+  background-color: var(--kogum-bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+a.layout-container {
+  min-width: 1000px;
+  background: var(--kogum-bg-color);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  padding: 32px;
+  color: var(--kogum-bg-color);
+  max-width: 1000px;
+  margin: 40px auto 0 auto;
+}
+
+.layout-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--kogum-nav-bg);
+  border-radius: var(--kogum-nav-radius);
+  margin-bottom: 0px;
+}
+
+.layout-nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.layout-nav-link {
+  text-decoration: none;
+  color: var(--kogum-nav-link);
+  font-weight: normal;
+  transition: color 0.2s;
+}
+.layout-nav-link.active {
+  font-weight: var(--kogum-nav-link-active);
+}
+.layout-nav-link.logout {
+  color: var(--kogum-logout);
 }
 
 a {
@@ -30,7 +75,7 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: #3d3d3d;
+  background-color: var(--kogum-bg-color);
 }
 
 h1 {
@@ -59,8 +104,9 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
+    color: #414966;
     background-color: #ffffff;
+    --kogum-bg-color: #414966;
   }
   a:hover {
     color: #747bff;
