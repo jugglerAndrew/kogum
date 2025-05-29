@@ -56,9 +56,6 @@ const Register: React.FC = () => {
         maxWidth: "400px",
         margin: "0px auto",
         padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        backgroundColor: "#000",
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: "20px" }}>jøin</h2>
@@ -135,7 +132,7 @@ const Register: React.FC = () => {
           style={{
             width: "100%",
             padding: "12px",
-            backgroundColor: "#007bff",
+            backgroundColor: "#fa9f42",
             color: "white",
             border: "none",
             borderRadius: "4px",

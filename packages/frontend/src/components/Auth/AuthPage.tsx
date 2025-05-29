@@ -30,6 +30,11 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
         {/* Login container */}
         <Login onLoginSuccess={onLoginSuccess} />
       </div>
+      <p>
+        <h2>
+          <b>or</b>
+        </h2>
+      </p>
       <div style={{ flex: 1, minWidth: "300px", maxWidth: "420px" }}>
         {" "}
         {/* Register container */}

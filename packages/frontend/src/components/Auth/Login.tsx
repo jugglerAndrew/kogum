@@ -45,8 +45,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
       if (response.ok) {
         setMessage(data.message || "Login successful!");
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userData', JSON.stringify(data.user));
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("userData", JSON.stringify(data.user));
         if (onLoginSuccess) {
           onLoginSuccess(data.token, data.user);
         }
@@ -69,9 +69,6 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     <div
       style={{
         padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        backgroundColor: "#000",
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: "20px" }}>løgin</h2>
@@ -126,7 +123,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           style={{
             width: "100%",
             padding: "12px",
-            backgroundColor: "#28a745",
+            backgroundColor: "#0b6e4f",
             color: "white",
             border: "none",
             borderRadius: "4px",
