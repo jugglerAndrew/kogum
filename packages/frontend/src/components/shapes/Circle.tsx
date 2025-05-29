@@ -3,11 +3,10 @@ import React from "react";
 interface ShapeProps {
   color: string;
   fillType: "SOLID" | "STRIPED" | "OPEN";
-  // Unique ID for pattern referencing, passed from Card.tsx
   patternId: string;
 }
 
-const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
+const Circle: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   let fillValue: string;
   const strokeValue: string = color;
   const strokeWidthValue = 2;
@@ -25,12 +24,12 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
       break;
   }
 
+  // Centered at (20,20) with radius 16
   return (
-    <ellipse
-      cx="25"
-      cy="25"
-      rx="20"
-      ry="12"
+    <circle
+      cx={20}
+      cy={20}
+      r={16}
       stroke={strokeValue}
       strokeWidth={strokeWidthValue}
       fill={fillValue}
@@ -38,4 +37,4 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   );
 };
 
-export default Oval;
+export default Circle;

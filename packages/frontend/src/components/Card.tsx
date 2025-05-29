@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import Oval from "./shapes/Oval";
 import Diamond from "./shapes/Diamond";
 import Squiggle from "./shapes/Squiggle";
-import Triangle from "./shapes/Triangle"; // Import the new Triangle component
+import Triangle from "./shapes/Triangle";
+import Hexagon from "./shapes/Hexagon";
+import Pentagon from "./shapes/Pentagon";
+import Circle from "./shapes/Circle";
+import Parallelogram from "./shapes/Parallelogram";
 
 // Define the types for card data
 interface ClientCardData {
@@ -85,7 +89,7 @@ const CardComponent: React.FC<CardProps> = ({
   };
 
   const renderShapes = () => {
-    const shapesToRender: JSX.Element[] = [];
+    const shapesToRender: React.ReactElement[] = [];
     const currentFillType = fillName.toUpperCase() as
       | "SOLID"
       | "STRIPED"
@@ -105,42 +109,82 @@ const CardComponent: React.FC<CardProps> = ({
     // --- End Positioning Logic ---
 
     for (let i = 0; i < count_value; i++) {
-      let shapeComponent: JSX.Element | null = null;
-      if (shapeName.toUpperCase() === "OVAL") {
-        shapeComponent = (
-          <Oval
-            color={actualColor}
-            fillType={currentFillType}
-            patternId={uniquePatternId}
-          />
-        );
-      } else if (shapeName.toUpperCase() === "DIAMOND") {
-        shapeComponent = (
-          <Diamond
-            color={actualColor}
-            fillType={currentFillType}
-            patternId={uniquePatternId}
-          />
-        );
-      } else if (shapeName.toUpperCase() === "SQUIGGLE") {
-        shapeComponent = (
-          <Squiggle
-            color={actualColor}
-            fillType={currentFillType}
-            patternId={uniquePatternId}
-          />
-        );
-      } else if (shapeName.toUpperCase() === "TRIANGLE") {
-        // Add condition for Triangle
-        shapeComponent = (
-          <Triangle
-            color={actualColor}
-            fillType={currentFillType}
-            patternId={uniquePatternId}
-          />
-        );
-      } else {
-        shapeComponent = <text fontSize="10">Unknown: {shapeName}</text>;
+      let shapeComponent: React.ReactElement | null = null;
+      switch (shapeName.toUpperCase()) {
+        case "OVAL":
+          shapeComponent = (
+            <Oval
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "DIAMOND":
+          shapeComponent = (
+            <Diamond
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "SQUIGGLE":
+          shapeComponent = (
+            <Squiggle
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "TRIANGLE":
+          shapeComponent = (
+            <Triangle
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "HEXAGON":
+          shapeComponent = (
+            <Hexagon
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "PENTAGON":
+          shapeComponent = (
+            <Pentagon
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "CIRCLE":
+          shapeComponent = (
+            <Circle
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        case "PARALLELOGRAM":
+          shapeComponent = (
+            <Parallelogram
+              color={actualColor}
+              fillType={currentFillType}
+              patternId={uniquePatternId}
+            />
+          );
+          break;
+        default:
+          shapeComponent = <text fontSize="10">Unknown: {shapeName}</text>;
       }
       if (shapeComponent) {
         shapesToRender.push(shapeComponent);

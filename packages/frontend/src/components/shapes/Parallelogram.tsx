@@ -3,11 +3,14 @@ import React from "react";
 interface ShapeProps {
   color: string;
   fillType: "SOLID" | "STRIPED" | "OPEN";
-  // Unique ID for pattern referencing, passed from Card.tsx
   patternId: string;
 }
 
-const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
+const Parallelogram: React.FC<ShapeProps> = ({
+  color,
+  fillType,
+  patternId,
+}) => {
   let fillValue: string;
   const strokeValue: string = color;
   const strokeWidthValue = 2;
@@ -25,12 +28,13 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
       break;
   }
 
+  // Parallelogram points in a 40x40 box, slanted right
+  // (8,8), (36,8), (32,32), (4,32)
+  const points = "8,8 36,8 32,32 4,32";
+
   return (
-    <ellipse
-      cx="25"
-      cy="25"
-      rx="20"
-      ry="12"
+    <polygon
+      points={points}
       stroke={strokeValue}
       strokeWidth={strokeWidthValue}
       fill={fillValue}
@@ -38,4 +42,4 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   );
 };
 
-export default Oval;
+export default Parallelogram;

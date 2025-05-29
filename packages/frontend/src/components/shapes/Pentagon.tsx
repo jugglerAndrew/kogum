@@ -3,11 +3,10 @@ import React from "react";
 interface ShapeProps {
   color: string;
   fillType: "SOLID" | "STRIPED" | "OPEN";
-  // Unique ID for pattern referencing, passed from Card.tsx
   patternId: string;
 }
 
-const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
+const Pentagon: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   let fillValue: string;
   const strokeValue: string = color;
   const strokeWidthValue = 2;
@@ -25,12 +24,13 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
       break;
   }
 
+  // Points for a regular pentagon centered in a 40x40 box
+  // (20,5), (36,16), (29,35), (11,35), (4,16)
+  const points = "20,5 36,16 29,35 11,35 4,16";
+
   return (
-    <ellipse
-      cx="25"
-      cy="25"
-      rx="20"
-      ry="12"
+    <polygon
+      points={points}
       stroke={strokeValue}
       strokeWidth={strokeWidthValue}
       fill={fillValue}
@@ -38,4 +38,4 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   );
 };
 
-export default Oval;
+export default Pentagon;

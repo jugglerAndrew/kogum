@@ -8,7 +8,7 @@ interface ShapeProps {
 
 const Squiggle: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   let fillValue: string;
-  let strokeValue: string = color;
+  const strokeValue: string = color;
   const strokeWidthValue = 2;
 
   switch (fillType) {
