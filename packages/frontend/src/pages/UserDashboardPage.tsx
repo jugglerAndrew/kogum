@@ -7,10 +7,15 @@ interface UserDashboardPageProps {
   currentUser: UserData;
 }
 
-const UserDashboardPage: React.FC<UserDashboardPageProps> = ({
+interface UserDashboardPageWithLogoutProps extends UserDashboardPageProps {
+  onLogout: () => void;
+}
+
+const UserDashboardPage: React.FC<UserDashboardPageWithLogoutProps> = ({
   currentUser,
+  onLogout,
 }) => {
-  return <UserPageComponent currentUser={currentUser} />;
+  return <UserPageComponent currentUser={currentUser} onLogout={onLogout} />;
 };
 
 export default UserDashboardPage;

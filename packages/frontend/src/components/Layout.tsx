@@ -22,7 +22,6 @@ const Layout: React.FC<LayoutProps> = ({
   activePage,
   isLoggedIn,
   currentUser,
-  onLogout,
   onNavigateLogin,
   onNavigateKogum,
   onNavigateToday,
@@ -108,16 +107,6 @@ const Layout: React.FC<LayoutProps> = ({
                 }}
               >
                 {currentUser.user_name}
-              </a>
-              <a
-                href="#"
-                className="layout-nav-link logout"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onLogout();
-                }}
-              >
-                løgout
               </a>
             </>
           ) : (

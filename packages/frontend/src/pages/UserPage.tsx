@@ -8,9 +8,10 @@ interface UserData {
 
 interface UserPageProps {
   currentUser: UserData | null;
+  onLogout: () => void;
 }
 
-const UserPage: React.FC<UserPageProps> = ({ currentUser }) => {
+const UserPage: React.FC<UserPageProps> = ({ currentUser, onLogout }) => {
   if (!currentUser) {
     return <p>Loading user data or not logged in...</p>;
   }
@@ -22,6 +23,16 @@ const UserPage: React.FC<UserPageProps> = ({ currentUser }) => {
       <p>User ID: {currentUser.user_id}</p>
       <p>Email: {currentUser.user_email}</p>
       {/* Placeholder for rankings, settings, daily puzzles links */}
+      <a
+        href="#"
+        className="layout-nav-link logout"
+        onClick={(e) => {
+          e.preventDefault();
+          onLogout();
+        }}
+      >
+        løgout
+      </a>
     </div>
   );
 };

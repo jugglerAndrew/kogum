@@ -363,10 +363,6 @@ const TutorialPage: React.FC = () => {
       <h1 style={{ textAlign: "center", fontSize: "2.2em", marginBottom: 8 }}>
         tutørial
       </h1>
-      <h2 style={{ textAlign: "center", color: "#007bff", marginBottom: 24 }}>
-        {steps[step].title}
-      </h2>
-      <div>{steps[step].content}</div>
       <div
         style={{
           display: "flex",
@@ -382,7 +378,7 @@ const TutorialPage: React.FC = () => {
             padding: "10px 24px",
             borderRadius: 8,
             border: "none",
-            background: step === 0 ? "#eee" : "#007bff",
+            background: step === 0 ? "#eee" : "#0b6e4f",
             color: step === 0 ? "#888" : "#fff",
             fontWeight: 600,
             fontSize: "1em",
@@ -399,9 +395,9 @@ const TutorialPage: React.FC = () => {
                 width: 14,
                 height: 14,
                 borderRadius: "50%",
-                background: i === step ? "#007bff" : "#eee",
+                background: i === step ? "#fa9f42" : "#eee",
                 display: "inline-block",
-                border: i === step ? "2px solid #007bff" : "1px solid #ccc",
+                border: i === step ? "1px solid #fa9f42" : "1px solid #ccc",
               }}
             />
           ))}
@@ -413,7 +409,7 @@ const TutorialPage: React.FC = () => {
             padding: "10px 24px",
             borderRadius: 8,
             border: "none",
-            background: step === totalSteps - 1 ? "#eee" : "#007bff",
+            background: step === totalSteps - 1 ? "#eee" : "#0b6e4f",
             color: step === totalSteps - 1 ? "#888" : "#fff",
             fontWeight: 600,
             fontSize: "1em",
@@ -423,6 +419,10 @@ const TutorialPage: React.FC = () => {
           Next
         </button>
       </div>
+      <h2 style={{ textAlign: "center", marginBottom: 24 }}>
+        {steps[step].title}
+      </h2>
+      <div>{steps[step].content}</div>
     </div>
   );
 };

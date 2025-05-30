@@ -55,7 +55,8 @@ a.layout-container {
   font-weight: var(--k-primary-color-active);
 }
 .layout-nav-link.logout {
-  color: var(--k-warn-color);
+  color: #d00;
+  font-weight: bold;
 }
 
 main {
@@ -64,6 +65,7 @@ main {
   color: var(--k-primary-color);
   margin-top: 40px;
   padding: 20px;
+  min-width: 1000px;
 }
 
 a {

@@ -146,7 +146,12 @@ const App: React.FC = () => {
         return null;
       case "userPage":
         if (isLoggedIn && currentUser) {
-          return <UserDashboardPage currentUser={currentUser} />;
+          return (
+            <UserDashboardPage
+              currentUser={currentUser}
+              onLogout={handleLogout}
+            />
+          );
         }
         setActivePage("login");
         return null;
