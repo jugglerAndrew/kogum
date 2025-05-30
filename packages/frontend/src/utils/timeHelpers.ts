@@ -4,7 +4,7 @@ export const getCurrentMealType = (date: Date = new Date()): DailyMealType => {
   const currentHour = date.getHours();
 
   if (currentHour >= 0 && currentHour <= 6) {
-    return "snack"; // 00:00 - 06:00
+    return "dessert"; // 00:00 - 06:00
   } else if (currentHour > 6 && currentHour <= 12) {
     return "breakfast"; // 06:01 - 12:00
   } else if (currentHour > 12 && currentHour <= 18) {

@@ -30,7 +30,7 @@ const colorMap: { [key: string]: string } = {
   GREEN: "green",
   BLUE: "blue",
   PURPLE: "purple",
-  YELLOW: "gold",
+  GOLD: "gold",
   ORANGE: "orange",
   CYAN: "cyan",
   MAGENTA: "magenta",

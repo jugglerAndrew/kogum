@@ -14,19 +14,37 @@ ALTER TABLE users ADD CONSTRAINT users_user_email_key UNIQUE (user_email);
 /* We will insert users via the application with proper hashing */
 -- INSERT INTO users(user_name, user_password, user_email) VALUES('test', 'hashed_password_here', 'kogumgame+test@gmail.com');
 
+CREATE TABLE IF NOT EXISTS difficulty (
+  difficulty_id SERIAL PRIMARY KEY,
+  difficulty_value INTEGER,
+  meal_type meal_type_enum NOT NULL,
+  active_flag BOOLEAN DEFAULT TRUE
+);
+INSERT INTO difficulty(difficulty_value, meal_type) VALUES(100, 'breakfast');
+INSERT INTO difficulty(difficulty_value, meal_type) VALUES(200, 'lunch');
+INSERT INTO difficulty(difficulty_value, meal_type) VALUES(300, 'dinner');
+INSERT INTO difficulty(difficulty_value, meal_type) VALUES(400, 'dessert');
+
 
 CREATE TABLE IF NOT EXISTS color (
   color_id SERIAL PRIMARY KEY,
-  color_code VARCHAR(6) NOT NULL,
+  color_code VARCHAR(6),
   color_name VARCHAR(50),
   difficulty INTEGER,
   active_flag BOOLEAN DEFAULT TRUE,
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO color(color_name, difficulty) VALUES('RED', 100);
+INSERT INTO color(color_name, difficulty) VALUES('GREEN', 100);
+INSERT INTO color(color_name, difficulty) VALUES('BLUE', 100);
+INSERT INTO color(color_name, difficulty) VALUES('GOLD', 200);
+INSERT INTO color(color_name, difficulty) VALUES('PURPLE', 200);
+INSERT INTO color(color_name, difficulty) VALUES('ORANGE', 200);
 
 
-CREATE TABLE IF NOT EXISTS ncount ( -- Renamed from 'ncount' for clarity if 'count' is reserved
+
+CREATE TABLE IF NOT EXISTS ncount ( -- Named this way because 'count' may be reserved
   count_id SERIAL PRIMARY KEY,
   count_value INTEGER NOT NULL,
   count_name VARCHAR(50),
@@ -35,9 +53,12 @@ CREATE TABLE IF NOT EXISTS ncount ( -- Renamed from 'ncount' for clarity if 'cou
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO ncount(count_value, count_name, difficulty) VALUES(1,'ONE',100);
-INSERT INTO ncount(count_value, count_name, difficulty) VALUES(2,'TWO',100);
-INSERT INTO ncount(count_value, count_name, difficulty) VALUES(3,'THREE',100);
+INSERT INTO ncount(count_value, count_name, difficulty) VALUES(1,'ONE', 100);
+INSERT INTO ncount(count_value, count_name, difficulty) VALUES(2,'TWO', 100);
+INSERT INTO ncount(count_value, count_name, difficulty) VALUES(3,'THREE', 100);
+INSERT INTO ncount(count_value, count_name, difficulty) VALUES(4,'FOUR', 400);
+INSERT INTO ncount(count_value, count_name, difficulty) VALUES(5,'FIVE', 400);
+INSERT INTO ncount(count_value, count_name, difficulty) VALUES(6,'SIX', 400);
 
 -- INSERT INTO fill_group(fill_group_name) VALUES('CIRCLE DOT');
 -- INSERT INTO fill_group(fill_group_name) VALUES('SQUARE DOT');
@@ -53,28 +74,30 @@ INSERT INTO ncount(count_value, count_name, difficulty) VALUES(3,'THREE',100);
 CREATE TABLE IF NOT EXISTS fill (
   fill_id SERIAL PRIMARY KEY,
   fill_name VARCHAR(50),
-  fill_group_id INTEGER REFERENCES fill_group(fill_group_id),
-  svg_pattern_id VARCHAR(50) NOT NULL,
-  svg_base64 TEXT, -- Changed VARCHAR(800) to TEXT for potentially longer base64
-  svg_markup TEXT, -- Changed VARCHAR(500) to TEXT
   difficulty INTEGER,
   active_flag BOOLEAN DEFAULT TRUE,
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO fill(fill_name, difficulty) VALUES('SOLID', 100);
+INSERT INTO fill(fill_name, difficulty) VALUES('STRIPED', 100);
+INSERT INTO fill(fill_name, difficulty) VALUES('OPEN', 100);
 
 
 CREATE TABLE IF NOT EXISTS shape (
   shape_id SERIAL PRIMARY KEY,
   shape_name VARCHAR(50),
-  shape_group_id INTEGER REFERENCES shape_group(shape_group_id),
-  svg_tag VARCHAR(50) NOT NULL,
-  svg_attribute_value VARCHAR(800) NOT NULL,
   difficulty INTEGER,
   active_flag BOOLEAN DEFAULT TRUE,
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO shape(shape_name, difficulty) VALUES('OVAL', 100);
+INSERT INTO shape(shape_name, difficulty) VALUES('DIAMOND', 100);
+INSERT INTO shape(shape_name, difficulty) VALUES('TRIANGLE', 100);
+INSERT INTO shape(shape_name, difficulty) VALUES('PARALLELOGRAM', 300);
+INSERT INTO shape(shape_name, difficulty) VALUES('HEXAGON', 300);
+INSERT INTO shape(shape_name, difficulty) VALUES('CIRCLE', 300);
 
 
 CREATE TABLE IF NOT EXISTS meta_color (
@@ -194,7 +217,7 @@ COMMENT ON COLUMN puzzles.card_ids IS 'Array of 12 abstract card identifiers tha
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'meal_type_enum') THEN
-        CREATE TYPE meal_type_enum AS ENUM ('breakfast', 'lunch', 'dinner', 'snack');
+        CREATE TYPE meal_type_enum AS ENUM ('breakfast', 'lunch', 'dinner', 'dessert');
     END IF;
 END$$;
 

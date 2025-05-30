@@ -70,7 +70,7 @@ async function seedCards() {
       for (const color of metaColors) {
         for (const fill of metaFills) {
           for (const shape of metaShapes) {
-            const cardName = `<span class="math-inline">\{count\.name\}\_</span>{color.name}_${fill.name}_${shape.name}`;
+            const cardName = `${count.name}_${color.name}_${fill.name}_${shape.name}`;
             // console.log(`Preparing to insert card: ${cardName}`);
             await query(
               `INSERT INTO card (card_name, meta_count_id, meta_color_id, meta_fill_id, meta_shape_id)

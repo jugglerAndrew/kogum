@@ -4,7 +4,7 @@ import db from "../src/db"; // Assuming your db connection is exported as defaul
 import type { DailyMealType } from "../src/game/types"; // Import the centralized type
 
 const NUMBER_OF_DAYS_TO_SEED = 21; // Insert for 3 weeks (today + 20 more days)
-const MEAL_TYPES: DailyMealType[] = ["snack", "breakfast", "lunch", "dinner"];
+const MEAL_TYPES: DailyMealType[] = ["dessert", "breakfast", "lunch", "dinner"];
 
 async function seedDailyPuzzles() {
   console.log("🌱 Starting to seed daily puzzles...");

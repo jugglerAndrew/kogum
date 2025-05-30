@@ -88,7 +88,7 @@ export const getRandomPuzzle: RequestHandler = async (req, res, next) => {
 };
 
 const isValidMealType = (meal: any): meal is DailyMealType => {
-  return ["breakfast", "lunch", "dinner", "snack"].includes(meal);
+  return ["breakfast", "lunch", "dinner", "dessert"].includes(meal);
 };
 
 export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
@@ -97,7 +97,7 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
   if (!meal || !isValidMealType(meal.toLowerCase() as DailyMealType)) {
     res.status(400).json({
       error:
-        "Invalid or missing meal type parameter. Must be one of: breakfast, lunch, dinner, snack.",
+        "Invalid or missing meal type parameter. Must be one of: breakfast, lunch, dinner, dessert.",
     });
     return;
   }
@@ -136,7 +136,69 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    // 2. Convert abstract card IDs to AbstractCard objects and materialize them
+    // 2. Get the difficulty for the meal type
+    const difficultyResult = await db.query(
+      `SELECT difficulty_value FROM difficulty WHERE meal_type = $1 LIMIT 1`,
+      [meal.toLowerCase()]
+    );
+    if (difficultyResult.rows.length === 0) {
+      res
+        .status(500)
+        .json({ message: `No difficulty found for meal type: ${meal}` });
+      return;
+    }
+    const difficultyValue: number = difficultyResult.rows[0].difficulty_value;
+
+    // 3. Fetch all valid colors, shapes, fills, and counts for this difficulty (no LIMIT, will shuffle in JS)
+    const [colorQ, shapeQ, fillQ, countQ] = await Promise.all([
+      db.query(
+        `SELECT color_name FROM color WHERE difficulty <= $1 AND active_flag = true ORDER BY color_id ASC`,
+        [difficultyValue]
+      ),
+      db.query(
+        `SELECT shape_name FROM shape WHERE difficulty <= $1 AND active_flag = true ORDER BY shape_id ASC`,
+        [difficultyValue]
+      ),
+      db.query(
+        `SELECT fill_name FROM fill WHERE difficulty <= $1 AND active_flag = true ORDER BY fill_id ASC`,
+        [difficultyValue]
+      ),
+      db.query(
+        `SELECT count_value FROM ncount WHERE difficulty <= $1 AND active_flag = true ORDER BY count_id ASC`,
+        [difficultyValue]
+      ),
+    ]);
+
+    // Helper to shuffle and pick 3
+    function pickThreeRandom<T>(arr: T[]): [T, T, T] {
+      const shuffled = arr.slice();
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return [shuffled[0], shuffled[1], shuffled[2]];
+    }
+
+    if (
+      colorQ.rows.length < 3 ||
+      shapeQ.rows.length < 3 ||
+      fillQ.rows.length < 3 ||
+      countQ.rows.length < 3
+    ) {
+      res
+        .status(500)
+        .json({ message: `Not enough attribute values for this difficulty.` });
+      return;
+    }
+
+    // 4. Build the GameAttributeSet with random 3 from each
+    const gameAttributes: GameAttributeSet = {
+      colors: pickThreeRandom(colorQ.rows.map((r) => r.color_name)),
+      shapes: pickThreeRandom(shapeQ.rows.map((r) => r.shape_name)),
+      fills: pickThreeRandom(fillQ.rows.map((r) => r.fill_name)),
+    };
+
+    // 5. Convert abstract card IDs to AbstractCard objects and materialize them
     const abstractPuzzleCards: AbstractCard[] = abstractCardIds
       .map((id) => getAbstractCardById(id))
       .filter(Boolean) as AbstractCard[];
@@ -148,16 +210,16 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
       return;
     }
     const clientPuzzleCards: ClientCardData[] = abstractPuzzleCards.map(
-      (abstractCard) => materializeCard(abstractCard, defaultGameAttributes)
+      (abstractCard) => materializeCard(abstractCard, gameAttributes)
     );
 
-    // 3. Find all solutions
+    // 6. Find all solutions
     const solutionsRaw = findAllSets(abstractPuzzleCards);
     const clientSolutions = solutionsRaw.map((set) =>
       set.map((cardInSet) => cardInSet.id)
     );
 
-    // 4. Send the response
+    // 7. Send the response
     res.status(200).json({
       puzzle_id: puzzleId,
       cards: clientPuzzleCards,

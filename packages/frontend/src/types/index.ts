@@ -26,4 +26,4 @@ export type ActivePage =
   | "userPage"
   | "tutorial";
 
-export type DailyMealType = "breakfast" | "lunch" | "dinner" | "snack";
+export type DailyMealType = "breakfast" | "lunch" | "dinner" | "dessert";
