@@ -17,6 +17,14 @@ interface LayoutProps {
   onNavigateUserPage: () => void;
 }
 
+// Extend the Window interface to include setActivePage for dev/debug use
+declare global {
+  interface Window {
+    setActivePage?: (page: string) => void;
+  }
+}
+
+const isDev = import.meta.env.MODE === "development";
 const Layout: React.FC<LayoutProps> = ({
   children,
   activePage,
@@ -29,6 +37,7 @@ const Layout: React.FC<LayoutProps> = ({
   onNavigateScores,
   onNavigateTutorial,
   onNavigateUserPage,
+  // Add debug nav handler if needed
 }) => {
   return (
     <div className="layout-container">
@@ -94,21 +103,34 @@ const Layout: React.FC<LayoutProps> = ({
           >
             scøres
           </a>
+          {isDev && (
+            <a
+              href="#"
+              className={`layout-nav-link${
+                activePage === "debugCombinations" ? " active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                if (typeof window !== "undefined" && window.setActivePage)
+                  window.setActivePage("debugCombinations");
+              }}
+            >
+              debug
+            </a>
+          )}
           {isLoggedIn && currentUser ? (
-            <>
-              <a
-                href="#"
-                className={`layout-nav-link${
-                  activePage === "userPage" ? " active" : ""
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  onNavigateUserPage();
-                }}
-              >
-                {currentUser.user_name}
-              </a>
-            </>
+            <a
+              href="#"
+              className={`layout-nav-link${
+                activePage === "userPage" ? " active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigateUserPage();
+              }}
+            >
+              {currentUser.user_name}
+            </a>
           ) : (
             <a
               href="#"

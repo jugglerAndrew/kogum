@@ -5,6 +5,7 @@ import cors from "cors"; // For Cross-Origin Resource Sharing
 import { config } from "./config"; // Your config file
 import authRoutes from "./routes/authRoutes";
 import puzzleRoutes from "./routes/puzzleRoutes";
+import debugRoutes from "./routes/debugRoutes";
 // import pool from './db'; // Import db pool if you want to test connection on start
 
 dotenv.config(); // Ensure .env is loaded
@@ -35,6 +36,11 @@ app.get("/api/health", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/puzzles", puzzleRoutes);
+
+// Only expose debug routes in development
+if (process.env.NODE_ENV === "development") {
+  app.use("/api/debug", debugRoutes);
+}
 
 // Basic Error Handling Middleware (optional, can be more sophisticated)
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

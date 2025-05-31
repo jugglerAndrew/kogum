@@ -123,7 +123,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Oval
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -132,7 +132,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Diamond
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -141,7 +141,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Squiggle
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -150,7 +150,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Triangle
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -159,7 +159,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Hexagon
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -168,7 +168,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Pentagon
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -177,7 +177,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Circle
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;
@@ -186,7 +186,7 @@ const CardComponent: React.FC<CardProps> = ({
             <Parallelogram
               color={actualColor}
               fillType={currentFillType}
-              patternId={uniquePatternId}
+              patternId={uniquePatternId ?? ""}
             />
           );
           break;

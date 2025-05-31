@@ -9,12 +9,19 @@ import ScoresPage from "./pages/ScoresPage";
 import WelcomePage from "./pages/WelcomePage";
 import TutorialPage from "./pages/TutorialPage";
 import type { ActivePage, UserData } from "./types";
+import DebugCombinationsPage from "./pages/DebugCombinationsPage";
 
+const isDev = import.meta.env.MODE === "development";
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<ActivePage>("kogum");
+  // Expose setActivePage globally for debug nav (dev only)
+  if (isDev && typeof window !== "undefined") {
+    // @ts-expect-error: Exposing for debug nav
+    window.setActivePage = setActivePage;
+  }
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
-  const [authToken, setAuthToken] = useState<string | null>(null);
+  // Remove unused authToken
   const [appIsLoading, setAppIsLoading] = useState<boolean>(true); // For initial auth check
   const [globalMessage, setGlobalMessage] = useState<string>(" "); // For messages not tied to game page
 
@@ -27,7 +34,6 @@ const App: React.FC = () => {
     if (storedToken && storedUserData) {
       try {
         const userData: UserData = JSON.parse(storedUserData);
-        setAuthToken(storedToken);
         setCurrentUser(userData);
         setIsLoggedIn(true);
         initialPage = "userPage"; // Default to user page if logged in
@@ -58,7 +64,6 @@ const App: React.FC = () => {
   const handleLoginSuccess = (token: string, userData: UserData) => {
     localStorage.setItem("authToken", token);
     localStorage.setItem("userData", JSON.stringify(userData));
-    setAuthToken(token);
     setCurrentUser(userData);
     setIsLoggedIn(true);
     setActivePage("userPage");
@@ -70,7 +75,6 @@ const App: React.FC = () => {
     localStorage.removeItem("userData");
     setIsLoggedIn(false);
     setCurrentUser(null);
-    setAuthToken(null);
     setActivePage("kogum"); // Or 'login' if you prefer
     setGlobalMessage(" ");
   };
@@ -120,6 +124,10 @@ const App: React.FC = () => {
           Loading application...
         </p>
       );
+    }
+    // Debug page route (only in dev)
+    if (isDev && activePage === "debugCombinations") {
+      return <DebugCombinationsPage />;
     }
     switch (activePage) {
       case "kogum":

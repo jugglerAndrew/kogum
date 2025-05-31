@@ -1,3 +1,9 @@
+// For debug page
+export interface DebugCombination {
+  shape: { id: number; name: string };
+  color: { id: number; name: string; code: string | null };
+  fill: { id: number; name: string };
+}
 // /workspaces/kogum/packages/frontend/src/types/index.ts
 export interface ClientCardData {
   card_name: string;
@@ -24,6 +30,7 @@ export type ActivePage =
   | "scores"
   | "login"
   | "userPage"
-  | "tutorial";
+  | "tutorial"
+  | "debugCombinations";
 
 export type DailyMealType = "breakfast" | "lunch" | "dinner" | "dessert";

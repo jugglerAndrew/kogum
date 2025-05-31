@@ -60,11 +60,7 @@ INSERT INTO ncount(count_value, count_name, difficulty) VALUES(4,'FOUR', 400);
 INSERT INTO ncount(count_value, count_name, difficulty) VALUES(5,'FIVE', 400);
 INSERT INTO ncount(count_value, count_name, difficulty) VALUES(6,'SIX', 400);
 
--- INSERT INTO fill_group(fill_group_name) VALUES('CIRCLE DOT');
--- INSERT INTO fill_group(fill_group_name) VALUES('SQUARE DOT');
--- INSERT INTO fill_group(fill_group_name) VALUES('DIAGONAL STRIPE');
--- INSERT INTO fill_group(fill_group_name) VALUES('HORIZONTAL STRIPE');
--- INSERT INTO fill_group(fill_group_name) VALUES('VERTICAL STRIPE');
+
 -- INSERT INTO fill_group(fill_group_name) VALUES('CROSSHATCH');
 -- INSERT INTO fill_group(fill_group_name) VALUES('CARBON');
 -- INSERT INTO fill_group(fill_group_name) VALUES('HOUNDSTOOTH');
