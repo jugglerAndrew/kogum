@@ -2,7 +2,7 @@ import React from "react";
 
 interface ShapeProps {
   color: string;
-  fillType: "SOLID" | "STRIPED" | "OPEN";
+  fillType: "SOLID" | "STRIPED" | "OPEN" | "DOTTED";
   // Unique ID for pattern referencing, passed from Card.tsx
   patternId: string;
 }
@@ -17,6 +17,7 @@ const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
       fillValue = color;
       break;
     case "STRIPED":
+    case "DOTTED":
       fillValue = `url(#${patternId})`;
       break;
     case "OPEN":

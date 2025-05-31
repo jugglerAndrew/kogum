@@ -93,8 +93,15 @@ const CardComponent: React.FC<CardProps> = ({
     const currentFillType = fillName.toUpperCase() as
       | "SOLID"
       | "STRIPED"
-      | "OPEN";
-    const uniquePatternId = `stripePattern-${abstractCardId}`;
+      | "OPEN"
+      | "DOTTED";
+    // Pick pattern id based on fill type
+    let uniquePatternId: string | undefined = undefined;
+    if (fillName.toUpperCase() === "STRIPED") {
+      uniquePatternId = `stripePattern-${abstractCardId}`;
+    } else if (fillName.toUpperCase() === "DOTTED") {
+      uniquePatternId = `dotPattern-${abstractCardId}`;
+    }
 
     // --- Positioning Logic for Multiple Shapes (HORIZONTAL LAYOUT) ---
     // Values based on viewBox="0 0 150 100" and shapes fitting in ~40x40
@@ -217,6 +224,7 @@ const CardComponent: React.FC<CardProps> = ({
         viewBox="0 0 150 100" // Adjusted for landscape
         preserveAspectRatio="xMidYMid meet"
       >
+        {/* STRIPED pattern */}
         {fillName.toUpperCase() === "STRIPED" && (
           <defs>
             <pattern
@@ -235,6 +243,21 @@ const CardComponent: React.FC<CardProps> = ({
                 stroke={actualColor}
                 strokeWidth="6"
               />
+            </pattern>
+          </defs>
+        )}
+        {/* DOTTED pattern */}
+        {fillName.toUpperCase() === "DOTTED" && (
+          <defs>
+            <pattern
+              id={`dotPattern-${abstractCardId}`}
+              width="8"
+              height="8"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width="8" height="8" fill="transparent" />
+              <circle cx="2" cy="2" r="1.5" fill={actualColor} />
+              <circle cx="6" cy="6" r="1.5" fill={actualColor} />
             </pattern>
           </defs>
         )}

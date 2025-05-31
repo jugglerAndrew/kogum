@@ -1,29 +1,16 @@
 import React from "react";
+import { getFillValue } from "./getFillValue";
 
 interface ShapeProps {
   color: string;
-  fillType: "SOLID" | "STRIPED" | "OPEN";
+  fillType: "SOLID" | "STRIPED" | "OPEN" | "DOTTED";
   patternId: string;
 }
 
 const Diamond: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
-  let fillValue: string;
+  const fillValue = getFillValue(fillType, color, patternId);
   const strokeValue: string = color;
   const strokeWidthValue = 4;
-
-  switch (fillType) {
-    case "SOLID":
-      fillValue = color;
-      break;
-    case "STRIPED":
-      fillValue = `url(#${patternId})`;
-      break;
-    case "OPEN":
-    default:
-      fillValue = "none";
-      break;
-  }
-
   // Points for a diamond centered roughly in a 50x50 box
   // Top(25,5), Right(45,25), Bottom(25,45), Left(5,25)
   return (
