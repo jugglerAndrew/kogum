@@ -13,7 +13,7 @@ const Parallelogram: React.FC<ShapeProps> = ({
 }) => {
   let fillValue: string;
   const strokeValue: string = color;
-  const strokeWidthValue = 2;
+  const strokeWidthValue = 4;
 
   switch (fillType) {
     case "SOLID":

@@ -10,7 +10,7 @@ interface ShapeProps {
 const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
   let fillValue: string;
   const strokeValue: string = color;
-  const strokeWidthValue = 2;
+  const strokeWidthValue = 4;
 
   switch (fillType) {
     case "SOLID":

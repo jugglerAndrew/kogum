@@ -233,7 +233,7 @@ const CardComponent: React.FC<CardProps> = ({
                 x2="0"
                 y2="8"
                 stroke={actualColor}
-                strokeWidth="1.5"
+                strokeWidth="6"
               />
             </pattern>
           </defs>
