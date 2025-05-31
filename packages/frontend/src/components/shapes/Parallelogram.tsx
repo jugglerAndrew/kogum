@@ -3,7 +3,7 @@ import { getFillValue } from "./getFillValue";
 
 interface ShapeProps {
   color: string;
-  fillType: "SOLID" | "STRIPED" | "OPEN" | "DOTTED";
+  fillType: string;
   patternId: string;
 }
 

@@ -79,6 +79,7 @@ INSERT INTO fill(fill_name, difficulty) VALUES('SOLID', 100);
 INSERT INTO fill(fill_name, difficulty) VALUES('STRIPED', 100);
 INSERT INTO fill(fill_name, difficulty) VALUES('OPEN', 100);
 INSERT INTO fill(fill_name, difficulty) VALUES('DOTTED', 400);
+INSERT INTO fill(fill_name, difficulty) VALUES('CROSSHATCH', 400);
 
 
 CREATE TABLE IF NOT EXISTS shape (

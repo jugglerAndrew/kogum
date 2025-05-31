@@ -1,30 +1,16 @@
 import React from "react";
+import { getFillValue } from "./getFillValue";
 
 interface ShapeProps {
   color: string;
-  fillType: "SOLID" | "STRIPED" | "OPEN" | "DOTTED";
-  // Unique ID for pattern referencing, passed from Card.tsx
+  fillType: string;
   patternId: string;
 }
 
 const Oval: React.FC<ShapeProps> = ({ color, fillType, patternId }) => {
-  let fillValue: string;
+  const fillValue = getFillValue(fillType, color, patternId);
   const strokeValue: string = color;
   const strokeWidthValue = 4;
-
-  switch (fillType) {
-    case "SOLID":
-      fillValue = color;
-      break;
-    case "STRIPED":
-    case "DOTTED":
-      fillValue = `url(#${patternId})`;
-      break;
-    case "OPEN":
-    default:
-      fillValue = "none";
-      break;
-  }
 
   return (
     <ellipse

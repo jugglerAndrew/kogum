@@ -94,13 +94,16 @@ const CardComponent: React.FC<CardProps> = ({
       | "SOLID"
       | "STRIPED"
       | "OPEN"
-      | "DOTTED";
+      | "DOTTED"
+      | "CROSSHATCH";
     // Pick pattern id based on fill type
     let uniquePatternId: string | undefined = undefined;
     if (fillName.toUpperCase() === "STRIPED") {
       uniquePatternId = `stripePattern-${abstractCardId}`;
     } else if (fillName.toUpperCase() === "DOTTED") {
       uniquePatternId = `dotPattern-${abstractCardId}`;
+    } else if (fillName.toUpperCase() === "CROSSHATCH") {
+      uniquePatternId = `crosshatchPattern-${abstractCardId}`;
     }
 
     // --- Positioning Logic for Multiple Shapes (HORIZONTAL LAYOUT) ---
@@ -258,6 +261,37 @@ const CardComponent: React.FC<CardProps> = ({
               <rect width="8" height="8" fill="transparent" />
               <circle cx="2" cy="2" r="1.5" fill={actualColor} />
               <circle cx="6" cy="6" r="1.5" fill={actualColor} />
+            </pattern>
+          </defs>
+        )}
+        {/* CROSSHATCH pattern (vertical and horizontal lines) */}
+        {fillName.toUpperCase() === "CROSSHATCH" && (
+          <defs>
+            <pattern
+              id={`crosshatchPattern-${abstractCardId}`}
+              width="8"
+              height="8"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width="8" height="8" fill="transparent" />
+              {/* Vertical line */}
+              <line
+                x1="4"
+                y1="0"
+                x2="4"
+                y2="8"
+                stroke={actualColor}
+                strokeWidth="2"
+              />
+              {/* Horizontal line */}
+              <line
+                x1="0"
+                y1="4"
+                x2="8"
+                y2="4"
+                stroke={actualColor}
+                strokeWidth="2"
+              />
             </pattern>
           </defs>
         )}
