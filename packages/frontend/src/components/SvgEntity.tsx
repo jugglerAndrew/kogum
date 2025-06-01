@@ -127,7 +127,7 @@ const SvgEntity: React.FC<SvgEntityProps & { svgPattern?: SvgPattern }> = ({
   }
 
   return (
-    <svg width="100%" height="100%" viewBox="0 0 100 100">
+    <svg width="100%" height="100%" viewBox="0 0 50 50">
       {patternId && svgPattern && (
         <defs>
           {renderPatternFromData(patternId, fillType, color, svgPattern)}

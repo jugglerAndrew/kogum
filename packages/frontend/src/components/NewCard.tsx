@@ -70,30 +70,47 @@ const NewCard: React.FC<NewCardProps> = ({
     opacity: isSolutionDisplayCard ? 0.7 : 1,
   };
 
-  // Render SvgEntity instances horizontally using flexbox
+  // Styles
   const entitiesRowStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-    height: "100%",
-    gap: "5px",
+    width: "150px",
+    height: "50%",
     margin: "auto",
   };
 
   const entityBoxStyle: React.CSSProperties = {
-    width: "100px",
-    height: "100px",
+    width: "50px",
+    height: "50px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   };
 
   // Try to get svgPattern from fillType if present in props (for DB-driven patterns)
-  // This expects the parent to pass svgPattern as a prop, or you can extend this to accept a fillPattern prop
-  // For now, try to extract from svgProps if present (for debug page, pass as svgPattern)
   const svgPattern = svgProps.svgPattern;
+
+  const maxPerRow = 3;
+  const rows: number[][] = [];
+  // Special logic for 4: two rows of 2. Otherwise, first row gets the remainder (so first row is fullest)
+  if (count === 4) {
+    rows.push([0, 1]);
+    rows.push([2, 3]);
+  } else if (count <= maxPerRow) {
+    rows.push(Array.from({ length: count }, (_, i) => i));
+  } else {
+    const numRows = Math.ceil(count / maxPerRow);
+    const firstRowCount = count - maxPerRow * (numRows - 1);
+    let idx = 0;
+    rows.push(Array.from({ length: firstRowCount }, (_, i) => idx + i));
+    idx += firstRowCount;
+    for (let r = 1; r < numRows; r++) {
+      rows.push(Array.from({ length: maxPerRow }, (_, i) => idx + i));
+      idx += maxPerRow;
+    }
+  }
 
   return (
     <div
@@ -101,20 +118,22 @@ const NewCard: React.FC<NewCardProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div style={entitiesRowStyle}>
-        {Array.from({ length: count }).map((_, i) => (
-          <div key={`svg-entity-${i}`} style={entityBoxStyle}>
-            <SvgEntity
-              svgType={svgType}
-              svgProps={svgProps}
-              fillType={fillType}
-              color={color}
-              patternId={patternId}
-              svgPattern={svgPattern}
-            />
-          </div>
-        ))}
-      </div>
+      {rows.map((row, rowIdx) => (
+        <div key={`entity-row-${rowIdx}`} style={entitiesRowStyle}>
+          {row.map((entityIdx) => (
+            <div key={`svg-entity-${entityIdx}`} style={entityBoxStyle}>
+              <SvgEntity
+                svgType={svgType}
+                svgProps={svgProps}
+                fillType={fillType}
+                color={color}
+                patternId={patternId}
+                svgPattern={svgPattern}
+              />
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

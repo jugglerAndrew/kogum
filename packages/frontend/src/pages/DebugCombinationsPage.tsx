@@ -29,6 +29,7 @@ type Combination = {
 export default function DebugCombinationsPage() {
   const [combinations, setCombinations] = useState<Combination[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [entityCount, setEntityCount] = useState<number>(1);
 
   useEffect(() => {
     fetch("/api/debug/combinations")
@@ -54,6 +55,26 @@ export default function DebugCombinationsPage() {
   return (
     <div style={{ padding: 24 }}>
       <h1>Debug: Shape/Color/Fill Combinations</h1>
+      <div style={{ margin: "16px 0" }}>
+        <label
+          htmlFor="entity-count-select"
+          style={{ fontWeight: 500, marginRight: 8 }}
+        >
+          Entity count:
+        </label>
+        <select
+          id="entity-count-select"
+          value={entityCount}
+          onChange={(e) => setEntityCount(Number(e.target.value))}
+          style={{ fontSize: 16, padding: "2px 8px" }}
+        >
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>
+              {n}
+            </option>
+          ))}
+        </select>
+      </div>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {combinations.length === 0 && (
           <div style={{ color: "red", fontWeight: 600, margin: 16 }}>
@@ -108,7 +129,7 @@ export default function DebugCombinationsPage() {
                 fillType={fillType}
                 color={color}
                 patternId={patternId}
-                count={1}
+                count={entityCount}
                 applyMargins={false}
                 isSelected={false}
                 isPaused={false}
