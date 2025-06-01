@@ -24,6 +24,9 @@ Number = 6
 Shape = 6
 
 REFACTOR
-x shape data
-_ fill data
-_ color data
+* fill data
+* color data
+
+EMAIL VERIFICATION
+* functionality
+* sendgrid signup 
