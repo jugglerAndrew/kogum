@@ -25,5 +25,5 @@ Shape = 6
 
 REFACTOR
 x shape data
-_ fill data
+x fill data
 _ color data

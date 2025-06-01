@@ -41,6 +41,9 @@ INSERT INTO color(color_name, difficulty) VALUES('BLUE', 100);
 INSERT INTO color(color_name, difficulty) VALUES('GOLD', 200);
 INSERT INTO color(color_name, difficulty) VALUES('PURPLE', 200);
 INSERT INTO color(color_name, difficulty) VALUES('ORANGE', 200);
+INSERT INTO color(color_name, difficulty) VALUES('BLACK', 400);
+INSERT INTO color(color_name, difficulty) VALUES('CYAN', 400);
+INSERT INTO color(color_name, difficulty) VALUES('MAGENTA', 400);
 
 
 
@@ -69,17 +72,77 @@ INSERT INTO ncount(count_value, count_name, difficulty) VALUES(6,'SIX', 400);
 CREATE TABLE IF NOT EXISTS fill (
   fill_id SERIAL PRIMARY KEY,
   fill_name VARCHAR(50),
+  svg_pattern JSONB,
   difficulty INTEGER,
   active_flag BOOLEAN DEFAULT TRUE,
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO fill(fill_name, difficulty) VALUES('SOLID', 100);
-INSERT INTO fill(fill_name, difficulty) VALUES('STRIPED', 100);
-INSERT INTO fill(fill_name, difficulty) VALUES('OPEN', 100);
-INSERT INTO fill(fill_name, difficulty) VALUES('DOTTED', 400);
-INSERT INTO fill(fill_name, difficulty) VALUES('CROSSHATCH', 400);
-
+-- SOLID (no pattern needed)
+INSERT INTO fill (fill_name, difficulty, svg_pattern)
+VALUES (
+  'SOLID',
+  100,
+  NULL
+);
+-- STRIPED
+INSERT INTO fill (fill_name, difficulty, svg_pattern)
+VALUES (
+  'STRIPED',
+  100,
+  '{
+    "type": "striped",
+    "patternUnits": "userSpaceOnUse",
+    "patternTransform": "rotate(45)",
+    "width": 8,
+    "height": 8,
+    "elements": [
+      { "element": "rect", "width": 8, "height": 8, "fill": "transparent" },
+      { "element": "line", "x1": 0, "y1": 0, "x2": 0, "y2": 8, "strokeWidth": 6 }
+    ]
+  }'
+);
+-- OPEN (no pattern, just outline)
+INSERT INTO fill (fill_name, difficulty, svg_pattern)
+VALUES (
+  'OPEN',
+  100,
+  NULL
+);
+-- DOTTED
+INSERT INTO fill (fill_name, difficulty, svg_pattern)
+VALUES (
+  'DOTTED',
+  400,
+  '{
+    "type": "dotted",
+    "patternUnits": "userSpaceOnUse",
+    "width": 8,
+    "height": 8,
+    "elements": [
+      { "element": "rect", "width": 8, "height": 8, "fill": "transparent" },
+      { "element": "circle", "cx": 2, "cy": 2, "r": 1.5 },
+      { "element": "circle", "cx": 6, "cy": 6, "r": 1.5 }
+    ]
+  }'
+);
+-- CROSSHATCH
+INSERT INTO fill (fill_name, difficulty, svg_pattern)
+VALUES (
+  'CROSSHATCH',
+  400,
+  '{
+    "type": "crosshatch",
+    "patternUnits": "userSpaceOnUse",
+    "width": 8,
+    "height": 8,
+    "elements": [
+      { "element": "rect", "width": 8, "height": 8, "fill": "transparent" },
+      { "element": "line", "x1": 4, "y1": 0, "x2": 4, "y2": 8, "strokeWidth": 2 },
+      { "element": "line", "x1": 0, "y1": 4, "x2": 8, "y2": 4, "strokeWidth": 2 }
+    ]
+  }'
+);
 
 CREATE TABLE IF NOT EXISTS shape (
   shape_id SERIAL PRIMARY KEY,
