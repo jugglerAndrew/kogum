@@ -1,3 +1,33 @@
+// SVG pattern element types for DB-driven SVG patterns
+export type SvgPatternElement =
+  | {
+      element: "rect";
+      width: number;
+      height: number;
+      fill?: string;
+    }
+  | {
+      element: "line";
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+      strokeWidth?: number;
+    }
+  | {
+      element: "circle";
+      cx: number;
+      cy: number;
+      r: number;
+    };
+
+export type SvgPattern = {
+  patternUnits?: string;
+  patternTransform?: string;
+  width: number;
+  height: number;
+  elements: SvgPatternElement[];
+};
 // For debug page
 export interface DebugCombination {
   shape: { id: number; name: string };

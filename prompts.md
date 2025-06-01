@@ -1,2 +1,7 @@
 ### Create New Fill Pattern
 Can you generate a fill pattern that is `both vertical and horizontal lines`? Add it to the fill logic and each shape component.
+
+### Refactor Card/Shape and how it interacts with the DB
+I want to create an SvgEntity component. The SvgEntity component will have the attributes of Shape,  Fill (this is the pattern applied to the SVG), and Color (this is the only color of the SVG, including any and all patterns and strokes). The inputs of the entity should include the necessary data from the shape, fill, and color tables that makes the most sense. The component should return either a polygon, path, ellipse, or circle SVG element. StrokeWidth should be hardcoded to 4. 
+
+Can you create a new Card component that takes in the same properties and SvgEntity plus Count (which is the number of SvgEntity that should appear within a card). It should return a div that will wrap around the SvgEntity SVG elements. Call this component NewCard so we can test it out. Feel free to use the existing logic in Card.tsx for positioning, styling, etc. However, it should only use the data passed into it to actually realize the SvgEntity values as this will be coming from the database.
