@@ -22,3 +22,8 @@ Color = 6
 Fill = 6
 Number = 6
 Shape = 6
+
+REFACTOR
+x shape data
+_ fill data
+_ color data
