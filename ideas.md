@@ -1,6 +1,6 @@
 DAILY
 Breakfast
-Color = 3
+Color = 6
 Fill = 3
 Number = 3
 Shape = 3
@@ -9,11 +9,11 @@ Lunch
 Color = 6
 Fill = 3
 Number = 3
-Shape = 3
+Shape = 6
 
 Dinner
 Color = 6
-Fill = 3
+Fill = 6
 Number = 3
 Shape = 6
 
@@ -23,10 +23,28 @@ Fill = 6
 Number = 6
 Shape = 6
 
-REFACTOR
-* fill data
-* color data
+CARD AND ENTITY REFACTOR
+
+- Use new card everywhere, plus new data query
+
+COMPONENT REFACTOR
+
+- Nav
+- Content container
+- Game board
 
 EMAIL VERIFICATION
-* functionality
-* sendgrid signup 
+
+- Sendgrid signup
+- Functionality
+
+RANDOM PUZZLE
+
+- New card and new game board
+- Shuffle attributes
+
+HOSTING
+
+CICD
+
+TESTING
