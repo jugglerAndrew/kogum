@@ -1,6 +1,8 @@
 // /workspaces/kogum/packages/backend/src/controllers/debugController.ts
 import { RequestHandler } from "express";
+
 import { query } from "../db";
+import { getShapeSvgData } from "../game/shapeSvgData";
 
 export const getShapeColorFillCombinations: RequestHandler = async (
   req,
@@ -21,6 +23,10 @@ export const getShapeColorFillCombinations: RequestHandler = async (
 
     const combinations = [];
     for (const shape of shapes.rows) {
+      // Fetch svg_type and svg_properties for this shape
+      const { svg_type, svg_properties } = await getShapeSvgData(
+        shape.shape_name
+      );
       for (const color of colors.rows) {
         for (const fill of fills.rows) {
           combinations.push({
@@ -31,6 +37,8 @@ export const getShapeColorFillCombinations: RequestHandler = async (
               code: color.color_code,
             },
             fill: { id: fill.fill_id, name: fill.fill_name },
+            svg_type,
+            svg_properties,
           });
         }
       }

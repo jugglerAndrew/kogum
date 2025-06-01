@@ -7,6 +7,8 @@ import {
   AttributeIndex,
 } from "./types";
 
+import { getShapeSvgData } from "./shapeSvgData";
+
 let allAbstractCardsCache: AbstractCard[] | null = null;
 let abstractCardMapCache: Map<string, AbstractCard> | null = null;
 /**
@@ -67,12 +69,12 @@ export function getAbstractCardById(id: string): AbstractCard | undefined {
  *
  * @param abstractCard The abstract card definition with attribute indices.
  * @param attributeSet The set of specific attribute names (colors, shapes, fills) for the current game context.
- * @returns ClientCardData containing the human-readable card_name and its count_value.
+ * @returns Promise<ClientCardData> containing the human-readable card_name and its count_value.
  */
-export function materializeCard(
+export async function materializeCard(
   abstractCard: AbstractCard,
   attributeSet: GameAttributeSet
-): ClientCardData {
+): Promise<ClientCardData> {
   const color = attributeSet.colors[abstractCard.colorIndex];
   const shape = attributeSet.shapes[abstractCard.shapeIndex];
   const fill = attributeSet.fills[abstractCard.fillIndex];
@@ -81,9 +83,15 @@ export function materializeCard(
   const card_name = `${color}_${fill}_${shape}`;
   const count_value = (abstractCard.countIndex + 1) as 1 | 2 | 3; // countIndex (0,1,2) maps to count (1,2,3)
 
+  // --- DB-driven SVG shape system ---
+  // getShapeSvgData returns { svg_type, svg_properties } for the given shape name
+  const { svg_type, svg_properties } = await getShapeSvgData(shape);
+
   return {
     card_name,
     count_value,
     abstractCardId: abstractCard.id, // Include the abstract ID for potential reference
+    svg_type,
+    svg_properties,
   };
 }

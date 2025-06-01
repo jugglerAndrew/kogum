@@ -1,27 +1,22 @@
 import React, { useState } from "react";
-import Oval from "./shapes/Oval";
-import Diamond from "./shapes/Diamond";
-import Squiggle from "./shapes/Squiggle";
-import Triangle from "./shapes/Triangle";
-import Hexagon from "./shapes/Hexagon";
-import Pentagon from "./shapes/Pentagon";
-import Circle from "./shapes/Circle";
-import Parallelogram from "./shapes/Parallelogram";
+import Shape from "./Shape";
 
-// Define the types for card data
+// Updated ClientCardData to support DB-driven SVG
 interface ClientCardData {
   card_name: string; // e.g., "RED_SOLID_OVAL"
   count_value: 1 | 2 | 3;
   abstractCardId: string;
+  svg_type: string;
+  svg_properties: Record<string, string | number | boolean | undefined>;
 }
 
 interface CardProps {
   cardData: ClientCardData;
   onSelect: (abstractCardId: string) => void;
   isSelected: boolean;
-  applyMargins?: boolean; // New prop
-  isPaused?: boolean; // To hide shapes when game is paused
-  isSolutionDisplayCard?: boolean; // True if this card is for displaying a found solution
+  applyMargins?: boolean;
+  isPaused?: boolean;
+  isSolutionDisplayCard?: boolean;
 }
 
 // A simple map for color names to SVG/CSS color values
@@ -45,10 +40,11 @@ const CardComponent: React.FC<CardProps> = ({
   isPaused = false, // Default to false
   isSolutionDisplayCard = false,
 }) => {
-  const { card_name, count_value, abstractCardId } = cardData;
+  const { card_name, count_value, abstractCardId, svg_type, svg_properties } =
+    cardData;
   const [isHovered, setIsHovered] = useState(false);
 
-  const [colorName = "", fillName = "", shapeName = ""] = card_name.split("_");
+  const [colorName = "", fillName = ""] = card_name.split("_");
   const actualColor = colorMap[colorName.toUpperCase()] || "black";
 
   const cardStyle: React.CSSProperties = {
@@ -88,6 +84,7 @@ const CardComponent: React.FC<CardProps> = ({
     opacity: isSolutionDisplayCard ? 0.7 : 1, // Grey out solution display cards
   };
 
+  // Generic renderShapes using DB-driven SVG
   const renderShapes = () => {
     const shapesToRender: React.ReactElement[] = [];
     const currentFillType = fillName.toUpperCase() as
@@ -96,7 +93,6 @@ const CardComponent: React.FC<CardProps> = ({
       | "OPEN"
       | "DOTTED"
       | "CROSSHATCH";
-    // Pick pattern id based on fill type
     let uniquePatternId: string | undefined = undefined;
     if (fillName.toUpperCase() === "STRIPED") {
       uniquePatternId = `stripePattern-${abstractCardId}`;
@@ -107,98 +103,36 @@ const CardComponent: React.FC<CardProps> = ({
     }
 
     // --- Positioning Logic for Multiple Shapes (HORIZONTAL LAYOUT) ---
-    // Values based on viewBox="0 0 150 100" and shapes fitting in ~40x40
     const shapeDisplayWidth = 40;
-    const shapeDisplayHeight = 40; // For vertical centering
+    const shapeDisplayHeight = 40;
     const spacing = 5;
-
     const totalShapesWidth =
       count_value * shapeDisplayWidth + Math.max(0, count_value - 1) * spacing;
-    const startX = (150 - totalShapesWidth) / 2; // Center horizontally in 150-width viewBox
-    const translateY = (100 - shapeDisplayHeight) / 2; // Center vertically in 100-height viewBox
+    const startX = (150 - totalShapesWidth) / 2;
+    const translateY = (100 - shapeDisplayHeight) / 2;
     // --- End Positioning Logic ---
 
+    // Patch: For circles, ensure svg_properties keys are correct and numbers, not strings
+    let safeSvgProps = svg_properties;
+    if (svg_type === "circle") {
+      safeSvgProps = {
+        cx: Number(svg_properties.cx),
+        cy: Number(svg_properties.cy),
+        r: Number(svg_properties.r),
+      };
+    }
+
     for (let i = 0; i < count_value; i++) {
-      let shapeComponent: React.ReactElement | null = null;
-      switch (shapeName.toUpperCase()) {
-        case "OVAL":
-          shapeComponent = (
-            <Oval
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "DIAMOND":
-          shapeComponent = (
-            <Diamond
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "SQUIGGLE":
-          shapeComponent = (
-            <Squiggle
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "TRIANGLE":
-          shapeComponent = (
-            <Triangle
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "HEXAGON":
-          shapeComponent = (
-            <Hexagon
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "PENTAGON":
-          shapeComponent = (
-            <Pentagon
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "CIRCLE":
-          shapeComponent = (
-            <Circle
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        case "PARALLELOGRAM":
-          shapeComponent = (
-            <Parallelogram
-              color={actualColor}
-              fillType={currentFillType}
-              patternId={uniquePatternId ?? ""}
-            />
-          );
-          break;
-        default:
-          shapeComponent = <text fontSize="10">Unknown: {shapeName}</text>;
-      }
-      if (shapeComponent) {
-        shapesToRender.push(shapeComponent);
-      }
+      shapesToRender.push(
+        <Shape
+          key={`${abstractCardId}-shape-${i}`}
+          svgType={svg_type}
+          svgProps={safeSvgProps}
+          color={actualColor}
+          fillType={currentFillType}
+          patternId={uniquePatternId ?? ""}
+        />
+      );
     }
 
     return shapesToRender.map((shapeComponentInstance, index) => {

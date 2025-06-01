@@ -60,9 +60,11 @@ export const getRandomPuzzle: RequestHandler = async (req, res, next) => {
       }
     }
 
-    // 3. Materialize AbstractCards into ClientCardData
-    const clientPuzzleCards: ClientCardData[] = abstractPuzzleCards.map(
-      (abstractCard) => materializeCard(abstractCard, defaultGameAttributes)
+    // 3. Materialize AbstractCards into ClientCardData (async)
+    const clientPuzzleCards: ClientCardData[] = await Promise.all(
+      abstractPuzzleCards.map((abstractCard) =>
+        materializeCard(abstractCard, defaultGameAttributes)
+      )
     );
 
     // 4. Find all solutions for the set of 12 abstract cards
@@ -209,8 +211,10 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
       res.status(500).json({ message: "Error processing daily puzzle cards." });
       return;
     }
-    const clientPuzzleCards: ClientCardData[] = abstractPuzzleCards.map(
-      (abstractCard) => materializeCard(abstractCard, gameAttributes)
+    const clientPuzzleCards: ClientCardData[] = await Promise.all(
+      abstractPuzzleCards.map((abstractCard) =>
+        materializeCard(abstractCard, gameAttributes)
+      )
     );
 
     // 6. Find all solutions

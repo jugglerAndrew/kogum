@@ -42,6 +42,10 @@ export interface ClientCardData {
   count_value: 1 | 2 | 3;
   /** Optionally, the ID of the abstract card this was derived from */
   abstractCardId?: string;
+  /** SVG type for generic shape rendering (e.g., 'ellipse', 'polygon', 'path') */
+  svg_type: string;
+  /** SVG properties for the shape, as stored in the DB (JSONB) */
+  svg_properties: Record<string, string | number | boolean | undefined>;
 }
 
 export type DailyMealType = "breakfast" | "lunch" | "dinner" | "dessert";

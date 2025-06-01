@@ -6,7 +6,7 @@ import {
 } from "../src/game/cardManager";
 import { AbstractCard, GameAttributeSet } from "../src/game/types";
 
-function runCardManagerTests() {
+async function runCardManagerTests() {
   console.log("🧪 Running CardManager Tests...\n");
 
   // Test generateAllAbstractCards()
@@ -55,7 +55,10 @@ function runCardManagerTests() {
     countIndex: 1,
   };
 
-  const clientCard = materializeCard(sampleAbstractCard, sampleAttributeSet);
+  const clientCard = await materializeCard(
+    sampleAbstractCard,
+    sampleAttributeSet
+  );
 
   const expectedCardName = `${sampleAttributeSet.colors[0]}_${sampleAttributeSet.fills[2]}_${sampleAttributeSet.shapes[1]}`; // RED_CIRCLES3_SQUARE
   const expectedCountValue = 2;

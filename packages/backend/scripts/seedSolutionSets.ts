@@ -52,7 +52,7 @@ function isSet(cardA: Card, cardB: Card, cardC: Card): boolean {
     cardC.meta_shape_id
   );
 
-  // This is the core "Set" rule: all four attribute checks must pass.
+  // This is the core rule: all four attribute checks must pass.
   // Your very long SQL WHERE clause in c_validate_sol essentially boils down to this,
   // ensuring that not all attributes are "all different" simultaneously (which would also be valid)
   // and not all attributes are "all same" simultaneously (which is an identity, not a set of 3 distinct cards usually).

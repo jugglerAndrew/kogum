@@ -61,7 +61,6 @@ INSERT INTO ncount(count_value, count_name, difficulty) VALUES(5,'FIVE', 400);
 INSERT INTO ncount(count_value, count_name, difficulty) VALUES(6,'SIX', 400);
 
 
--- INSERT INTO fill_group(fill_group_name) VALUES('CROSSHATCH');
 -- INSERT INTO fill_group(fill_group_name) VALUES('CARBON');
 -- INSERT INTO fill_group(fill_group_name) VALUES('HOUNDSTOOTH');
 -- INSERT INTO fill_group(fill_group_name) VALUES('BASIC');
@@ -85,17 +84,70 @@ INSERT INTO fill(fill_name, difficulty) VALUES('CROSSHATCH', 400);
 CREATE TABLE IF NOT EXISTS shape (
   shape_id SERIAL PRIMARY KEY,
   shape_name VARCHAR(50),
+  svg_type VARCHAR(50),
+  svg_properties JSONB,
   difficulty INTEGER,
   active_flag BOOLEAN DEFAULT TRUE,
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO shape(shape_name, difficulty) VALUES('OVAL', 100);
-INSERT INTO shape(shape_name, difficulty) VALUES('DIAMOND', 100);
-INSERT INTO shape(shape_name, difficulty) VALUES('TRIANGLE', 100);
-INSERT INTO shape(shape_name, difficulty) VALUES('PARALLELOGRAM', 300);
-INSERT INTO shape(shape_name, difficulty) VALUES('HEXAGON', 300);
-INSERT INTO shape(shape_name, difficulty) VALUES('CIRCLE', 300);
+-- OVAL (as an ellipse)
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty) 
+VALUES(
+  'OVAL', 
+  'ellipse', 
+  '{"cx":25,"cy":25,"rx":20,"ry":12}', 
+  100
+);
+-- DIAMOND (as a polygon)
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty)
+VALUES (
+  'DIAMOND',
+  'polygon',
+  '{"points":"25,5 45,25 25,45 5,25"}',
+  100
+);
+-- TRIANGLE (equilateral, pointing up)
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty)
+VALUES (
+  'TRIANGLE',
+  'polygon',
+  '{"points":"25,7 43,43 7,43"}',
+  100
+);
+-- PARALLELOGRAM
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty)
+VALUES (
+  'PARALLELOGRAM',
+  'polygon',
+  '{"points":"10,40 35,40 45,10 20,10"}',
+  300
+);
+-- HEXAGON
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty)
+VALUES (
+  'HEXAGON',
+  'polygon',
+  '{"points":"25,7 43,17 43,37 25,47 7,37 7,17"}',
+  300
+);
+-- CIRCLE
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty)
+VALUES (
+  'CIRCLE',
+  'circle',
+  '{"cx":25,"cy":25,"r":18}',
+  300
+);
+-- PENTAGON
+INSERT INTO shape(shape_name, svg_type, svg_properties, difficulty)
+VALUES (
+  'PENTAGON',
+  'polygon',
+  '{"points":"25,7 43,20 35,43 15,43 7,20"}',
+  400
+);
+
 
 
 CREATE TABLE IF NOT EXISTS meta_color (
