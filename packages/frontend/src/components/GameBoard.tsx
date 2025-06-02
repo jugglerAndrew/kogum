@@ -170,6 +170,12 @@ const GameBoard: React.FC<GameBoardProps> = ({
                             isSelected={false}
                             isPaused={isPaused}
                             isSolutionDisplayCard={true}
+                            svgPattern={card.svg_pattern ?? undefined}
+                            patternId={
+                              card.svg_pattern
+                                ? `solution-pattern-${card.abstractCardId}-${index}`
+                                : undefined
+                            }
                           />
                         </div>
                       ))
@@ -225,6 +231,11 @@ const GameBoard: React.FC<GameBoardProps> = ({
                 isPaused={isPaused}
                 isSolutionDisplayCard={false}
                 svgPattern={card.svg_pattern ?? undefined}
+                patternId={
+                  card.svg_pattern
+                    ? `pattern-${card.abstractCardId}`
+                    : undefined
+                }
               />
             </div>
           ))}

@@ -7,7 +7,7 @@ type SvgEntityProps = {
   >;
   fillType: string;
   color: string;
-  patternId?: string; // Required for STRIPED, DOTTED, CROSSHATCH
+  patternId?: string; // Required for fills with an actual SVG pattern
 };
 
 const getFillValue = (
