@@ -25,13 +25,13 @@ Shape = 6
 
 CARD AND ENTITY REFACTOR
 
-- Use new card everywhere, plus new data query
+- Setup new random page
 
 COMPONENT REFACTOR
 
 - Nav
 - Content container
-- Game board
+- Game board and CSS
 
 EMAIL VERIFICATION
 
