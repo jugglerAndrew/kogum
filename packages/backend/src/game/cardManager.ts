@@ -7,8 +7,6 @@ import {
   AttributeIndex,
 } from "./types";
 
-import { getShapeSvgData } from "./shapeSvgData";
-
 let allAbstractCardsCache: AbstractCard[] | null = null;
 let abstractCardMapCache: Map<string, AbstractCard> | null = null;
 /**
@@ -69,11 +67,13 @@ export function getAbstractCardById(id: string): AbstractCard | undefined {
  *
  * @param abstractCard The abstract card definition with attribute indices.
  * @param attributeSet The set of specific attribute names (colors, shapes, fills) for the current game context.
+ * @param svgEntityData (optional) The centralized SVG entity data cache for shape SVG info.
  * @returns Promise<ClientCardData> containing the human-readable card_name and its count_value.
  */
 export async function materializeCard(
   abstractCard: AbstractCard,
-  attributeSet: GameAttributeSet
+  attributeSet: GameAttributeSet,
+  svgEntityData?: import("../db/svgEntity").SvgEntityData
 ): Promise<ClientCardData> {
   const color = attributeSet.colors[abstractCard.colorIndex];
   const shape = attributeSet.shapes[abstractCard.shapeIndex];
@@ -83,9 +83,26 @@ export async function materializeCard(
   const card_name = `${color}_${fill}_${shape}`;
   const count_value = (abstractCard.countIndex + 1) as 1 | 2 | 3; // countIndex (0,1,2) maps to count (1,2,3)
 
-  // --- DB-driven SVG shape system ---
-  // getShapeSvgData returns { svg_type, svg_properties } for the given shape name
-  const { svg_type, svg_properties } = await getShapeSvgData(shape);
+  // Use svgEntityData for shape SVG info if provided
+  let svg_type: string = "ellipse";
+  let svg_properties: Record<string, string | number | boolean | undefined> = {
+    cx: 25,
+    cy: 25,
+    rx: 20,
+    ry: 12,
+  };
+  let svg_pattern: any | null = null;
+  if (svgEntityData) {
+    const shapeData = svgEntityData.shapes[shape.toUpperCase()];
+    if (shapeData) {
+      svg_type = shapeData.svg_type;
+      svg_properties = shapeData.svg_properties;
+    }
+    const fillData = svgEntityData.fills[fill.toUpperCase()];
+    if (fillData && fillData.svg_pattern) {
+      svg_pattern = fillData.svg_pattern;
+    }
+  }
 
   return {
     card_name,
@@ -93,5 +110,6 @@ export async function materializeCard(
     abstractCardId: abstractCard.id, // Include the abstract ID for potential reference
     svg_type,
     svg_properties,
+    svg_pattern,
   };
 }

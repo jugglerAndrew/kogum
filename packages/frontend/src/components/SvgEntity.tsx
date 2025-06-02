@@ -21,7 +21,7 @@ const getFillValue = (
     case "OPEN":
       return "none";
     default:
-      return patternId ? `url(#${patternId})` : color;
+      return patternId ? `url(#${patternId})` : "YELLOW";
   }
 };
 

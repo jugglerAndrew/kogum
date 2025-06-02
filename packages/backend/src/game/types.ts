@@ -46,6 +46,8 @@ export interface ClientCardData {
   svg_type: string;
   /** SVG properties for the shape, as stored in the DB (JSONB) */
   svg_properties: Record<string, string | number | boolean | undefined>;
+  /** SVG pattern for the fill, if applicable */
+  svg_pattern?: any | null;
 }
 
 export type DailyMealType = "breakfast" | "lunch" | "dinner" | "dessert";

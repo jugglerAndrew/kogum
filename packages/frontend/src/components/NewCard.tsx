@@ -5,11 +5,11 @@ import type { SvgPattern } from "../types";
 
 // Props for NewCard
 interface NewCardProps {
-  svgType: "polygon" | "ellipse" | "circle" | "path";
+  svgType: string;
   svgProps: React.SVGProps<
     SVGPolygonElement | SVGEllipseElement | SVGCircleElement | SVGPathElement
-  > & { svgPattern?: SvgPattern };
-  fillType: "SOLID" | "STRIPED" | "DOTTED" | "CROSSHATCH" | "OPEN";
+  > & { "data-abstract-card-id"?: string };
+  fillType: string;
   color: string;
   patternId?: string;
   count: number;
@@ -17,20 +17,23 @@ interface NewCardProps {
   isSelected?: boolean;
   isPaused?: boolean;
   isSolutionDisplayCard?: boolean;
+  svgPattern?: SvgPattern;
 }
 
-const NewCard: React.FC<NewCardProps> = ({
-  svgType,
-  svgProps,
-  fillType,
-  color,
-  patternId,
-  count,
-  applyMargins = true,
-  isSelected = false,
-  isPaused = false,
-  isSolutionDisplayCard = false,
-}) => {
+const NewCard: React.FC<NewCardProps> = (props) => {
+  const {
+    svgType,
+    svgProps,
+    fillType,
+    color,
+    patternId,
+    count,
+    applyMargins = true,
+    isSelected = false,
+    isPaused = false,
+    isSolutionDisplayCard = false,
+    svgPattern,
+  } = props;
   const [isHovered, setIsHovered] = useState(false);
 
   // Card styling (adapted from Card.tsx)
@@ -89,8 +92,8 @@ const NewCard: React.FC<NewCardProps> = ({
     justifyContent: "center",
   };
 
-  // Try to get svgPattern from fillType if present in props (for DB-driven patterns)
-  const svgPattern = svgProps.svgPattern;
+  // Use svgPattern prop directly; svgPattern is no longer part of svgProps
+  const effectiveSvgPattern = svgPattern;
 
   const maxPerRow = 3;
   const rows: number[][] = [];
@@ -115,6 +118,7 @@ const NewCard: React.FC<NewCardProps> = ({
   return (
     <div
       style={cardStyle}
+      id={`card-${svgProps["data-abstract-card-id"] ?? ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -128,7 +132,7 @@ const NewCard: React.FC<NewCardProps> = ({
                 fillType={fillType}
                 color={color}
                 patternId={patternId}
-                svgPattern={svgPattern}
+                svgPattern={effectiveSvgPattern}
               />
             </div>
           ))}

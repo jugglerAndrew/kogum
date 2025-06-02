@@ -39,6 +39,9 @@ export interface ClientCardData {
   card_name: string;
   count_value: 1 | 2 | 3;
   abstractCardId: string;
+  svg_type: string;
+  svg_properties: Record<string, string | number | boolean | undefined>;
+  svg_pattern?: SvgPattern | null;
 }
 
 export interface PuzzleData {

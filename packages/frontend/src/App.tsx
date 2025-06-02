@@ -4,7 +4,8 @@ import Layout from "./components/Layout"; // Assuming Layout.tsx is in src/compo
 import LoginPage from "./pages/LoginPage";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import GamePage from "./pages/GamePage";
-import TodayPage from "./pages/TodayPage";
+// import TodayPage from "./pages/TodayPage";
+import DailyPage from "./pages/DailyPage";
 import ScoresPage from "./pages/ScoresPage";
 import WelcomePage from "./pages/WelcomePage";
 import TutorialPage from "./pages/TutorialPage";
@@ -143,7 +144,7 @@ const App: React.FC = () => {
       case "random":
         return <GamePage key="random" pageTitle="randøm" />;
       case "today":
-        return <TodayPage />;
+        return <DailyPage />;
       case "scores":
         return <ScoresPage />;
       case "login":

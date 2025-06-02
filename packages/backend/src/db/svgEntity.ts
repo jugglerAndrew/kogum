@@ -4,8 +4,10 @@
 import { Pool } from "pg";
 
 export interface ShapeSvgData {
+  shape_name: string;
   svg_type: string;
   svg_properties: Record<string, string | number | boolean | undefined>;
+  difficulty: number;
 }
 
 export interface FillData {
@@ -35,13 +37,15 @@ let svgEntityDataCache: SvgEntityData | null = null;
 export async function loadSvgEntityDataFromDb(): Promise<void> {
   // Load shapes
   const shapeRes = await pool.query(
-    "SELECT shape_name, svg_type, svg_properties FROM shape WHERE active_flag = TRUE"
+    "SELECT shape_name, svg_type, svg_properties, difficulty FROM shape WHERE active_flag = TRUE"
   );
   const shapes: Record<string, ShapeSvgData> = {};
   for (const row of shapeRes.rows) {
     shapes[row.shape_name.toUpperCase()] = {
+      shape_name: row.shape_name,
       svg_type: row.svg_type,
       svg_properties: row.svg_properties,
+      difficulty: row.difficulty,
     };
   }
 

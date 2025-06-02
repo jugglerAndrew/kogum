@@ -2,6 +2,8 @@
 
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import db from "../db";
+import { getSvgEntityData } from "../db/svgEntity";
+import { getRandomPuzzleCardIds, getDailyPuzzleCardIds } from "../db/puzzle";
 import {
   GameAttributeSet,
   ClientCardData,
@@ -11,82 +13,36 @@ import {
 import { getAbstractCardById, materializeCard } from "../game/cardManager";
 import { findAllSets } from "../game/gameLogic";
 
-// Define a default attribute set for random puzzles for now
-// Later, this could be fetched from the DB or be more dynamic
-const defaultGameAttributes: GameAttributeSet = {
-  colors: ["RED", "GREEN", "BLUE"], // Example values
-  shapes: ["OVAL", "TRIANGLE", "DIAMOND"], // Example values
-  fills: ["SOLID", "STRIPED", "OPEN"], // Example values
-};
-
 export const getRandomPuzzle: RequestHandler = async (req, res, next) => {
-  try {
-    // 1. Fetch a random puzzle (card_ids) from the database
-    const puzzleResult = await db.query(
-      "SELECT puzzle_id, card_ids FROM puzzles ORDER BY RANDOM() LIMIT 1"
-    );
-
-    if (puzzleResult.rows.length === 0) {
-      res
-        .status(404)
-        .json({ message: "No puzzles available in the database." });
-      return;
-    }
-
-    const dbPuzzle = puzzleResult.rows[0];
-    const puzzleId: number = dbPuzzle.puzzle_id;
-    const abstractCardIds: string[] = dbPuzzle.card_ids;
-
-    if (!abstractCardIds || abstractCardIds.length !== 12) {
-      console.error("Invalid puzzle data fetched from DB:", dbPuzzle);
-      res.status(500).json({ message: "Invalid puzzle data retrieved." });
-      return;
-    }
-
-    // 2. Convert abstract card IDs to AbstractCard objects
-    const abstractPuzzleCards: AbstractCard[] = [];
-    for (const id of abstractCardIds) {
-      const card = getAbstractCardById(id);
-      if (card) {
-        abstractPuzzleCards.push(card);
-      } else {
-        console.error(
-          `Could not find abstract card for ID: ${id} in puzzle_id: ${puzzleId}`
-        );
-        res
-          .status(500)
-          .json({ message: `Invalid card ID ${id} found in puzzle.` });
-        return;
+  const puzzleData = await getRandomPuzzleCardIds();
+  await servePuzzle({
+    puzzleData,
+    buildGameAttributes: (svgEntityData) => {
+      const availableColors = Object.values(svgEntityData.colors).map(
+        (c) => (c as { color_name: string }).color_name
+      );
+      const availableShapes = Object.values(svgEntityData.shapes).map(
+        (s) => (s as { shape_name: string }).shape_name
+      );
+      const availableFills = Object.values(svgEntityData.fills).map(
+        (f) => (f as { fill_name: string }).fill_name
+      );
+      if (
+        availableColors.length < 3 ||
+        availableShapes.length < 3 ||
+        availableFills.length < 3
+      ) {
+        throw new Error("Not enough attribute values for random puzzle.");
       }
-    }
-
-    // 3. Materialize AbstractCards into ClientCardData (async)
-    const clientPuzzleCards: ClientCardData[] = await Promise.all(
-      abstractPuzzleCards.map((abstractCard) =>
-        materializeCard(abstractCard, defaultGameAttributes)
-      )
-    );
-
-    // 4. Find all solutions for the set of 12 abstract cards
-    const solutionsRaw = findAllSets(abstractPuzzleCards);
-
-    // 5. Format solutions (e.g., array of arrays of abstract card IDs)
-    // The client will likely need the original abstract card IDs to identify selected cards.
-    const clientSolutions = solutionsRaw.map((set) =>
-      set.map((cardInSet) => cardInSet.id)
-    );
-
-    // 6. Send the response
-    res.status(200).json({
-      puzzle_id: puzzleId,
-      cards: clientPuzzleCards, // Array of 12 { card_name, count_value, abstractCardId }
-      solutions: clientSolutions, // Array of arrays of abstract card IDs
-      // Optionally, you could also send the GameAttributeSet used
-      // game_attributes: defaultGameAttributes,
-    });
-  } catch (error) {
-    next(error); // Pass error to Express error handling middleware
-  }
+      return {
+        colors: pickThreeRandom(availableColors),
+        shapes: pickThreeRandom(availableShapes),
+        fills: pickThreeRandom(availableFills),
+      };
+    },
+    res,
+    next,
+  });
 };
 
 const isValidMealType = (meal: any): meal is DailyMealType => {
@@ -106,39 +62,9 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
 
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format (server's date)
 
+  // Get difficulty for the meal type
+  let difficultyValue: number | null = null;
   try {
-    // 1. Fetch the daily puzzle assignment (puzzle_id) and its card_ids
-    const dailyPuzzleAssignmentResult = await db.query(
-      `SELECT 
-        p.puzzle_id, 
-        p.card_ids
-      FROM 
-        puzzles p
-      JOIN 
-        daily_puzzles dp ON p.puzzle_id = dp.puzzle_id
-      WHERE 
-        dp.puzzle_date = $1 AND dp.meal_type = $2;`,
-      [today, meal.toLowerCase()]
-    );
-
-    if (dailyPuzzleAssignmentResult.rows.length === 0) {
-      res
-        .status(404)
-        .json({ message: `Today's ${meal} puzzle is not available yet.` });
-      return;
-    }
-
-    const dbPuzzle = dailyPuzzleAssignmentResult.rows[0];
-    const puzzleId: number = dbPuzzle.puzzle_id;
-    const abstractCardIds: string[] = dbPuzzle.card_ids;
-
-    if (!abstractCardIds || abstractCardIds.length !== 12) {
-      console.error("Invalid daily puzzle data fetched from DB:", dbPuzzle);
-      res.status(500).json({ message: "Invalid daily puzzle data retrieved." });
-      return;
-    }
-
-    // 2. Get the difficulty for the meal type
     const difficultyResult = await db.query(
       `SELECT difficulty_value FROM difficulty WHERE meal_type = $1 LIMIT 1`,
       [meal.toLowerCase()]
@@ -149,87 +75,146 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
         .json({ message: `No difficulty found for meal type: ${meal}` });
       return;
     }
-    const difficultyValue: number = difficultyResult.rows[0].difficulty_value;
+    difficultyValue = difficultyResult.rows[0].difficulty_value;
+  } catch (error) {
+    next(error);
+    return;
+  }
 
-    // 3. Fetch all valid colors, shapes, fills, and counts for this difficulty (no LIMIT, will shuffle in JS)
-    const [colorQ, shapeQ, fillQ, countQ] = await Promise.all([
-      db.query(
-        `SELECT color_name FROM color WHERE difficulty <= $1 AND active_flag = true ORDER BY color_id ASC`,
-        [difficultyValue]
-      ),
-      db.query(
-        `SELECT shape_name FROM shape WHERE difficulty <= $1 AND active_flag = true ORDER BY shape_id ASC`,
-        [difficultyValue]
-      ),
-      db.query(
-        `SELECT fill_name FROM fill WHERE difficulty <= $1 AND active_flag = true ORDER BY fill_id ASC`,
-        [difficultyValue]
-      ),
-      db.query(
-        `SELECT count_value FROM ncount WHERE difficulty <= $1 AND active_flag = true ORDER BY count_id ASC`,
-        [difficultyValue]
-      ),
-    ]);
-
-    // Helper to shuffle and pick 3
-    function pickThreeRandom<T>(arr: T[]): [T, T, T] {
-      const shuffled = arr.slice();
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  const puzzleData = await getDailyPuzzleCardIds(
+    meal.toLowerCase() as DailyMealType,
+    today
+  );
+  await servePuzzle({
+    puzzleData,
+    buildGameAttributes: (svgEntityData) => {
+      const availableColors = Object.values(svgEntityData.colors)
+        .filter(
+          (c) => (c as { difficulty: number }).difficulty <= difficultyValue!
+        )
+        .map((c) => (c as { color_name: string }).color_name);
+      const availableShapes = Object.values(svgEntityData.shapes)
+        .filter(
+          (s) => (s as { difficulty: number }).difficulty <= difficultyValue!
+        )
+        .map((s) => (s as { shape_name: string }).shape_name);
+      const availableFills = Object.values(svgEntityData.fills)
+        .filter(
+          (f) => (f as { difficulty: number }).difficulty <= difficultyValue!
+        )
+        .map((f) => (f as { fill_name: string }).fill_name);
+      if (
+        availableColors.length < 3 ||
+        availableShapes.length < 3 ||
+        availableFills.length < 3
+      ) {
+        throw new Error("Not enough attribute values for this difficulty.");
       }
-      return [shuffled[0], shuffled[1], shuffled[2]];
-    }
+      return {
+        colors: pickThreeRandom(availableColors),
+        shapes: pickThreeRandom(availableShapes),
+        fills: pickThreeRandom(availableFills),
+      };
+    },
+    res,
+    next,
+  });
+};
+// --- Utility and helper functions ---
 
-    if (
-      colorQ.rows.length < 3 ||
-      shapeQ.rows.length < 3 ||
-      fillQ.rows.length < 3 ||
-      countQ.rows.length < 3
-    ) {
+function pickThreeRandom<T>(arr: T[]): [T, T, T] {
+  const shuffled = arr.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return [shuffled[0], shuffled[1], shuffled[2]];
+}
+
+async function servePuzzle({
+  puzzleData,
+  buildGameAttributes,
+  res,
+  next,
+}: {
+  puzzleData: { puzzle_id: number; card_ids: string[] } | null;
+  buildGameAttributes: (
+    svgEntityData: any
+  ) => Promise<GameAttributeSet> | GameAttributeSet;
+  res: Response;
+  next: NextFunction;
+}) {
+  try {
+    if (!puzzleData) {
+      res.status(404).json({ message: "No puzzle available." });
+      return;
+    }
+    const { puzzle_id: puzzleId, card_ids: abstractCardIds } = puzzleData;
+    if (!abstractCardIds || abstractCardIds.length !== 12) {
+      res.status(500).json({ message: "Invalid puzzle data retrieved." });
+      return;
+    }
+    // Get SVG entity data
+    const svgEntityData = await getSvgEntityData();
+    // Build the GameAttributeSet
+    const gameAttributes = await buildGameAttributes(svgEntityData);
+    // Deduplicate card IDs and log
+    const uniqueCardIds = Array.from(new Set(abstractCardIds));
+    console.log("[servePuzzle] puzzle_id (from puzzleData):", puzzleId);
+    if (puzzleData) {
+      console.log(
+        "[servePuzzle] full puzzleData:",
+        JSON.stringify(puzzleData, null, 2)
+      );
+    }
+    console.log("[servePuzzle] abstractCardIds:", abstractCardIds);
+    console.log("[servePuzzle] uniqueCardIds:", uniqueCardIds);
+    if (uniqueCardIds.length !== 12) {
+      console.error(
+        "[servePuzzle] Puzzle contains duplicate or missing cards:",
+        uniqueCardIds
+      );
       res
         .status(500)
-        .json({ message: `Not enough attribute values for this difficulty.` });
+        .json({ message: "Puzzle contains duplicate or missing cards." });
       return;
     }
-
-    // 4. Build the GameAttributeSet with random 3 from each
-    const gameAttributes: GameAttributeSet = {
-      colors: pickThreeRandom(colorQ.rows.map((r) => r.color_name)),
-      shapes: pickThreeRandom(shapeQ.rows.map((r) => r.shape_name)),
-      fills: pickThreeRandom(fillQ.rows.map((r) => r.fill_name)),
-    };
-
-    // 5. Convert abstract card IDs to AbstractCard objects and materialize them
-    const abstractPuzzleCards: AbstractCard[] = abstractCardIds
-      .map((id) => getAbstractCardById(id))
-      .filter(Boolean) as AbstractCard[];
-    if (abstractPuzzleCards.length !== 12) {
-      console.error(
-        `Error materializing cards for daily puzzle_id: ${puzzleId}. Expected 12, got ${abstractPuzzleCards.length}`
-      );
-      res.status(500).json({ message: "Error processing daily puzzle cards." });
-      return;
+    // Convert unique abstract card IDs to AbstractCard objects
+    const abstractPuzzleCards: AbstractCard[] = [];
+    for (const id of uniqueCardIds) {
+      const card = getAbstractCardById(id);
+      if (card) {
+        abstractPuzzleCards.push(card);
+      } else {
+        res
+          .status(500)
+          .json({ message: `Invalid card ID ${id} found in puzzle.` });
+        return;
+      }
     }
+    // Materialize AbstractCards into ClientCardData (async)
     const clientPuzzleCards: ClientCardData[] = await Promise.all(
       abstractPuzzleCards.map((abstractCard) =>
-        materializeCard(abstractCard, gameAttributes)
+        materializeCard(abstractCard, gameAttributes, svgEntityData)
       )
     );
-
-    // 6. Find all solutions
+    console.log(
+      "[servePuzzle] clientPuzzleCards:",
+      clientPuzzleCards.map((c) => c.abstractCardId)
+    );
+    // Find all solutions for the set of 12 abstract cards
     const solutionsRaw = findAllSets(abstractPuzzleCards);
+    // Format solutions (e.g., array of arrays of abstract card IDs)
     const clientSolutions = solutionsRaw.map((set) =>
       set.map((cardInSet) => cardInSet.id)
     );
-
-    // 7. Send the response
+    // Send the response
     res.status(200).json({
       puzzle_id: puzzleId,
       cards: clientPuzzleCards,
       solutions: clientSolutions,
     });
   } catch (error) {
-    next(error); // Pass error to Express error handling middleware
+    next(error);
   }
-};
+}
