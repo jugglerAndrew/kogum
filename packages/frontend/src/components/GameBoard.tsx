@@ -74,7 +74,13 @@ const GameBoard: React.FC<GameBoardProps> = ({
         >
           {message}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+          }}
+        >
           <div style={{ fontSize: "1.2em", fontFamily: "monospace" }}>
             {displayTime}
           </div>
@@ -84,9 +90,11 @@ const GameBoard: React.FC<GameBoardProps> = ({
           >
             {isPaused ? "Resume" : "Pause"}
           </button>
-          <button onClick={onResetPuzzle} disabled={cards.length === 0}>
-            {resetButtonLabel}
-          </button>
+          {resetButtonLabel && (
+            <button onClick={onResetPuzzle} disabled={cards.length === 0}>
+              {resetButtonLabel}
+            </button>
+          )}
         </div>
       </div>
 

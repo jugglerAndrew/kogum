@@ -188,9 +188,29 @@ const DailyPage: React.FC = () => {
     });
   };
 
-  const handleResetPuzzle = () => {
-    if (currentMeal) fetchDailyPuzzle(currentMeal);
-  };
+  // Add window event listener for beforeunload
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Show warning if there's an active puzzle and it's not completed
+      if (puzzle && !isGameCompleted) {
+        // Pause the game before showing the dialog
+        if (!isPaused && startTime) {
+          const currentElapsed = elapsedTime + (Date.now() - startTime);
+          setElapsedTime(currentElapsed);
+          setStartTime(null);
+          setIsPaused(true);
+        }
+        e.preventDefault();
+        // Modern browsers standardize on this pattern
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isGameCompleted, puzzle, isPaused, startTime, elapsedTime]);
 
   return (
     <GameBoard
@@ -208,8 +228,8 @@ const DailyPage: React.FC = () => {
       displayTime={displayTime}
       onCardSelect={handleCardSelect}
       onPauseResume={handlePauseResume}
-      onResetPuzzle={handleResetPuzzle}
-      resetButtonLabel="New Daily"
+      onResetPuzzle={() => {}} // Empty function since we don't want reset functionality
+      resetButtonLabel="" // Empty string to hide the reset button
     />
   );
 };
