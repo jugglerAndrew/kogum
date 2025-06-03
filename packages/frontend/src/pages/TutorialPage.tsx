@@ -1,6 +1,6 @@
 // /workspaces/kogum/packages/frontend/src/pages/TutorialPage.tsx
 import React, { useState } from "react";
-import CardComponent from "../components/Card";
+import NewCard from "../components/NewCard";
 
 // Example cards for tutorial steps (replace with real data as needed)
 const exampleCards = [
@@ -67,10 +67,13 @@ const steps = [
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
           {exampleCards.slice(0, 3).map((card) => (
-            <CardComponent
+            <NewCard
               key={card.abstractCardId}
-              cardData={card}
-              onSelect={() => {}}
+              svgType={card.card_name.split("_")[2]?.toUpperCase() || "ellipse"}
+              svgProps={{ "data-abstract-card-id": card.abstractCardId }}
+              fillType={card.card_name.split("_")[1]?.toUpperCase() || "SOLID"}
+              color={card.card_name.split("_")[0]?.toUpperCase() || "BLUE"}
+              count={card.count_value}
               isSelected={false}
             />
           ))}
@@ -90,128 +93,104 @@ const steps = [
         <div>
           <b>Color:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <CardComponent
-              cardData={{
-                card_name: "RED_SOLID_OVAL",
-                count_value: 1,
-                abstractCardId: "color1",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color1" }}
+              fillType="SOLID"
+              color="RED"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "GREEN_SOLID_OVAL",
-                count_value: 1,
-                abstractCardId: "color2",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color2" }}
+              fillType="SOLID"
+              color="GREEN"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "BLUE_SOLID_OVAL",
-                count_value: 1,
-                abstractCardId: "color3",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color3" }}
+              fillType="SOLID"
+              color="BLUE"
+              count={1}
             />
           </div>
         </div>
         <div>
           <b>Number:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <CardComponent
-              cardData={{
-                card_name: "RED_SOLID_OVAL",
-                count_value: 1,
-                abstractCardId: "num1",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "num1" }}
+              fillType="SOLID"
+              color="RED"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "RED_SOLID_OVAL",
-                count_value: 2,
-                abstractCardId: "num2",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "num2" }}
+              fillType="SOLID"
+              color="RED"
+              count={2}
             />
-            <CardComponent
-              cardData={{
-                card_name: "RED_SOLID_OVAL",
-                count_value: 3,
-                abstractCardId: "num3",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "num3" }}
+              fillType="SOLID"
+              color="RED"
+              count={3}
             />
           </div>
         </div>
         <div>
           <b>Fill:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <CardComponent
-              cardData={{
-                card_name: "GREEN_SOLID_OVAL",
-                count_value: 1,
-                abstractCardId: "fill1",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "fill1" }}
+              fillType="SOLID"
+              color="GREEN"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "GREEN_STRIPED_OVAL",
-                count_value: 1,
-                abstractCardId: "fill2",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "fill2" }}
+              fillType="STRIPED"
+              color="GREEN"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "GREEN_OPEN_OVAL",
-                count_value: 1,
-                abstractCardId: "fill3",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "fill3" }}
+              fillType="OPEN"
+              color="GREEN"
+              count={1}
             />
           </div>
         </div>
         <div>
           <b>Shape:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <CardComponent
-              cardData={{
-                card_name: "BLUE_SOLID_OVAL",
-                count_value: 1,
-                abstractCardId: "shape1",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "shape1" }}
+              fillType="SOLID"
+              color="BLUE"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "BLUE_SOLID_DIAMOND",
-                count_value: 1,
-                abstractCardId: "shape2",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="DIAMOND"
+              svgProps={{ "data-abstract-card-id": "shape2" }}
+              fillType="SOLID"
+              color="BLUE"
+              count={1}
             />
-            <CardComponent
-              cardData={{
-                card_name: "BLUE_SOLID_TRIANGLE",
-                count_value: 1,
-                abstractCardId: "shape3",
-              }}
-              onSelect={() => {}}
-              isSelected={false}
+            <NewCard
+              svgType="TRIANGLE"
+              svgProps={{ "data-abstract-card-id": "shape3" }}
+              fillType="SOLID"
+              color="BLUE"
+              count={1}
             />
           </div>
         </div>
@@ -235,10 +214,13 @@ const steps = [
         </ol>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
           {exampleCards.slice(0, 3).map((card) => (
-            <CardComponent
+            <NewCard
               key={card.abstractCardId + "set"}
-              cardData={card}
-              onSelect={() => {}}
+              svgType={card.card_name.split("_")[2]?.toUpperCase() || "ellipse"}
+              svgProps={{ "data-abstract-card-id": card.abstractCardId }}
+              fillType={card.card_name.split("_")[1]?.toUpperCase() || "SOLID"}
+              color={card.card_name.split("_")[0]?.toUpperCase() || "BLUE"}
+              count={card.count_value}
               isSelected={true}
             />
           ))}
@@ -256,32 +238,26 @@ const steps = [
       <>
         <p>Here are more valid sets. Can you spot why they are valid?</p>
         <div style={{ display: "flex", gap: 8 }}>
-          <CardComponent
-            cardData={{
-              card_name: "RED_SOLID_OVAL",
-              count_value: 2,
-              abstractCardId: "color1",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color1" }}
+            fillType="SOLID"
+            color="RED"
+            count={2}
           />
-          <CardComponent
-            cardData={{
-              card_name: "GREEN_SOLID_OVAL",
-              count_value: 2,
-              abstractCardId: "color2",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color2" }}
+            fillType="SOLID"
+            color="GREEN"
+            count={2}
           />
-          <CardComponent
-            cardData={{
-              card_name: "BLUE_SOLID_OVAL",
-              count_value: 2,
-              abstractCardId: "color3",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color3" }}
+            fillType="SOLID"
+            color="BLUE"
+            count={2}
           />
         </div>
         <p style={{ marginTop: 16 }}>
@@ -289,63 +265,51 @@ const steps = [
         </p>
         <br />
         <div style={{ display: "flex", gap: 8 }}>
-          <CardComponent
-            cardData={{
-              card_name: "RED_EMPTY_OVAL",
-              count_value: 3,
-              abstractCardId: "color1",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color1" }}
+            fillType="OPEN"
+            color="RED"
+            count={3}
           />
-          <CardComponent
-            cardData={{
-              card_name: "BLUE_EMPTY_OVAL",
-              count_value: 1,
-              abstractCardId: "color2",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color2" }}
+            fillType="OPEN"
+            color="BLUE"
+            count={1}
           />
-          <CardComponent
-            cardData={{
-              card_name: "GREEN_EMPTY_OVAL",
-              count_value: 2,
-              abstractCardId: "color3",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color3" }}
+            fillType="OPEN"
+            color="GREEN"
+            count={2}
           />
         </div>
         <p>Same: shape, fill. Different: count, color.</p>
         <br />
         <div style={{ display: "flex", gap: 8 }}>
-          <CardComponent
-            cardData={{
-              card_name: "RED_STRIPED_DIAMOND",
-              count_value: 2,
-              abstractCardId: "color1",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="DIAMOND"
+            svgProps={{ "data-abstract-card-id": "color1" }}
+            fillType="STRIPED"
+            color="RED"
+            count={2}
           />
-          <CardComponent
-            cardData={{
-              card_name: "GREEN_EMPTY_TRIANGLE",
-              count_value: 1,
-              abstractCardId: "color2",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="TRIANGLE"
+            svgProps={{ "data-abstract-card-id": "color2" }}
+            fillType="OPEN"
+            color="GREEN"
+            count={1}
           />
-          <CardComponent
-            cardData={{
-              card_name: "BLUE_SOLID_OVAL",
-              count_value: 3,
-              abstractCardId: "color3",
-            }}
-            onSelect={() => {}}
-            isSelected={false}
+          <NewCard
+            svgType="OVAL"
+            svgProps={{ "data-abstract-card-id": "color3" }}
+            fillType="SOLID"
+            color="BLUE"
+            count={3}
           />
         </div>
         <p>Different: shape, count, fill, color.</p>
