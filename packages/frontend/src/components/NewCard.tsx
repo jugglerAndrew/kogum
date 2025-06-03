@@ -122,22 +122,40 @@ const NewCard: React.FC<NewCardProps> = (props) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {rows.map((row, rowIdx) => (
-        <div key={`entity-row-${rowIdx}`} style={entitiesRowStyle}>
-          {row.map((entityIdx) => (
-            <div key={`svg-entity-${entityIdx}`} style={entityBoxStyle}>
-              <SvgEntity
-                svgType={svgType}
-                svgProps={svgProps}
-                fillType={fillType}
-                color={color}
-                patternId={patternId}
-                svgPattern={effectiveSvgPattern}
-              />
-            </div>
-          ))}
+      {isPaused ? (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "5em",
+            color: "#bbb",
+            fontFamily: "monospace",
+            letterSpacing: "0.2em",
+          }}
+        >
+          ø
         </div>
-      ))}
+      ) : (
+        rows.map((row, rowIdx) => (
+          <div key={`entity-row-${rowIdx}`} style={entitiesRowStyle}>
+            {row.map((entityIdx) => (
+              <div key={`svg-entity-${entityIdx}`} style={entityBoxStyle}>
+                <SvgEntity
+                  svgType={svgType}
+                  svgProps={svgProps}
+                  fillType={fillType}
+                  color={color}
+                  patternId={patternId}
+                  svgPattern={effectiveSvgPattern}
+                />
+              </div>
+            ))}
+          </div>
+        ))
+      )}
     </div>
   );
 };
