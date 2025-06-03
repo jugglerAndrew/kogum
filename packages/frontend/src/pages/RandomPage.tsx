@@ -13,7 +13,7 @@ const RandomPage: React.FC = () => {
   >(Array(6).fill(null));
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isGameCompleted, setIsGameCompleted] = useState<boolean>(false);
-  const [displayTime, setDisplayTime] = useState<string>("00:00");
+  const [displayTime, setDisplayTime] = useState<string>("00:00.000");
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
@@ -54,9 +54,8 @@ const RandomPage: React.FC = () => {
     if (!isPaused && startTime !== null && puzzle && !isGameCompleted) {
       timerRef.current = setInterval(() => {
         const ms = elapsedTime + (Date.now() - startTime);
-        const formattedTime = formatTime(ms);
-        setDisplayTime(formattedTime);
-      }, 1000);
+        setDisplayTime(formatTime(ms));
+      }, 43); // ~23fps for smooth ms updates
     } else if (isPaused || isGameCompleted) {
       setDisplayTime(formatTime(elapsedTime));
     }
@@ -72,7 +71,8 @@ const RandomPage: React.FC = () => {
       .toString()
       .padStart(2, "0");
     const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-    return `${minutes}:${seconds}`;
+    const milliseconds = String(ms % 1000).padStart(3, "0");
+    return `${minutes}:${seconds}.${milliseconds}`;
   };
 
   const handleCardSelect = (abstractCardId: string) => {
