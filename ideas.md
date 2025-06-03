@@ -1,3 +1,5 @@
+thøughts
+
 DAILY
 Breakfast
 Color = 6
@@ -23,10 +25,6 @@ Fill = 6
 Number = 6
 Shape = 6
 
-CARD AND ENTITY REFACTOR
-
-- Setup new random page
-
 COMPONENT REFACTOR
 
 - Nav
@@ -38,10 +36,19 @@ EMAIL VERIFICATION
 - Sendgrid signup
 - Functionality
 
-RANDOM PUZZLE
+QOL
 
-- New card and new game board
-- Shuffle attributes
+- Daily countdown until next puzzle
+- Dark mode / light mode
+- Colorblind friendly options
+
+FEATURES
+
+- Metrics 1 - Time tracking, personal best, daily rankings
+- Countdown gametype
+- Marathon gametype
+- Relay gametype
+- Tutorial game
 
 HOSTING
 
