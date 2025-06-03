@@ -3,9 +3,8 @@ import React, { useState, useEffect } from "react";
 import Layout from "./components/Layout"; // Assuming Layout.tsx is in src/components/
 import LoginPage from "./pages/LoginPage";
 import UserDashboardPage from "./pages/UserDashboardPage";
-import GamePage from "./pages/GamePage";
-// import TodayPage from "./pages/TodayPage";
 import DailyPage from "./pages/DailyPage";
+import RandomPage from "./pages/RandomPage";
 import ScoresPage from "./pages/ScoresPage";
 import WelcomePage from "./pages/WelcomePage";
 import TutorialPage from "./pages/TutorialPage";
@@ -142,7 +141,7 @@ const App: React.FC = () => {
       case "tutorial":
         return <TutorialPage />;
       case "random":
-        return <GamePage key="random" pageTitle="randøm" />;
+        return <RandomPage />;
       case "today":
         return <DailyPage />;
       case "scores":
