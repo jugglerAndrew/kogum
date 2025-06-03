@@ -37,3 +37,18 @@ export async function getDailyPuzzleCardIds(
     card_ids: dbPuzzle.card_ids,
   };
 }
+
+export async function getPuzzleById(
+  puzzleId: number
+): Promise<{ puzzle_id: number; card_ids: string[] } | null> {
+  const puzzleResult = await db.query(
+    "SELECT puzzle_id, card_ids FROM puzzles WHERE puzzle_id = $1",
+    [puzzleId]
+  );
+  if (puzzleResult.rows.length === 0) return null;
+  const dbPuzzle = puzzleResult.rows[0];
+  return {
+    puzzle_id: dbPuzzle.puzzle_id,
+    card_ids: dbPuzzle.card_ids,
+  };
+}

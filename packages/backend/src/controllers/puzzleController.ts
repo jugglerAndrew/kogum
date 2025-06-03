@@ -3,7 +3,11 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import db from "../db";
 import { getSvgEntityData } from "../db/svgEntity";
-import { getRandomPuzzleCardIds, getDailyPuzzleCardIds } from "../db/puzzle";
+import {
+  getRandomPuzzleCardIds,
+  getDailyPuzzleCardIds,
+  getPuzzleById,
+} from "../db/puzzle";
 import {
   GameAttributeSet,
   ClientCardData,
@@ -120,8 +124,23 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
     next,
   });
 };
-// --- Utility and helper functions ---
 
+export const getTutorialPuzzle: RequestHandler = async (req, res, next) => {
+  // Always fetch puzzle with id 1
+  const puzzleData = await getPuzzleById(1);
+  await servePuzzle({
+    puzzleData,
+    buildGameAttributes: () => ({
+      colors: ["RED", "BLUE", "GREEN"],
+      shapes: ["OVAL", "TRIANGLE", "DIAMOND"],
+      fills: ["SOLID", "EMPTY", "STRIPED"],
+    }),
+    res,
+    next,
+  });
+};
+
+// --- Utility and helper functions ---
 function pickThreeRandom<T>(arr: T[]): [T, T, T] {
   const shuffled = arr.slice();
   for (let i = shuffled.length - 1; i > 0; i--) {
