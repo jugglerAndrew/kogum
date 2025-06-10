@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import SvgEntity from "./SvgEntity";
 import type { SvgPattern } from "../types";
 
-// Props for NewCard
-interface NewCardProps {
+// Props for Card
+interface CardProps {
   svgType: string;
   svgProps: React.SVGProps<
     SVGPolygonElement | SVGEllipseElement | SVGCircleElement | SVGPathElement
@@ -20,7 +20,7 @@ interface NewCardProps {
   svgPattern?: SvgPattern;
 }
 
-const NewCard: React.FC<NewCardProps> = (props) => {
+const Card: React.FC<CardProps> = (props) => {
   const {
     svgType,
     svgProps,
@@ -160,4 +160,4 @@ const NewCard: React.FC<NewCardProps> = (props) => {
   );
 };
 
-export default NewCard;
+export default Card;
