@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NewCard from "../components/Card";
+import Card from "../components/Card";
 import type { SvgPattern } from "../types";
 
 type Combination = {
@@ -123,7 +123,7 @@ export default function DebugCombinationsPage() {
           }
           return (
             <div key={i} style={{ margin: 8, minWidth: 180 }}>
-              <NewCard
+              <Card
                 svgType={svgType}
                 svgProps={svgProps}
                 fillType={fillType}

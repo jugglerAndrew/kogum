@@ -1,5 +1,5 @@
 import React from "react";
-import NewCard from "./Card";
+import Card from "./Card";
 import type { ClientCardData } from "../types";
 
 interface GameBoardProps {
@@ -159,7 +159,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
                             height: "60px",
                           }}
                         >
-                          <NewCard
+                          <Card
                             svgType={card.svg_type as string}
                             svgProps={
                               card.svg_properties as Record<
@@ -222,7 +222,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
                 }
               }}
             >
-              <NewCard
+              <Card
                 svgType={card.svg_type as string}
                 svgProps={{
                   ...(card.svg_properties as Record<

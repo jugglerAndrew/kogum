@@ -1,6 +1,6 @@
 // /workspaces/kogum/packages/frontend/src/pages/TutorialPage.tsx
 import React, { useState } from "react";
-import NewCard from "../components/Card";
+import Card from "../components/Card";
 
 // Example cards for tutorial steps (replace with real data as needed)
 const exampleCards = [
@@ -67,7 +67,7 @@ const steps = [
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
           {exampleCards.slice(0, 3).map((card) => (
-            <NewCard
+            <Card
               key={card.abstractCardId}
               svgType={card.card_name.split("_")[2]?.toUpperCase() || "ellipse"}
               svgProps={{ "data-abstract-card-id": card.abstractCardId }}
@@ -93,21 +93,21 @@ const steps = [
         <div>
           <b>Color:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "color1" }}
               fillType="SOLID"
               color="RED"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "color2" }}
               fillType="SOLID"
               color="GREEN"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "color3" }}
               fillType="SOLID"
@@ -119,21 +119,21 @@ const steps = [
         <div>
           <b>Number:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "num1" }}
               fillType="SOLID"
               color="RED"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "num2" }}
               fillType="SOLID"
               color="RED"
               count={2}
             />
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "num3" }}
               fillType="SOLID"
@@ -145,21 +145,21 @@ const steps = [
         <div>
           <b>Fill:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "fill1" }}
               fillType="SOLID"
               color="GREEN"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "fill2" }}
               fillType="STRIPED"
               color="GREEN"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "fill3" }}
               fillType="OPEN"
@@ -171,21 +171,21 @@ const steps = [
         <div>
           <b>Shape:</b>
           <div style={{ display: "flex", gap: 8 }}>
-            <NewCard
+            <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "shape1" }}
               fillType="SOLID"
               color="BLUE"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="DIAMOND"
               svgProps={{ "data-abstract-card-id": "shape2" }}
               fillType="SOLID"
               color="BLUE"
               count={1}
             />
-            <NewCard
+            <Card
               svgType="TRIANGLE"
               svgProps={{ "data-abstract-card-id": "shape3" }}
               fillType="SOLID"
@@ -214,7 +214,7 @@ const steps = [
         </ol>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
           {exampleCards.slice(0, 3).map((card) => (
-            <NewCard
+            <Card
               key={card.abstractCardId + "set"}
               svgType={card.card_name.split("_")[2]?.toUpperCase() || "ellipse"}
               svgProps={{ "data-abstract-card-id": card.abstractCardId }}
@@ -238,21 +238,21 @@ const steps = [
       <>
         <p>Here are more valid sets. Can you spot why they are valid?</p>
         <div style={{ display: "flex", gap: 8 }}>
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color1" }}
             fillType="SOLID"
             color="RED"
             count={2}
           />
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color2" }}
             fillType="SOLID"
             color="GREEN"
             count={2}
           />
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color3" }}
             fillType="SOLID"
@@ -265,21 +265,21 @@ const steps = [
         </p>
         <br />
         <div style={{ display: "flex", gap: 8 }}>
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color1" }}
             fillType="OPEN"
             color="RED"
             count={3}
           />
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color2" }}
             fillType="OPEN"
             color="BLUE"
             count={1}
           />
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color3" }}
             fillType="OPEN"
@@ -290,21 +290,21 @@ const steps = [
         <p>Same: shape, fill. Different: count, color.</p>
         <br />
         <div style={{ display: "flex", gap: 8 }}>
-          <NewCard
+          <Card
             svgType="DIAMOND"
             svgProps={{ "data-abstract-card-id": "color1" }}
             fillType="STRIPED"
             color="RED"
             count={2}
           />
-          <NewCard
+          <Card
             svgType="TRIANGLE"
             svgProps={{ "data-abstract-card-id": "color2" }}
             fillType="OPEN"
             color="GREEN"
             count={1}
           />
-          <NewCard
+          <Card
             svgType="OVAL"
             svgProps={{ "data-abstract-card-id": "color3" }}
             fillType="SOLID"
