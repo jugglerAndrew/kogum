@@ -1,109 +1,358 @@
 // /workspaces/kogum/packages/frontend/src/pages/TutorialPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../components/Card";
+import type { ClientCardData, PuzzleData } from "../types";
 
-// Example cards for tutorial steps (replace with real data as needed)
-const exampleCards = [
-  {
-    card_name: "BLUE_SOLID_TRIANGLE",
-    count_value: 1 as const,
-    abstractCardId: "c1",
-  },
-  {
-    card_name: "BLUE_STRIPED_DIAMOND",
-    count_value: 1 as const,
-    abstractCardId: "c2",
-  },
-  {
-    card_name: "BLUE_OPEN_OVAL",
-    count_value: 1 as const,
-    abstractCardId: "c3",
-  },
-  {
-    card_name: "GREEN_SOLID_TRIANGLE",
-    count_value: 1 as const,
-    abstractCardId: "c4",
-  },
-  {
-    card_name: "RED_STRIPED_DIAMOND",
-    count_value: 1 as const,
-    abstractCardId: "c5",
-  },
-  {
-    card_name: "BLUE_OPEN_OVAL",
-    count_value: 1 as const,
-    abstractCardId: "c6",
-  },
-  {
-    card_name: "BLUE_OPEN_OVAL",
-    count_value: 3 as const,
-    abstractCardId: "c7",
-  },
-  {
-    card_name: "BLUE_OPEN_OVAL",
-    count_value: 2 as const,
-    abstractCardId: "c8",
-  },
-  {
-    card_name: "RED_STRIPED_DIAMOND",
-    count_value: 2 as const,
-    abstractCardId: "c9",
-  },
-  {
-    card_name: "GREEN_SOLID_TRIANGLE",
-    count_value: 2 as const,
-    abstractCardId: "c10",
-  },
-];
+const TUTORIAL_API_URL = "/api/puzzles/tutorial";
 
-const steps = [
-  {
-    title: "What is Køgum?",
-    content: (
-      <>
-        <p>
-          Køgum is a puzzle game composed of twelve different cards. The goal is
-          to find sets of three cards that form a valid pattern.
-        </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-          {exampleCards.slice(0, 3).map((card) => (
-            <Card
-              key={card.abstractCardId}
-              svgType={card.card_name.split("_")[2]?.toUpperCase() || "ellipse"}
-              svgProps={{ "data-abstract-card-id": card.abstractCardId }}
-              fillType={card.card_name.split("_")[1]?.toUpperCase() || "SOLID"}
-              color={card.card_name.split("_")[0]?.toUpperCase() || "BLUE"}
-              count={card.count_value}
-              isSelected={false}
-            />
-          ))}
-        </div>
-      </>
-    ),
-  },
-  {
-    title: "Card Attributes",
-    content: (
-      <>
-        <p>
-          Each card has four attributes: <b>color</b>, <b>number</b>,{" "}
-          <b>fill</b>, and <b>shape</b>.
-        </p>
+const TutorialPage: React.FC = () => {
+  const [step, setStep] = useState(0);
+  const [tutorialCards, setTutorialCards] = useState<ClientCardData[] | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const totalSteps = 4;
 
-        <div>
+  useEffect(() => {
+    const fetchTutorial = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(TUTORIAL_API_URL);
+        if (!res.ok) throw new Error("Failed to fetch tutorial cards");
+        const data: PuzzleData = await res.json();
+        setTutorialCards(data.cards);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Unknown error");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTutorial();
+  }, []);
+
+  const steps = [
+    {
+      title: "What is Køgum?",
+      content: (
+        <>
+          <p>
+            Køgum is a puzzle game composed of twelve different cards. The goal
+            is to find sets of three cards that form a valid pattern.
+          </p>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+            {tutorialCards &&
+              [
+                // Replace these IDs with the ones you want to show
+                "c0-s0-f1-n0",
+                "c2-s2-f1-n2",
+                "c1-s1-f0-n1",
+                "c0-s2-f1-n1",
+                "c1-s2-f1-n0",
+              ].map((id) => {
+                const card = tutorialCards.find((c) => c.abstractCardId === id);
+                if (!card) return null;
+                return (
+                  <Card
+                    key={card.abstractCardId}
+                    svgType={card.svg_type as string}
+                    svgProps={{
+                      ...(card.svg_properties as Record<
+                        string,
+                        string | number | boolean | undefined
+                      >),
+                      "data-abstract-card-id": card.abstractCardId,
+                    }}
+                    fillType={
+                      card.card_name.split("_")[1]?.toUpperCase() as string
+                    }
+                    color={card.card_name.split("_")[0]?.toUpperCase()}
+                    count={card.count_value}
+                    applyMargins={true}
+                    isSelected={false}
+                    isPaused={false}
+                    isSolutionDisplayCard={false}
+                    svgPattern={card.svg_pattern ?? undefined}
+                    patternId={
+                      card.svg_pattern
+                        ? `pattern-${card.abstractCardId}`
+                        : undefined
+                    }
+                  />
+                );
+              })}
+          </div>
+        </>
+      ),
+    },
+    {
+      title: "Card Attributes",
+      content: (
+        <>
+          <p>
+            Each card has four attributes: <b>color</b>, <b>number</b>,{" "}
+            <b>fill</b>, and <b>shape</b>.
+          </p>
+
           <b>Color:</b>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+            <Card
+              key="1"
+              svgType="polygon"
+              svgProps={{
+                ...(card.svg_properties as Record<
+                  string,
+                  string | number | boolean | undefined
+                >),
+                "data-abstract-card-id": card.abstractCardId,
+              }}
+              fillType={card.card_name.split("_")[1]?.toUpperCase() as string}
+              color={card.card_name.split("_")[0]?.toUpperCase()}
+              count={card.count_value}
+              applyMargins={true}
+              isSelected={false}
+              isPaused={false}
+              isSolutionDisplayCard={false}
+              svgPattern={card.svg_pattern ?? undefined}
+              patternId={
+                card.svg_pattern ? `pattern-${card.abstractCardId}` : undefined
+              }
+            />
+          </div>
+
+          <b>Number:</b>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+            {tutorialCards &&
+              ["c0-s0-f1-n0", "c1-s1-f0-n1", "c2-s2-f2-n2"].map((id) => {
+                const card = tutorialCards.find((c) => c.abstractCardId === id);
+                if (!card) return null;
+                return (
+                  <Card
+                    key={card.abstractCardId}
+                    svgType={card.svg_type as string}
+                    svgProps={{
+                      ...(card.svg_properties as Record<
+                        string,
+                        string | number | boolean | undefined
+                      >),
+                      "data-abstract-card-id": card.abstractCardId,
+                    }}
+                    fillType={
+                      card.card_name.split("_")[1]?.toUpperCase() as string
+                    }
+                    color={card.card_name.split("_")[0]?.toUpperCase()}
+                    count={card.count_value}
+                    applyMargins={true}
+                    isSelected={false}
+                    isPaused={false}
+                    isSolutionDisplayCard={false}
+                    svgPattern={card.svg_pattern ?? undefined}
+                    patternId={
+                      card.svg_pattern
+                        ? `pattern-${card.abstractCardId}`
+                        : undefined
+                    }
+                  />
+                );
+              })}
+          </div>
+
+          <b>Fill:</b>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+            {tutorialCards &&
+              ["c0-s0-f1-n0", "c2-s2-f1-n2", "c1-s1-f1-n2"].map((id) => {
+                const card = tutorialCards.find((c) => c.abstractCardId === id);
+                if (!card) return null;
+                return (
+                  <Card
+                    key={card.abstractCardId}
+                    svgType={card.svg_type as string}
+                    svgProps={{
+                      ...(card.svg_properties as Record<
+                        string,
+                        string | number | boolean | undefined
+                      >),
+                      "data-abstract-card-id": card.abstractCardId,
+                    }}
+                    fillType={
+                      card.card_name.split("_")[1]?.toUpperCase() as string
+                    }
+                    color={card.card_name.split("_")[0]?.toUpperCase()}
+                    count={card.count_value}
+                    applyMargins={true}
+                    isSelected={false}
+                    isPaused={false}
+                    isSolutionDisplayCard={false}
+                    svgPattern={card.svg_pattern ?? undefined}
+                    patternId={
+                      card.svg_pattern
+                        ? `pattern-${card.abstractCardId}`
+                        : undefined
+                    }
+                  />
+                );
+              })}
+          </div>
+
+          <b>Shape:</b>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+            {tutorialCards &&
+              ["c0-s0-f1-n0", "c2-s2-f1-n2", "c1-s1-f1-n2"].map((id) => {
+                const card = tutorialCards.find((c) => c.abstractCardId === id);
+                if (!card) return null;
+                return (
+                  <Card
+                    key={card.abstractCardId}
+                    svgType={card.svg_type as string}
+                    svgProps={{
+                      ...(card.svg_properties as Record<
+                        string,
+                        string | number | boolean | undefined
+                      >),
+                      "data-abstract-card-id": card.abstractCardId,
+                    }}
+                    fillType={
+                      card.card_name.split("_")[1]?.toUpperCase() as string
+                    }
+                    color={card.card_name.split("_")[0]?.toUpperCase()}
+                    count={card.count_value}
+                    applyMargins={true}
+                    isSelected={false}
+                    isPaused={false}
+                    isSolutionDisplayCard={false}
+                    svgPattern={card.svg_pattern ?? undefined}
+                    patternId={
+                      card.svg_pattern
+                        ? `pattern-${card.abstractCardId}`
+                        : undefined
+                    }
+                  />
+                );
+              })}
+          </div>
+        </>
+      ),
+    },
+    {
+      title: "How to Find a Set",
+      content: (
+        <>
+          <p>
+            The goal is to find a set of three cards where, for each attribute,
+            the cards are either all the same or all different.
+          </p>
+          <ol>
+            <li>All cards must be unique.</li>
+            <li>
+              For any attribute (color, number, fill, shape), the three cards
+              must either all share the same value or all have different values.
+            </li>
+          </ol>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+            {tutorialCards &&
+              tutorialCards.slice(0, 3).map((card) => (
+                <Card
+                  key={card.abstractCardId + "set"}
+                  svgType={
+                    card.svg_type ||
+                    card.card_name.split("_")[2]?.toUpperCase() ||
+                    "ellipse"
+                  }
+                  svgProps={{
+                    ...(card.svg_properties || {}),
+                    "data-abstract-card-id": card.abstractCardId,
+                  }}
+                  fillType={
+                    card.card_name.split("_")[1]?.toUpperCase() || "SOLID"
+                  }
+                  color={card.card_name.split("_")[0]?.toUpperCase() || "BLUE"}
+                  count={card.count_value}
+                  isSelected={true}
+                  svgPattern={card.svg_pattern || undefined}
+                />
+              ))}
+          </div>
+          <p style={{ marginTop: 16 }}>
+            In this example, all three cards are blue, so color is the same. The
+            shapes and fills are all different, and the number is the same.
+          </p>
+        </>
+      ),
+    },
+    {
+      title: "More Examples",
+      content: (
+        <>
+          <p>Here are more valid sets. Can you spot why they are valid?</p>
           <div style={{ display: "flex", gap: 8 }}>
             <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "color1" }}
               fillType="SOLID"
               color="RED"
-              count={1}
+              count={2}
             />
             <Card
               svgType="OVAL"
               svgProps={{ "data-abstract-card-id": "color2" }}
               fillType="SOLID"
+              color="GREEN"
+              count={2}
+            />
+            <Card
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color3" }}
+              fillType="SOLID"
+              color="BLUE"
+              count={2}
+            />
+          </div>
+          <p style={{ marginTop: 16 }}>
+            Same: count, fill, shape. Different: color.
+          </p>
+          <br />
+          <div style={{ display: "flex", gap: 8 }}>
+            <Card
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color1" }}
+              fillType="OPEN"
+              color="RED"
+              count={3}
+            />
+            <Card
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color2" }}
+              fillType="OPEN"
+              color="BLUE"
+              count={1}
+            />
+            <Card
+              svgType="OVAL"
+              svgProps={{ "data-abstract-card-id": "color3" }}
+              fillType="OPEN"
+              color="GREEN"
+              count={2}
+            />
+          </div>
+          <p>Same: shape, fill. Different: count, color.</p>
+          <br />
+          <div style={{ display: "flex", gap: 8 }}>
+            <Card
+              svgType="DIAMOND"
+              svgProps={{ "data-abstract-card-id": "color1" }}
+              fillType="STRIPED"
+              color="RED"
+              count={2}
+            />
+            <Card
+              svgType="TRIANGLE"
+              svgProps={{ "data-abstract-card-id": "color2" }}
+              fillType="OPEN"
               color="GREEN"
               count={1}
             />
@@ -112,216 +361,29 @@ const steps = [
               svgProps={{ "data-abstract-card-id": "color3" }}
               fillType="SOLID"
               color="BLUE"
-              count={1}
-            />
-          </div>
-        </div>
-        <div>
-          <b>Number:</b>
-          <div style={{ display: "flex", gap: 8 }}>
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "num1" }}
-              fillType="SOLID"
-              color="RED"
-              count={1}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "num2" }}
-              fillType="SOLID"
-              color="RED"
-              count={2}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "num3" }}
-              fillType="SOLID"
-              color="RED"
               count={3}
             />
           </div>
-        </div>
-        <div>
-          <b>Fill:</b>
-          <div style={{ display: "flex", gap: 8 }}>
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "fill1" }}
-              fillType="SOLID"
-              color="GREEN"
-              count={1}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "fill2" }}
-              fillType="STRIPED"
-              color="GREEN"
-              count={1}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "fill3" }}
-              fillType="OPEN"
-              color="GREEN"
-              count={1}
-            />
-          </div>
-        </div>
-        <div>
-          <b>Shape:</b>
-          <div style={{ display: "flex", gap: 8 }}>
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "shape1" }}
-              fillType="SOLID"
-              color="BLUE"
-              count={1}
-            />
-            <Card
-              svgType="DIAMOND"
-              svgProps={{ "data-abstract-card-id": "shape2" }}
-              fillType="SOLID"
-              color="BLUE"
-              count={1}
-            />
-            <Card
-              svgType="TRIANGLE"
-              svgProps={{ "data-abstract-card-id": "shape3" }}
-              fillType="SOLID"
-              color="BLUE"
-              count={1}
-            />
-          </div>
-        </div>
-      </>
-    ),
-  },
-  {
-    title: "How to Find a Set",
-    content: (
-      <>
-        <p>
-          The goal is to find a set of three cards where, for each attribute,
-          the cards are either all the same or all different.
-        </p>
-        <ol>
-          <li>All cards must be unique.</li>
-          <li>
-            For any attribute (color, number, fill, shape), the three cards must
-            either all share the same value or all have different values.
-          </li>
-        </ol>
-        <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-          {exampleCards.slice(0, 3).map((card) => (
-            <Card
-              key={card.abstractCardId + "set"}
-              svgType={card.card_name.split("_")[2]?.toUpperCase() || "ellipse"}
-              svgProps={{ "data-abstract-card-id": card.abstractCardId }}
-              fillType={card.card_name.split("_")[1]?.toUpperCase() || "SOLID"}
-              color={card.card_name.split("_")[0]?.toUpperCase() || "BLUE"}
-              count={card.count_value}
-              isSelected={true}
-            />
-          ))}
-        </div>
-        <p style={{ marginTop: 16 }}>
-          In this example, all three cards are blue, so color is the same. The
-          shapes and fills are all different, and the number is the same.
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "More Examples",
-    content: (
-      <>
-        <p>Here are more valid sets. Can you spot why they are valid?</p>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color1" }}
-            fillType="SOLID"
-            color="RED"
-            count={2}
-          />
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color2" }}
-            fillType="SOLID"
-            color="GREEN"
-            count={2}
-          />
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color3" }}
-            fillType="SOLID"
-            color="BLUE"
-            count={2}
-          />
-        </div>
-        <p style={{ marginTop: 16 }}>
-          Same: count, fill, shape. Different: color.
-        </p>
-        <br />
-        <div style={{ display: "flex", gap: 8 }}>
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color1" }}
-            fillType="OPEN"
-            color="RED"
-            count={3}
-          />
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color2" }}
-            fillType="OPEN"
-            color="BLUE"
-            count={1}
-          />
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color3" }}
-            fillType="OPEN"
-            color="GREEN"
-            count={2}
-          />
-        </div>
-        <p>Same: shape, fill. Different: count, color.</p>
-        <br />
-        <div style={{ display: "flex", gap: 8 }}>
-          <Card
-            svgType="DIAMOND"
-            svgProps={{ "data-abstract-card-id": "color1" }}
-            fillType="STRIPED"
-            color="RED"
-            count={2}
-          />
-          <Card
-            svgType="TRIANGLE"
-            svgProps={{ "data-abstract-card-id": "color2" }}
-            fillType="OPEN"
-            color="GREEN"
-            count={1}
-          />
-          <Card
-            svgType="OVAL"
-            svgProps={{ "data-abstract-card-id": "color3" }}
-            fillType="SOLID"
-            color="BLUE"
-            count={3}
-          />
-        </div>
-        <p>Different: shape, count, fill, color.</p>
-      </>
-    ),
-  },
-];
+          <p>Different: shape, count, fill, color.</p>
+        </>
+      ),
+    },
+  ];
 
-const TutorialPage: React.FC = () => {
-  const [step, setStep] = useState(0);
-  const totalSteps = steps.length;
-
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", marginTop: 40 }}>
+        Loading tutorial cards...
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div style={{ color: "red", textAlign: "center", marginTop: 40 }}>
+        Error: {error}
+      </div>
+    );
+  }
   return (
     <div>
       <h1 style={{ textAlign: "center", fontSize: "2.2em", marginBottom: 8 }}>
