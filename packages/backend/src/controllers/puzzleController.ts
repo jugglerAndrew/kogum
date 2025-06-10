@@ -133,7 +133,7 @@ export const getTutorialPuzzle: RequestHandler = async (req, res, next) => {
     buildGameAttributes: () => ({
       colors: ["RED", "BLUE", "GREEN"],
       shapes: ["OVAL", "TRIANGLE", "DIAMOND"],
-      fills: ["SOLID", "EMPTY", "STRIPED"],
+      fills: ["SOLID", "OPEN", "STRIPED"],
     }),
     res,
     next,
