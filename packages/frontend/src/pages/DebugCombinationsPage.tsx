@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NewCard from "../components/NewCard";
+import NewCard from "../components/Card";
 import type { SvgPattern } from "../types";
 
 type Combination = {

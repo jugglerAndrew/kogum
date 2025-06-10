@@ -1,5 +1,5 @@
 import React from "react";
-import NewCard from "./NewCard";
+import NewCard from "./Card";
 import type { ClientCardData } from "../types";
 
 interface GameBoardProps {

@@ -1,30 +1,5 @@
 thøughts
 
-DAILY
-Breakfast
-Color = 6
-Fill = 3
-Number = 3
-Shape = 3
-
-Lunch
-Color = 6
-Fill = 3
-Number = 3
-Shape = 6
-
-Dinner
-Color = 6
-Fill = 6
-Number = 3
-Shape = 6
-
-Dessert
-Color = 6
-Fill = 6
-Number = 6
-Shape = 6
-
 COMPONENT REFACTOR
 
 - Nav
@@ -55,3 +30,29 @@ HOSTING
 CICD
 
 TESTING
+
+
+DAILY
+Breakfast
+Color = 6
+Fill = 3
+Number = 3
+Shape = 3
+
+Lunch
+Color = 6
+Fill = 3
+Number = 3
+Shape = 6
+
+Dinner
+Color = 6
+Fill = 6
+Number = 3
+Shape = 6
+
+Dessert
+Color = 6
+Fill = 6
+Number = 6
+Shape = 6

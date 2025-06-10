@@ -1,6 +1,6 @@
 // /workspaces/kogum/packages/frontend/src/pages/TutorialPage.tsx
 import React, { useState } from "react";
-import NewCard from "../components/NewCard";
+import NewCard from "../components/Card";
 
 // Example cards for tutorial steps (replace with real data as needed)
 const exampleCards = [
