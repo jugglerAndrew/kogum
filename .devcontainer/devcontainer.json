@@ -37,7 +37,7 @@
   "portsAttributes": {
     "3000": {
       "label": "Frontend (React App)",
-      "onAutoForward": "openPreview" // or "openBrowser"
+      "onAutoForward": "silent" // or "openBrowser"
     },
     "5173": {
       "label": "Frontend (Vite HMR Port)",
