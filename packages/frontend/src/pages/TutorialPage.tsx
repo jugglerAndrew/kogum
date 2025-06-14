@@ -1,7 +1,7 @@
 // /workspaces/kogum/packages/frontend/src/pages/TutorialPage.tsx
 import React, { useState, useEffect } from "react";
-import Card from "../components/Card";
 import type { ClientCardData, PuzzleData } from "../types";
+import AdhocCard from "../components/AdhocCard";
 
 const TUTORIAL_API_URL = "/api/puzzles/tutorial";
 
@@ -45,47 +45,10 @@ const TutorialPage: React.FC = () => {
             Køgum is a puzzle game composed of twelve different cards. The goal
             is to find sets of three cards that form a valid pattern.
           </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-            {tutorialCards &&
-              [
-                // Replace these IDs with the ones you want to show
-                "c0-s0-f1-n0",
-                "c2-s2-f1-n2",
-                "c1-s1-f0-n1",
-                "c0-s2-f1-n1",
-                "c1-s2-f1-n0",
-              ].map((id) => {
-                const card = tutorialCards.find((c) => c.abstractCardId === id);
-                if (!card) return null;
-                return (
-                  <Card
-                    key={card.abstractCardId}
-                    svgType={card.svg_type as string}
-                    svgProps={{
-                      ...(card.svg_properties as Record<
-                        string,
-                        string | number | boolean | undefined
-                      >),
-                      "data-abstract-card-id": card.abstractCardId,
-                    }}
-                    fillType={
-                      card.card_name.split("_")[1]?.toUpperCase() as string
-                    }
-                    color={card.card_name.split("_")[0]?.toUpperCase()}
-                    count={card.count_value}
-                    applyMargins={true}
-                    isSelected={false}
-                    isPaused={false}
-                    isSolutionDisplayCard={false}
-                    svgPattern={card.svg_pattern ?? undefined}
-                    patternId={
-                      card.svg_pattern
-                        ? `pattern-${card.abstractCardId}`
-                        : undefined
-                    }
-                  />
-                );
-              })}
+          <div style={{ display: "flex", gap: 16 }}>
+            <AdhocCard shape="triangle" fill="solid" color="red" count={1} />
+            <AdhocCard shape="hexagon" fill="solid" color="purple" count={2} />
+            <AdhocCard shape="circle" fill="solid" color="blue" count={3} />
           </div>
         </>
       ),
@@ -99,141 +62,37 @@ const TutorialPage: React.FC = () => {
             <b>fill</b>, and <b>shape</b>.
           </p>
 
-          <b>Color:</b>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-            <Card
-              key="1"
-              svgType="polygon"
-              svgProps={{
-                ...(card.svg_properties as Record<
-                  string,
-                  string | number | boolean | undefined
-                >),
-                "data-abstract-card-id": card.abstractCardId,
-              }}
-              fillType={card.card_name.split("_")[1]?.toUpperCase() as string}
-              color={card.card_name.split("_")[0]?.toUpperCase()}
-              count={card.count_value}
-              applyMargins={true}
-              isSelected={false}
-              isPaused={false}
-              isSolutionDisplayCard={false}
-              svgPattern={card.svg_pattern ?? undefined}
-              patternId={
-                card.svg_pattern ? `pattern-${card.abstractCardId}` : undefined
-              }
+          <h3>Color:</h3>
+          <div style={{ display: "flex", gap: 16 }}>
+            <AdhocCard shape="triangle" fill="solid" color="red" count={1} />
+            <AdhocCard shape="triangle" fill="solid" color="gold" count={1} />
+            <AdhocCard shape="triangle" fill="solid" color="green" count={1} />
+          </div>
+
+          <h3>Number:</h3>
+          <div style={{ display: "flex", gap: 16 }}>
+            <AdhocCard shape="triangle" fill="solid" color="red" count={1} />
+            <AdhocCard shape="triangle" fill="solid" color="red" count={2} />
+            <AdhocCard shape="triangle" fill="solid" color="red" count={3} />
+          </div>
+
+          <h3>Fill:</h3>
+          <div style={{ display: "flex", justifyContent: "left", gap: 16 }}>
+            <AdhocCard shape="triangle" fill="open" color="blue" count={1} />
+            <AdhocCard
+              shape="triangle"
+              fill="crosshatch"
+              color="blue"
+              count={1}
             />
+            <AdhocCard shape="triangle" fill="striped" color="blue" count={1} />
           </div>
 
-          <b>Number:</b>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-            {tutorialCards &&
-              ["c0-s0-f1-n0", "c1-s1-f0-n1", "c2-s2-f2-n2"].map((id) => {
-                const card = tutorialCards.find((c) => c.abstractCardId === id);
-                if (!card) return null;
-                return (
-                  <Card
-                    key={card.abstractCardId}
-                    svgType={card.svg_type as string}
-                    svgProps={{
-                      ...(card.svg_properties as Record<
-                        string,
-                        string | number | boolean | undefined
-                      >),
-                      "data-abstract-card-id": card.abstractCardId,
-                    }}
-                    fillType={
-                      card.card_name.split("_")[1]?.toUpperCase() as string
-                    }
-                    color={card.card_name.split("_")[0]?.toUpperCase()}
-                    count={card.count_value}
-                    applyMargins={true}
-                    isSelected={false}
-                    isPaused={false}
-                    isSolutionDisplayCard={false}
-                    svgPattern={card.svg_pattern ?? undefined}
-                    patternId={
-                      card.svg_pattern
-                        ? `pattern-${card.abstractCardId}`
-                        : undefined
-                    }
-                  />
-                );
-              })}
-          </div>
-
-          <b>Fill:</b>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-            {tutorialCards &&
-              ["c0-s0-f1-n0", "c2-s2-f1-n2", "c1-s1-f1-n2"].map((id) => {
-                const card = tutorialCards.find((c) => c.abstractCardId === id);
-                if (!card) return null;
-                return (
-                  <Card
-                    key={card.abstractCardId}
-                    svgType={card.svg_type as string}
-                    svgProps={{
-                      ...(card.svg_properties as Record<
-                        string,
-                        string | number | boolean | undefined
-                      >),
-                      "data-abstract-card-id": card.abstractCardId,
-                    }}
-                    fillType={
-                      card.card_name.split("_")[1]?.toUpperCase() as string
-                    }
-                    color={card.card_name.split("_")[0]?.toUpperCase()}
-                    count={card.count_value}
-                    applyMargins={true}
-                    isSelected={false}
-                    isPaused={false}
-                    isSolutionDisplayCard={false}
-                    svgPattern={card.svg_pattern ?? undefined}
-                    patternId={
-                      card.svg_pattern
-                        ? `pattern-${card.abstractCardId}`
-                        : undefined
-                    }
-                  />
-                );
-              })}
-          </div>
-
-          <b>Shape:</b>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-            {tutorialCards &&
-              ["c0-s0-f1-n0", "c2-s2-f1-n2", "c1-s1-f1-n2"].map((id) => {
-                const card = tutorialCards.find((c) => c.abstractCardId === id);
-                if (!card) return null;
-                return (
-                  <Card
-                    key={card.abstractCardId}
-                    svgType={card.svg_type as string}
-                    svgProps={{
-                      ...(card.svg_properties as Record<
-                        string,
-                        string | number | boolean | undefined
-                      >),
-                      "data-abstract-card-id": card.abstractCardId,
-                    }}
-                    fillType={
-                      card.card_name.split("_")[1]?.toUpperCase() as string
-                    }
-                    color={card.card_name.split("_")[0]?.toUpperCase()}
-                    count={card.count_value}
-                    applyMargins={true}
-                    isSelected={false}
-                    isPaused={false}
-                    isSolutionDisplayCard={false}
-                    svgPattern={card.svg_pattern ?? undefined}
-                    patternId={
-                      card.svg_pattern
-                        ? `pattern-${card.abstractCardId}`
-                        : undefined
-                    }
-                  />
-                );
-              })}
+          <h3>Shape:</h3>
+          <div style={{ display: "flex", gap: 16 }}>
+            <AdhocCard shape="oval" fill="solid" color="orange" count={1} />
+            <AdhocCard shape="pentagon" fill="solid" color="orange" count={1} />
+            <AdhocCard shape="diamond" fill="solid" color="orange" count={1} />
           </div>
         </>
       ),
@@ -254,28 +113,9 @@ const TutorialPage: React.FC = () => {
             </li>
           </ol>
           <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-            {tutorialCards &&
-              tutorialCards.slice(0, 3).map((card) => (
-                <Card
-                  key={card.abstractCardId + "set"}
-                  svgType={
-                    card.svg_type ||
-                    card.card_name.split("_")[2]?.toUpperCase() ||
-                    "ellipse"
-                  }
-                  svgProps={{
-                    ...(card.svg_properties || {}),
-                    "data-abstract-card-id": card.abstractCardId,
-                  }}
-                  fillType={
-                    card.card_name.split("_")[1]?.toUpperCase() || "SOLID"
-                  }
-                  color={card.card_name.split("_")[0]?.toUpperCase() || "BLUE"}
-                  count={card.count_value}
-                  isSelected={true}
-                  svgPattern={card.svg_pattern || undefined}
-                />
-              ))}
+            <AdhocCard shape="oval" fill="solid" color="blue" count={2} />
+            <AdhocCard shape="diamond" fill="open" color="blue" count={2} />
+            <AdhocCard shape="triangle" fill="striped" color="blue" count={2} />
           </div>
           <p style={{ marginTop: 16 }}>
             In this example, all three cards are blue, so color is the same. The
@@ -290,79 +130,25 @@ const TutorialPage: React.FC = () => {
         <>
           <p>Here are more valid sets. Can you spot why they are valid?</p>
           <div style={{ display: "flex", gap: 8 }}>
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color1" }}
-              fillType="SOLID"
-              color="RED"
-              count={2}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color2" }}
-              fillType="SOLID"
-              color="GREEN"
-              count={2}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color3" }}
-              fillType="SOLID"
-              color="BLUE"
-              count={2}
-            />
+            <AdhocCard shape="oval" fill="solid" color="red" count={2} />
+            <AdhocCard shape="oval" fill="solid" color="green" count={2} />
+            <AdhocCard shape="oval" fill="solid" color="blue" count={2} />
           </div>
           <p style={{ marginTop: 16 }}>
             Same: count, fill, shape. Different: color.
           </p>
           <br />
           <div style={{ display: "flex", gap: 8 }}>
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color1" }}
-              fillType="OPEN"
-              color="RED"
-              count={3}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color2" }}
-              fillType="OPEN"
-              color="BLUE"
-              count={1}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color3" }}
-              fillType="OPEN"
-              color="GREEN"
-              count={2}
-            />
+            <AdhocCard shape="oval" fill="open" color="red" count={3} />
+            <AdhocCard shape="oval" fill="open" color="blue" count={1} />
+            <AdhocCard shape="oval" fill="open" color="green" count={2} />
           </div>
           <p>Same: shape, fill. Different: count, color.</p>
           <br />
           <div style={{ display: "flex", gap: 8 }}>
-            <Card
-              svgType="DIAMOND"
-              svgProps={{ "data-abstract-card-id": "color1" }}
-              fillType="STRIPED"
-              color="RED"
-              count={2}
-            />
-            <Card
-              svgType="TRIANGLE"
-              svgProps={{ "data-abstract-card-id": "color2" }}
-              fillType="OPEN"
-              color="GREEN"
-              count={1}
-            />
-            <Card
-              svgType="OVAL"
-              svgProps={{ "data-abstract-card-id": "color3" }}
-              fillType="SOLID"
-              color="BLUE"
-              count={3}
-            />
+            <AdhocCard shape="diamond" fill="striped" color="red" count={2} />
+            <AdhocCard shape="triangle" fill="open" color="green" count={1} />
+            <AdhocCard shape="oval" fill="solid" color="blue" count={3} />
           </div>
           <p>Different: shape, count, fill, color.</p>
         </>
