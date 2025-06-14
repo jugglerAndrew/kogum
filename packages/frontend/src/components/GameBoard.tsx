@@ -62,7 +62,9 @@ const GameBoard: React.FC<GameBoardProps> = ({
         <div
           style={{
             color:
-              message.trim() === "" || message.startsWith("Congratulations")
+              message.trim() === "" ||
+              message.startsWith("Congratulations") ||
+              message.startsWith("Correct")
                 ? "green"
                 : "red",
             fontWeight: "bold",
