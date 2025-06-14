@@ -1,16 +1,38 @@
-/* Adapted for PostgreSQL */
+
+/* 
+DROP TABLE IF EXISTS solution_set CASCADE;
+DROP TABLE IF EXISTS daily_puzzles CASCADE;
+DROP TABLE IF EXISTS card CASCADE;
+DROP TABLE IF EXISTS puzzles CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS color CASCADE;
+DROP TABLE IF EXISTS difficulty CASCADE;
+DROP TABLE IF EXISTS fill CASCADE;
+DROP TABLE IF EXISTS meta_color CASCADE;
+DROP TABLE IF EXISTS meta_count CASCADE;
+DROP TABLE IF EXISTS meta_fill CASCADE;
+DROP TABLE IF EXISTS meta_shape CASCADE;
+DROP TABLE IF EXISTS ncount CASCADE;
+DROP TABLE IF EXISTS shape CASCADE;
+*/
+
+-- Enum type for meal_type for better data integrity
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'meal_type_enum') THEN
+        CREATE TYPE meal_type_enum AS ENUM ('breakfast', 'lunch', 'dinner', 'dessert');
+    END IF;
+END$$;
 
 CREATE TABLE IF NOT EXISTS users (
   user_id SERIAL PRIMARY KEY,
-  user_name VARCHAR(100) NOT NULL,
+  user_name VARCHAR(100) NOT NULL UNIQUE,
   user_password VARCHAR(255) NOT NULL, /* Increased length for modern hashes */
   user_email VARCHAR(100) NOT NULL UNIQUE, /* Added UNIQUE constraint */
   user_register_date TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   insert_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE users ADD CONSTRAINT users_user_name_key UNIQUE (user_name);
-ALTER TABLE users ADD CONSTRAINT users_user_email_key UNIQUE (user_email);
 /* We will insert users via the application with proper hashing */
 -- INSERT INTO users(user_name, user_password, user_email) VALUES('test', 'hashed_password_here', 'kogumgame+test@gmail.com');
 
@@ -24,7 +46,6 @@ INSERT INTO difficulty(difficulty_value, meal_type) VALUES(100, 'breakfast');
 INSERT INTO difficulty(difficulty_value, meal_type) VALUES(200, 'lunch');
 INSERT INTO difficulty(difficulty_value, meal_type) VALUES(300, 'dinner');
 INSERT INTO difficulty(difficulty_value, meal_type) VALUES(400, 'dessert');
-
 
 CREATE TABLE IF NOT EXISTS color (
   color_id SERIAL PRIMARY KEY,
@@ -44,8 +65,6 @@ INSERT INTO color(color_name, difficulty) VALUES('ORANGE', 200);
 INSERT INTO color(color_name, difficulty) VALUES('BLACK', 400);
 INSERT INTO color(color_name, difficulty) VALUES('CYAN', 400);
 INSERT INTO color(color_name, difficulty) VALUES('MAGENTA', 400);
-
-
 
 CREATE TABLE IF NOT EXISTS ncount ( -- Named this way because 'count' may be reserved
   count_id SERIAL PRIMARY KEY,
@@ -67,7 +86,6 @@ INSERT INTO ncount(count_value, count_name, difficulty) VALUES(6,'SIX', 400);
 -- INSERT INTO fill_group(fill_group_name) VALUES('CARBON');
 -- INSERT INTO fill_group(fill_group_name) VALUES('HOUNDSTOOTH');
 -- INSERT INTO fill_group(fill_group_name) VALUES('BASIC');
-
 
 CREATE TABLE IF NOT EXISTS fill (
   fill_id SERIAL PRIMARY KEY,
@@ -211,8 +229,6 @@ VALUES (
   400
 );
 
-
-
 CREATE TABLE IF NOT EXISTS meta_color (
   meta_color_id SERIAL PRIMARY KEY,
   meta_color_name VARCHAR(50),
@@ -264,7 +280,6 @@ CREATE TABLE IF NOT EXISTS card (
   update_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-
 CREATE TABLE IF NOT EXISTS solution_set (
   solution_set_id SERIAL PRIMARY KEY,
   solution_set_code VARCHAR(50) NOT NULL UNIQUE, -- This code represents the set of 3 cards
@@ -296,16 +311,6 @@ CREATE TABLE IF NOT EXISTS solution_set (
 CREATE INDEX IF NOT EXISTS idx_solution_set_code ON solution_set (solution_set_code);
 
 
-
-
-
-/* Stored procedures/functions are not directly translated here.
-   Their logic will be implemented in the Node.js backend.
--- CALL generateCard();
--- CALL generateSolutionSet();
--- CALL generatePuzzle(p_amount INT);
-*/
-
 CREATE TABLE IF NOT EXISTS puzzles (
     puzzle_id SERIAL PRIMARY KEY,
     -- Stores an array of abstract card IDs, e.g., {"c0-s1-f2-n0", "c1-s0-f1-n2", ...}
@@ -316,23 +321,10 @@ CREATE TABLE IF NOT EXISTS puzzles (
     -- CONSTRAINT unique_puzzle_cards UNIQUE (card_ids)
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
-
 -- Optional: Index on card_ids if you plan to query by them, though less common for this table.
 -- CREATE INDEX IF NOT EXISTS idx_puzzles_card_ids ON puzzles USING GIN (card_ids);
-
 COMMENT ON TABLE puzzles IS 'Stores pre-generated abstract puzzles, each consisting of 12 abstract card IDs that form 6 solutions.';
 COMMENT ON COLUMN puzzles.card_ids IS 'Array of 12 abstract card identifiers that make up the puzzle.';
-
-
-
--- daily feature
--- Enum type for meal_type for better data integrity
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'meal_type_enum') THEN
-        CREATE TYPE meal_type_enum AS ENUM ('breakfast', 'lunch', 'dinner', 'dessert');
-    END IF;
-END$$;
 
 CREATE TABLE daily_puzzles (
     daily_puzzle_id SERIAL PRIMARY KEY,
