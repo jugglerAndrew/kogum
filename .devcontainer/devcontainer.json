@@ -36,19 +36,19 @@
   // Ports that should be opened locally when the container starts.
   "portsAttributes": {
     "3000": {
-      "label": "Frontend (React App)",
+      "label": "Frontend (React)",
       "onAutoForward": "silent" // or "openBrowser"
     },
     "5173": {
-      "label": "Frontend (Vite HMR Port)",
+      "label": "Frontend (Vite HMR)",
       "onAutoForward": "silent"
     },
     "8080": {
-      "label": "Backend API",
+      "label": "Backend API (Node)",
       "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
     },
     "5432": {
-      "label": "PostgreSQL",
+      "label": "Backend DB (PostgreSQL)",
       "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
     }
   },
