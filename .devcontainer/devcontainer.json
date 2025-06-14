@@ -15,10 +15,8 @@
   // More info: https://containers.dev/implementors/features/
   "features": {
     // Installs common utilities like git, curl, etc.
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": "true", // Optional: install Zsh
-      "configureZshAsDefaultShell": "true" // Optional: set Zsh as default
-    }
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/robbert229/devcontainer-features/postgresql-client:1": {}
     // Installs Node.js - though our base image in docker-compose already has it,
     // this feature can manage versions or install nvm if needed.
     // If your 'app' service image in docker-compose.yml is a generic one,
@@ -31,7 +29,7 @@
   },
 
   // Ports to forward automatically. These match the 'ports' in docker-compose.yml for the 'app' service.
-  "forwardPorts": [3000, 5173, 8080, 5432],
+  "forwardPorts": [3000, 5173, 8080],
 
   // Ports that should be opened locally when the container starts.
   "portsAttributes": {
@@ -45,10 +43,6 @@
     },
     "8080": {
       "label": "Backend API (Node)",
-      "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
-    },
-    "5432": {
-      "label": "Backend DB (PostgreSQL)",
       "onAutoForward": "silent" // or "notify" / "openBrowser" if you have a root API page
     }
   },

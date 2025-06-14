@@ -49,10 +49,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespassword # Change this if you want, but match DATABASE_URL
       POSTGRES_DB: kogum_dev
-    ports:
-      # Forward PostgreSQL port to host (optional, for external DB tools)
-      # If you only access it from the 'app' container, you don't need to expose it to host.
-      - "5432:5432"
+    # ports:
+    # Forward PostgreSQL port to host (optional, for external DB tools)
+    # If you only access it from the 'app' container, you don't need to expose it to host.
+    # - "5432:5432"
 
 volumes:
   postgres_data: # Defines the named volume for PostgreSQL data persistence
