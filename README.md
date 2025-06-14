@@ -1,7 +1,9 @@
 # kogum
-A game of patterns
 
-Roadmap:
-1) Alpha release - random puzzles
-2) Beta release - daily puzzles, user accounts, and rankings
-3) And beyond...
+### Env Setup
+
+1. Create an .env file (use .env.example).
+2. cd packages/backend
+3. npm run dev
+4. cd packages/frontend
+5. npm run dev
