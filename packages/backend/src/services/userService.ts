@@ -2,12 +2,16 @@
 import bcrypt from "bcrypt";
 import { query } from "../db"; // Your database query function
 import { config } from "../config";
+import { v4 as uuidv4 } from "uuid";
 
 export interface NewUser {
   user_name: string;
   user_email: string;
   user_password: string; // Store the hash, not the plain password
   user_register_date?: Date; // Optional, as DB has default
+  verification_token?: string | null;
+  verification_token_expires?: Date | null;
+  verified?: boolean;
 }
 
 export interface User extends NewUser {
@@ -18,8 +22,16 @@ export const createUser = async (userData: {
   user_name: string;
   user_email: string;
   plainPassword: string;
+  verification_token: string;
+  verification_token_expires: Date;
 }): Promise<User> => {
-  const { user_name, user_email, plainPassword } = userData;
+  const {
+    user_name,
+    user_email,
+    plainPassword,
+    verification_token,
+    verification_token_expires,
+  } = userData;
 
   // Hash the password
   const passwordHash = await bcrypt.hash(
@@ -28,9 +40,9 @@ export const createUser = async (userData: {
   );
 
   const sql = `
-    INSERT INTO users (user_name, user_email, user_password, user_register_date)
-    VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
-    RETURNING user_id, user_name, user_email, user_password, user_register_date;
+    INSERT INTO users (user_name, user_email, user_password, user_register_date, verification_token, verification_token_expires)
+    VALUES ($1, $2, $3, CURRENT_TIMESTAMP, $4, $5)
+    RETURNING user_id, user_name, user_email, user_password, user_register_date, verified, verification_token, verification_token_expires;
   `;
   // Note: user_password in DB will store the hash
 
@@ -39,6 +51,8 @@ export const createUser = async (userData: {
       user_name,
       user_email,
       passwordHash,
+      verification_token,
+      verification_token_expires,
     ]);
     if (result.rows.length > 0) {
       // Don't return user_password from this function usually, but for now, let's match User interface
@@ -73,7 +87,7 @@ export const createUser = async (userData: {
 export const findUserByUsername = async (
   user_name: string
 ): Promise<User | null> => {
-  const sql = `SELECT user_id, user_name, user_email, user_password, user_register_date FROM users WHERE user_name = $1;`;
+  const sql = `SELECT user_id, user_name, user_email, user_password, user_register_date, verified FROM users WHERE user_name = $1;`;
   try {
     const result = await query<User>(sql, [user_name]);
     return result.rows.length > 0 ? result.rows[0] : null;

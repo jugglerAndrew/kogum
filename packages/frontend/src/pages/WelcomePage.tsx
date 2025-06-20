@@ -1,22 +1,14 @@
 // /workspaces/kogum/packages/frontend/src/pages/WelcomePage.tsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-interface WelcomePageProps {
-  onPlayToday: () => void;
-  onPlayRandom: () => void;
-  onRegister: () => void;
-}
-
-const WelcomePage: React.FC<WelcomePageProps> = ({
-  onPlayToday,
-  onPlayRandom,
-  onRegister,
-}) => {
+const WelcomePage: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div style={{ textAlign: "center", padding: "0 20px 8px 20px" }}>
       <h1>k&#248;gum</h1>a game of patterns
       <button
-        onClick={onPlayToday}
+        onClick={() => navigate("/today")}
         style={{
           width: "100%",
           padding: "28px 0",
@@ -36,7 +28,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
         Play Today's Puzzle
       </button>
       <button
-        onClick={onPlayRandom}
+        onClick={() => navigate("/random")}
         style={{
           width: "100%",
           padding: "28px 0",
@@ -78,7 +70,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({
           your stats!
         </div>
         <button
-          onClick={onRegister}
+          onClick={() => navigate("/login")}
           style={{
             width: "100%",
             padding: "16px 0",

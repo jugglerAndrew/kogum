@@ -1,20 +1,13 @@
 // /workspaces/kogum/packages/frontend/src/components/Layout.tsx
 import React from "react";
-import type { ActivePage, UserData } from "../types";
+import type { UserData } from "../types";
+import { Link, useLocation } from "react-router-dom";
 
 interface LayoutProps {
   children: React.ReactNode;
-  activePage: ActivePage;
   isLoggedIn: boolean;
   currentUser: UserData | null;
   onLogout: () => void;
-  onNavigateLogin: () => void;
-  onNavigateKogum: () => void;
-  onNavigateToday: () => void;
-  onNavigateRandom: () => void;
-  onNavigateScores: () => void;
-  onNavigateTutorial: () => void;
-  onNavigateUserPage: () => void;
 }
 
 // Extend the Window interface to include setActivePage for dev/debug use
@@ -27,123 +20,83 @@ declare global {
 const isDev = import.meta.env.MODE === "development";
 const Layout: React.FC<LayoutProps> = ({
   children,
-  activePage,
   isLoggedIn,
   currentUser,
-  onNavigateLogin,
-  onNavigateKogum,
-  onNavigateToday,
-  onNavigateRandom,
-  onNavigateScores,
-  onNavigateTutorial,
-  onNavigateUserPage,
-  // Add debug nav handler if needed
+  onLogout,
 }) => {
+  const location = useLocation();
   return (
     <div className="layout-container">
       <nav className="layout-nav">
         <div className="layout-nav-links">
-          <a
-            href="#"
+          <Link
             className={`layout-nav-link${
-              activePage === "kogum" ? " active" : ""
+              location.pathname === "/" ? " active" : ""
             }`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigateKogum();
-            }}
+            to="/"
           >
             køgum
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
             className={`layout-nav-link${
-              activePage === "tutorial" ? " active" : ""
+              location.pathname === "/tutorial" ? " active" : ""
             }`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigateTutorial();
-            }}
+            to="/tutorial"
           >
             tutørial
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
             className={`layout-nav-link${
-              activePage === "today" ? " active" : ""
+              location.pathname === "/today" ? " active" : ""
             }`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigateToday();
-            }}
+            to="/today"
           >
             tøday
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
             className={`layout-nav-link${
-              activePage === "random" ? " active" : ""
+              location.pathname === "/random" ? " active" : ""
             }`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigateRandom();
-            }}
+            to="/random"
           >
             randøm
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
             className={`layout-nav-link${
-              activePage === "scores" ? " active" : ""
+              location.pathname === "/scores" ? " active" : ""
             }`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigateScores();
-            }}
+            to="/scores"
           >
             scøres
-          </a>
+          </Link>
           {isDev && (
-            <a
-              href="#"
+            <Link
               className={`layout-nav-link${
-                activePage === "debugCombinations" ? " active" : ""
+                location.pathname === "/debugCombinations" ? " active" : ""
               }`}
-              onClick={(e) => {
-                e.preventDefault();
-                if (typeof window !== "undefined" && window.setActivePage)
-                  window.setActivePage("debugCombinations");
-              }}
+              to="/debugCombinations"
             >
               debug
-            </a>
+            </Link>
           )}
           {isLoggedIn && currentUser ? (
-            <a
-              href="#"
+            <Link
               className={`layout-nav-link${
-                activePage === "userPage" ? " active" : ""
+                location.pathname === "/user" ? " active" : ""
               }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigateUserPage();
-              }}
+              to="/user"
             >
               {currentUser.user_name}
-            </a>
+            </Link>
           ) : (
-            <a
-              href="#"
+            <Link
               className={`layout-nav-link${
-                activePage === "login" ? " active" : ""
+                location.pathname === "/login" ? " active" : ""
               }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigateLogin();
-              }}
+              to="/login"
             >
               løgin
-            </a>
+            </Link>
           )}
         </div>
       </nav>

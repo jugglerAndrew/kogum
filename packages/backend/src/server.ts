@@ -7,6 +7,8 @@ import authRoutes from "./routes/authRoutes";
 import puzzleRoutes from "./routes/puzzleRoutes";
 import debugRoutes from "./routes/debugRoutes";
 import adhocCardRoutes from "./routes/adhocCard"; // Import the new adhocCard routes
+import path from "path";
+
 // import pool from './db'; // Import db pool if you want to test connection on start
 
 dotenv.config(); // Ensure .env is loaded

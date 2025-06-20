@@ -7,5 +7,6 @@ const router = Router();
 router.post("/register", authController.register);
 router.post("/login", authController.login);
 // router.post('/logout', authController.logout); // We'll handle logout client-side first
+router.get("/verify-email", authController.verifyEmail);
 
 export default router;

@@ -11,6 +11,12 @@ export const config = {
     secret: process.env.JWT_SECRET || "fallback_secret_key", // Fallback, but .env is better
     expiresIn: process.env.JWT_EXPIRES_IN || 3600,
   },
+  smtp: {
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    user: process.env.SMTP_USER,
+    password: process.env.SMTP_PASSWORD,
+  },
 };
 
 if (!config.databaseUrl) {
