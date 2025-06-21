@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import type { ClientCardData, PuzzleData } from "../types";
 import AdhocCard from "../components/AdhocCard";
 
-const TUTORIAL_API_URL = "/api/puzzles/tutorial";
+const TUTORIAL_API_URL = "/api/puzzle/tutorial";
 
 const TutorialPage: React.FC = () => {
   const [step, setStep] = useState(0);

@@ -90,6 +90,19 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
     meal.toLowerCase() as DailyMealType,
     today
   );
+  if (!puzzleData) {
+    res
+      .status(404)
+      .json({ message: "No daily puzzle found for this meal and date." });
+    return;
+  }
+  // Patch servePuzzle to allow extra fields in the response, type-safe
+  let extraFields: Record<string, unknown> = {};
+  if (typeof puzzleData.daily_puzzle_id === "number") {
+    extraFields.daily_puzzle_id = puzzleData.daily_puzzle_id;
+  }
+  // Use a wrapper for res.json to merge extraFields into the response
+  const originalJson = res.json.bind(res);
   await servePuzzle({
     puzzleData,
     buildGameAttributes: (svgEntityData) => {
@@ -121,7 +134,19 @@ export const getDailyPuzzle: RequestHandler = async (req, res, next) => {
         fills: pickThreeRandom(availableFills),
       };
     },
-    res,
+    res: Object.assign(Object.create(res), {
+      json: (body: any) => {
+        // Only add extra fields if present
+        if (
+          Object.keys(extraFields).length > 0 &&
+          typeof body === "object" &&
+          body !== null
+        ) {
+          return originalJson({ ...body, ...extraFields });
+        }
+        return originalJson(body);
+      },
+    }) as Response,
     next,
   });
 };

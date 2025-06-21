@@ -363,7 +363,7 @@ CREATE TABLE IF NOT EXISTS puzzle_completions (
     puzzle_type VARCHAR(50) NOT NULL DEFAULT 'daily', -- for future expansion
     meal_type meal_type_enum NOT NULL,
     start_time TIMESTAMP WITH TIME ZONE NOT NULL,
-    end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time TIMESTAMP WITH TIME ZONE,
     completion_time_ms INTEGER GENERATED ALWAYS AS ((EXTRACT(EPOCH FROM (end_time - start_time)) * 1000)::INTEGER) STORED,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_id, daily_puzzle_id) -- Prevent duplicate completions per user per puzzle

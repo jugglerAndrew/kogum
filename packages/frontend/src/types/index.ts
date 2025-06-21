@@ -46,6 +46,7 @@ export interface ClientCardData {
 
 export interface PuzzleData {
   puzzle_id: number;
+  daily_puzzle_id?: number; // Added for daily puzzle completion tracking
   cards: ClientCardData[];
   solutions: string[][]; // Array of arrays of abstract card IDs
 }

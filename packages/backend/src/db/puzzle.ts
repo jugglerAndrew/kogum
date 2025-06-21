@@ -20,11 +20,16 @@ export async function getRandomPuzzleCardIds(): Promise<{
 export async function getDailyPuzzleCardIds(
   meal: DailyMealType,
   today: string
-): Promise<{ puzzle_id: number; card_ids: string[] } | null> {
+): Promise<{
+  puzzle_id: number;
+  card_ids: string[];
+  daily_puzzle_id: number;
+} | null> {
   const dailyPuzzleAssignmentResult = await db.query(
     `SELECT \
       p.puzzle_id, \
-      p.card_ids\n    FROM \
+      p.card_ids, \
+      dp.daily_puzzle_id\n    FROM \
       puzzles p\n    JOIN \
       daily_puzzles dp ON p.puzzle_id = dp.puzzle_id\n    WHERE \
       dp.puzzle_date = $1 AND dp.meal_type = $2;`,
@@ -35,6 +40,7 @@ export async function getDailyPuzzleCardIds(
   return {
     puzzle_id: dbPuzzle.puzzle_id,
     card_ids: dbPuzzle.card_ids,
+    daily_puzzle_id: dbPuzzle.daily_puzzle_id,
   };
 }
 

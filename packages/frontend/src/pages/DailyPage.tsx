@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import GameBoard from "../components/GameBoard";
 import type { ClientCardData, PuzzleData, DailyMealType } from "../types";
 import { getCurrentMealType, formatMealType } from "../utils/timeHelpers";
+import { recordPuzzleCompletion, startPuzzleForUser } from "../utils/puzzleApi";
 
 const DailyPage: React.FC = () => {
   const [currentMeal, setCurrentMeal] = useState<DailyMealType | null>(null);
@@ -39,7 +40,7 @@ const DailyPage: React.FC = () => {
     setFoundSolutions(Array(6).fill(null));
     setIsGameCompleted(false);
     try {
-      const response = await fetch(`/api/puzzles/daily?meal=${mealType}`);
+      const response = await fetch(`/api/puzzle/daily?meal=${mealType}`);
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error(
@@ -53,6 +54,18 @@ const DailyPage: React.FC = () => {
       setElapsedTime(0);
       setStartTime(Date.now());
       setIsPaused(false);
+      // Start puzzle for user if logged in and daily_puzzle_id is present
+      const jwt = localStorage.getItem("authToken");
+      console.log("[DailyPage] Attempting to start puzzle", {
+        jwtPresent: !!jwt,
+        daily_puzzle_id: data.daily_puzzle_id,
+      });
+      if (jwt && data.daily_puzzle_id) {
+        startPuzzleForUser(data.daily_puzzle_id).catch((err) => {
+          // Optionally show error to user
+          console.error("Failed to start puzzle for user:", err);
+        });
+      }
     } catch (error: unknown) {
       let errorMessage =
         "Failed to load today's puzzle. Please try again later.";
@@ -150,8 +163,10 @@ const DailyPage: React.FC = () => {
               puzzle.solutions.length > 0
             ) {
               setIsGameCompleted(true);
+              let finalElapsedTime = elapsedTime;
+              let endTimestamp = Date.now();
               if (startTime) {
-                const finalElapsedTime = elapsedTime + (Date.now() - startTime);
+                finalElapsedTime = elapsedTime + (endTimestamp - startTime);
                 setElapsedTime(finalElapsedTime);
                 setDisplayTime(formatTime(finalElapsedTime));
               }
@@ -161,6 +176,25 @@ const DailyPage: React.FC = () => {
                   currentMeal ? formatMealType(currentMeal) : ""
                 } puzzle!`
               );
+              // Record completion in backend
+              if (puzzle && currentMeal) {
+                const startISO = new Date(
+                  endTimestamp - finalElapsedTime
+                ).toISOString();
+                const endISO = new Date(endTimestamp).toISOString();
+                // Use daily_puzzle_id if available, else fallback to puzzle_id
+                const dailyPuzzleId =
+                  puzzle.daily_puzzle_id || puzzle.puzzle_id;
+                recordPuzzleCompletion({
+                  daily_puzzle_id: dailyPuzzleId,
+                  meal_type: currentMeal,
+                  start_time: startISO,
+                  end_time: endISO,
+                }).catch((err) => {
+                  // Optionally show error to user
+                  console.error("Failed to record puzzle completion:", err);
+                });
+              }
             } else {
               setMessage("Correct! You found a Set.");
             }

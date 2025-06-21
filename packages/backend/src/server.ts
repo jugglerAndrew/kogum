@@ -38,7 +38,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/puzzles", puzzleRoutes);
+app.use("/api/puzzle", puzzleRoutes);
 app.use("/api/adhoc", adhocCardRoutes); // Register the new adhocCard API route
 
 // Only expose debug routes in development
