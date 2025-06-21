@@ -1,4 +1,3 @@
-
 /* 
 DROP TABLE IF EXISTS solution_set CASCADE;
 DROP TABLE IF EXISTS daily_puzzles CASCADE;
@@ -353,3 +352,23 @@ CREATE TRIGGER set_daily_puzzles_timestamp
 BEFORE UPDATE ON daily_puzzles
 FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
+
+--
+-- Puzzle Completion Tracking for User Rankings and Leaderboards
+--
+CREATE TABLE IF NOT EXISTS puzzle_completions (
+    completion_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    daily_puzzle_id INTEGER NOT NULL REFERENCES daily_puzzles(daily_puzzle_id),
+    puzzle_type VARCHAR(50) NOT NULL DEFAULT 'daily', -- for future expansion
+    meal_type meal_type_enum NOT NULL,
+    start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    completion_time_ms INTEGER GENERATED ALWAYS AS ((EXTRACT(EPOCH FROM (end_time - start_time)) * 1000)::INTEGER) STORED,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, daily_puzzle_id) -- Prevent duplicate completions per user per puzzle
+);
+-- Indexes for leaderboard and personal best queries
+CREATE INDEX IF NOT EXISTS idx_puzzle_completions_meal_type ON puzzle_completions (meal_type);
+CREATE INDEX IF NOT EXISTS idx_puzzle_completions_puzzle_type ON puzzle_completions (puzzle_type);
+CREATE INDEX IF NOT EXISTS idx_puzzle_completions_end_time ON puzzle_completions (end_time);

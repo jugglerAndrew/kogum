@@ -16,6 +16,7 @@ import {
 } from "../game/types";
 import { getAbstractCardById, materializeCard } from "../game/cardManager";
 import { findAllSets } from "../game/gameLogic";
+import { AuthenticatedRequest } from "../middleware/requireAuth";
 
 export const getRandomPuzzle: RequestHandler = async (req, res, next) => {
   const puzzleData = await getRandomPuzzleCardIds();
@@ -138,6 +139,233 @@ export const getTutorialPuzzle: RequestHandler = async (req, res, next) => {
     res,
     next,
   });
+};
+
+// POST /api/puzzle/start
+export const startPuzzleForUser: RequestHandler = async (req, res, next) => {
+  const typedReq = req as AuthenticatedRequest;
+  try {
+    const { dailyPuzzleId } = typedReq.body;
+    if (!dailyPuzzleId || !typedReq.user) {
+      res.status(400).json({ message: "Missing dailyPuzzleId or user." });
+      return;
+    }
+    const mealResult = await db.query(
+      `SELECT meal_type FROM daily_puzzles WHERE daily_puzzle_id = $1`,
+      [dailyPuzzleId]
+    );
+    if (mealResult.rows.length === 0) {
+      res.status(404).json({ message: "Daily puzzle not found." });
+      return;
+    }
+    const meal_type = mealResult.rows[0].meal_type;
+    const insertSql = `
+      INSERT INTO puzzle_completions (user_id, daily_puzzle_id, puzzle_type, meal_type, start_time, end_time)
+      VALUES ($1, $2, 'daily', $3, NOW(), NULL)
+      ON CONFLICT (user_id, daily_puzzle_id) DO UPDATE SET start_time = EXCLUDED.start_time
+      RETURNING start_time;
+    `;
+    const result = await db.query(insertSql, [
+      typedReq.user.user_id,
+      dailyPuzzleId,
+      meal_type,
+    ]);
+    res.status(200).json({ start_time: result.rows[0].start_time });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /api/puzzle/complete
+export const completePuzzleForUser: RequestHandler = async (req, res, next) => {
+  const typedReq = req as AuthenticatedRequest;
+  try {
+    const { dailyPuzzleId } = typedReq.body;
+    if (!dailyPuzzleId || !typedReq.user) {
+      res.status(400).json({ message: "Missing dailyPuzzleId or user." });
+      return;
+    }
+    const updateSql = `
+      UPDATE puzzle_completions
+      SET end_time = NOW()
+      WHERE user_id = $1 AND daily_puzzle_id = $2 AND end_time IS NULL
+      RETURNING start_time, end_time, completion_time_ms;
+    `;
+    const result = await db.query(updateSql, [
+      typedReq.user.user_id,
+      dailyPuzzleId,
+    ]);
+    if (result.rows.length === 0) {
+      res.status(400).json({
+        message: "No started puzzle to complete or already completed.",
+      });
+      return;
+    }
+    res.status(200).json({
+      start_time: result.rows[0].start_time,
+      end_time: result.rows[0].end_time,
+      completion_time_ms: result.rows[0].completion_time_ms,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/puzzle/leaderboard
+export const getLeaderboard: RequestHandler = async (req, res, next) => {
+  try {
+    const { mealType, period } = req.query;
+    let periodStart: string, periodEnd: string;
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    // Calculate period range
+    switch (period) {
+      case "daily":
+        periodStart = today;
+        periodEnd = today;
+        break;
+      case "weekly": {
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Sunday=0
+        const weekStart = new Date(now.setDate(diff));
+        periodStart = weekStart.toISOString().split("T")[0];
+        periodEnd = today;
+        break;
+      }
+      case "monthly":
+        periodStart = `${now.getFullYear()}-${String(
+          now.getMonth() + 1
+        ).padStart(2, "0")}-01`;
+        periodEnd = today;
+        break;
+      case "yearly":
+        periodStart = `${now.getFullYear()}-01-01`;
+        periodEnd = today;
+        break;
+      default:
+        periodStart = "1970-01-01";
+        periodEnd = today;
+    }
+    if (!mealType) {
+      res.status(400).json({ message: "Missing mealType parameter." });
+      return;
+    }
+    const sql = `
+      SELECT u.user_name, pc.completion_time_ms, pc.end_time, pc.start_time
+      FROM puzzle_completions pc
+      JOIN users u ON pc.user_id = u.user_id
+      WHERE pc.meal_type = $1
+        AND pc.puzzle_type = 'daily'
+        AND pc.end_time IS NOT NULL
+        AND pc.start_time >= $2
+        AND pc.start_time <= $3
+      ORDER BY pc.completion_time_ms ASC, pc.end_time ASC
+      LIMIT 10;
+    `;
+    const result = await db.query(sql, [mealType, periodStart, periodEnd]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/puzzle/leaderboard/overall
+export const getOverallLeaderboard: RequestHandler = async (req, res, next) => {
+  try {
+    const { period } = req.query;
+    let periodStart: string, periodEnd: string;
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    switch (period) {
+      case "daily":
+        periodStart = today;
+        periodEnd = today;
+        break;
+      case "weekly": {
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        const weekStart = new Date(now.setDate(diff));
+        periodStart = weekStart.toISOString().split("T")[0];
+        periodEnd = today;
+        break;
+      }
+      case "monthly":
+        periodStart = `${now.getFullYear()}-${String(
+          now.getMonth() + 1
+        ).padStart(2, "0")}-01`;
+        periodEnd = today;
+        break;
+      case "yearly":
+        periodStart = `${now.getFullYear()}-01-01`;
+        periodEnd = today;
+        break;
+      default:
+        periodStart = "1970-01-01";
+        periodEnd = today;
+    }
+    const sql = `
+      SELECT u.user_name,
+        SUM(pc.completion_time_ms) AS total_time_ms,
+        MAX(pc.end_time) AS last_completion_time,
+        MIN(pc.start_time) AS first_start_time
+      FROM puzzle_completions pc
+      JOIN users u ON pc.user_id = u.user_id
+      JOIN daily_puzzles dp ON pc.daily_puzzle_id = dp.daily_puzzle_id
+      WHERE dp.puzzle_date >= $1
+        AND dp.puzzle_date <= $2
+        AND pc.puzzle_type = 'daily'
+        AND pc.end_time IS NOT NULL
+      GROUP BY u.user_id, u.user_name
+      HAVING COUNT(DISTINCT pc.meal_type) = 4
+      ORDER BY total_time_ms ASC, last_completion_time ASC
+      LIMIT 10;
+    `;
+    const result = await db.query(sql, [periodStart, periodEnd]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/puzzle/personal-bests (auth required)
+export const getPersonalBests: RequestHandler = async (req, res, next) => {
+  const typedReq = req as AuthenticatedRequest;
+  try {
+    if (!typedReq.user) {
+      res.status(401).json({ message: "Not authenticated." });
+      return;
+    }
+    // Per-meal bests
+    const bestsSql = `
+      SELECT pc.meal_type, MIN(pc.completion_time_ms) AS best_time_ms, MIN(pc.end_time) AS best_time_date
+      FROM puzzle_completions pc
+      WHERE pc.user_id = $1
+        AND pc.puzzle_type = 'daily'
+        AND pc.end_time IS NOT NULL
+      GROUP BY pc.meal_type;
+    `;
+    const bestsResult = await db.query(bestsSql, [typedReq.user.user_id]);
+    // Overall best (sum of all meal types in a day)
+    const overallSql = `
+      SELECT dp.puzzle_date, SUM(pc.completion_time_ms) AS total_time_ms, MAX(pc.end_time) AS last_completion_time
+      FROM puzzle_completions pc
+      JOIN daily_puzzles dp ON pc.daily_puzzle_id = dp.daily_puzzle_id
+      WHERE pc.user_id = $1
+        AND pc.puzzle_type = 'daily'
+        AND pc.end_time IS NOT NULL
+      GROUP BY dp.puzzle_date
+      HAVING COUNT(DISTINCT pc.meal_type) = 4
+      ORDER BY total_time_ms ASC, last_completion_time ASC
+      LIMIT 1;
+    `;
+    const overallResult = await db.query(overallSql, [typedReq.user.user_id]);
+    res.status(200).json({
+      meal_bests: bestsResult.rows,
+      overall_best: overallResult.rows[0] || null,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // --- Utility and helper functions ---
