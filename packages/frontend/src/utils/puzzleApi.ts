@@ -53,6 +53,7 @@ export async function recordPuzzleCompletion({
     "Content-Type": "application/json",
     ...getAuthHeaders(),
   };
+  console.log("Calling complete API");
   const res = await fetchWithAuth(`${API_BASE}/complete`, {
     method: "POST",
     headers,
@@ -87,5 +88,3 @@ export async function startPuzzleForUser(daily_puzzle_id: number) {
   }
   return res.json();
 }
-
-// Optionally, add leaderboard fetchers here as needed

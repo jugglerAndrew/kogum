@@ -22,6 +22,14 @@ const DailyPage: React.FC = () => {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
 
   useEffect(() => {
+    const jwt = localStorage.getItem("authToken");
+    if (!jwt) {
+      window.location.href = "/login";
+      return;
+    }
+  }, []);
+
+  useEffect(() => {
     const meal = getCurrentMealType();
     setCurrentMeal(meal);
   }, []);
@@ -30,7 +38,6 @@ const DailyPage: React.FC = () => {
     if (currentMeal) {
       fetchDailyPuzzle(currentMeal);
     }
-    // eslint-disable-next-line
   }, [currentMeal]);
 
   const fetchDailyPuzzle = async (mealType: DailyMealType) => {
@@ -54,15 +61,10 @@ const DailyPage: React.FC = () => {
       setElapsedTime(0);
       setStartTime(Date.now());
       setIsPaused(false);
-      // Start puzzle for user if logged in and daily_puzzle_id is present
-      const jwt = localStorage.getItem("authToken");
-      console.log("[DailyPage] Attempting to start puzzle", {
-        jwtPresent: !!jwt,
-        daily_puzzle_id: data.daily_puzzle_id,
-      });
-      if (jwt && data.daily_puzzle_id) {
+      // Start puzzle for user if daily_puzzle_id is present
+      if (data.daily_puzzle_id) {
+        console.log("Calling startPuzzleForUser", data.daily_puzzle_id);
         startPuzzleForUser(data.daily_puzzle_id).catch((err) => {
-          // Optionally show error to user
           console.error("Failed to start puzzle for user:", err);
         });
       }
@@ -121,6 +123,7 @@ const DailyPage: React.FC = () => {
   };
 
   const checkIfSet = (currentSelection: string[]) => {
+    if (isGameCompleted) return; // Guard: don't process if already completed
     if (!puzzle || currentSelection.length !== 3) return;
     const sortedSelectedIds = [...currentSelection].sort();
     let isSetFoundThisTurn = false;
@@ -172,7 +175,7 @@ const DailyPage: React.FC = () => {
               }
               setStartTime(null);
               setMessage(
-                `Congratulations! You completed Today's ${
+                `Congratulations! You completed the daily ${
                   currentMeal ? formatMealType(currentMeal) : ""
                 } puzzle!`
               );
@@ -185,6 +188,7 @@ const DailyPage: React.FC = () => {
                 // Use daily_puzzle_id if available, else fallback to puzzle_id
                 const dailyPuzzleId =
                   puzzle.daily_puzzle_id || puzzle.puzzle_id;
+                console.log("Recording puzzle completion"); // TODO this is being called twice for some reason
                 recordPuzzleCompletion({
                   daily_puzzle_id: dailyPuzzleId,
                   meal_type: currentMeal,
@@ -192,7 +196,10 @@ const DailyPage: React.FC = () => {
                   end_time: endISO,
                 }).catch((err) => {
                   // Optionally show error to user
-                  console.error("Failed to record puzzle completion:", err);
+                  console.error(
+                    "Frontend Failed to record puzzle completion:",
+                    err
+                  );
                 });
               }
             } else {

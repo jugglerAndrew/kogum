@@ -216,10 +216,19 @@ export const completePuzzleForUser: RequestHandler = async (req, res, next) => {
       WHERE user_id = $1 AND daily_puzzle_id = $2 AND end_time IS NULL
       RETURNING start_time, end_time, completion_time_ms;
     `;
+    // Debug: log user and puzzle info before update
+    console.log('[completePuzzleForUser] user_id:', typedReq.user.user_id, 'dailyPuzzleId:', dailyPuzzleId);
+    const preUpdate = await db.query(
+      'SELECT * FROM puzzle_completions WHERE user_id = $1 AND daily_puzzle_id = $2',
+      [typedReq.user.user_id, dailyPuzzleId]
+    );
+    console.log('[completePuzzleForUser] Pre-update row(s):', preUpdate.rows);
     const result = await db.query(updateSql, [
       typedReq.user.user_id,
       dailyPuzzleId,
     ]);
+    // Debug: log result after update
+    console.log('[completePuzzleForUser] Update result:', result.rows);
     if (result.rows.length === 0) {
       res.status(400).json({
         message: "No started puzzle to complete or already completed.",
